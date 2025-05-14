@@ -1,0 +1,25 @@
+.detailView {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: white;
+}
+
+.detailView h2 {
+  margin-bottom: 1rem;
+}
+
+.field {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.field dt {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  min-width: 120px;
+}
+
+.field dd {
+  margin: 0;
+}
