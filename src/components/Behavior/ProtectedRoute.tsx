@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { mockUserAuth } from "@/data/mockUserAuth";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProtectedRoute({
   allowedRoles,
@@ -11,20 +11,31 @@ export default function ProtectedRoute({
   allowedRoles: string[];
   children: React.ReactNode;
 }) {
+  const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!mockUserAuth) {
-      router.push("/login");
-    } else if (!allowedRoles.includes(mockUserAuth.role)) {
-      router.push("/unauthorized");
-    } else {
-      setChecking(false);
-    }
-  }, [allowedRoles, router]);
+    setMounted(true);
+  }, []);
 
-  if (checking) return <p>Verificando acceso...</p>;
+  useEffect(() => {
+    if (!mounted || isLoading) return;
+
+    if (!user) {
+      router.replace("/login");
+    } else if (!allowedRoles.includes(user.rol)) {
+      router.replace("/unauthorized");
+    }
+  }, [user, isLoading, allowedRoles, router, mounted]);
+
+  if (!mounted || isLoading) {
+    return <p>Verificando acceso...</p>;
+  }
+
+  if (!user || !allowedRoles.includes(user.rol)) {
+    return null;
+  }
 
   return <>{children}</>;
 }

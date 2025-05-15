@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+import api from "@/services/axios";
 import { useAuth } from "@/context/AuthContext";
-import { mockUsers } from "@/data/mockUsers";
-import { setUserCookie } from "@/utils/setUserCookie";
 import styles from "./RegisterForm.module.css";
 
 export default function RegisterForm() {
-  const { login } = useAuth();
   const router = useRouter();
+  const { fetchUser } = useAuth();
 
   const [form, setForm] = useState({
     nombre: "",
@@ -18,38 +18,46 @@ export default function RegisterForm() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    const exists = mockUsers.some((u) => u.correo === form.correo);
-    if (exists) {
-      setError("Este correo ya está registrado.");
-      return;
+    try {
+      await api.post("/auth/register", form);
+
+      await api.post("/auth/login", {
+        correo: form.correo,
+        clave: form.clave,
+      }, { withCredentials: true });
+
+      await fetchUser();
+      router.replace("/perfil");
+
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || "Error en el registro.");
+      } else {
+        setError("Error inesperado al registrar.");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    const newUser = {
-      id: mockUsers.length + 1,
-      username: form.correo.split("@")[0],
-      password: form.clave,
-      role: "usuario",
-      nombre: form.nombre,
-      correo: form.correo,
-      fechaRegistro: new Date().toISOString().split("T")[0],
-    };
-
-    mockUsers.push(newUser);
-
-    login(newUser);
-    setUserCookie(newUser);
-
-    router.push("/perfil");
   };
+
+  if (!mounted) return null;
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
@@ -82,7 +90,9 @@ export default function RegisterForm() {
         required
       />
 
-      <button type="submit">Registrar</button>
+      <button type="submit" disabled={loading}>
+        {loading ? "Registrando..." : "Registrar"}
+      </button>
 
       {error && <p className={styles.error}>{error}</p>}
     </form>

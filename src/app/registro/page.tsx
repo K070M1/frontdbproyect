@@ -14,7 +14,7 @@ export default function RegistroPage() {
 
   useEffect(() => {
     if (user) {
-      router.push('/perfil'); // Si ya está logueado, redirigir
+      router.replace('/perfil');
     } else {
       setChecking(false);
     }
@@ -24,9 +24,9 @@ export default function RegistroPage() {
 
   return (
     <LayoutShell>
-      <div className={styles.registerPage}>
+      <main className={styles.registerPage}>
         <RegisterForm />
-      </div>
+      </main>
     </LayoutShell>
   );
 }

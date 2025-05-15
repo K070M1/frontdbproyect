@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./UserForm.module.css";
 
 type UserData = {
+  id: number;
   nombre: string;
   rol: string;
   correo: string;
@@ -11,11 +12,15 @@ type UserData = {
 
 type UserFormProps = {
   initialData: UserData;
-  onSubmit: (data: UserData) => void;
+  onSubmit: (data: Omit<UserData, "id">) => void;
 };
 
 export default function UserForm({ initialData, onSubmit }: UserFormProps) {
-  const [form, setForm] = useState<UserData>(initialData);
+  const [form, setForm] = useState<Omit<UserData, "id">>({
+    nombre: initialData.nombre,
+    rol: initialData.rol,
+    correo: initialData.correo,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

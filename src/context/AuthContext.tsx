@@ -1,55 +1,57 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import { setUserCookie } from "@/utils/setUserCookie";
-import { clearUserCookie } from "@/utils/clearUserCookie";
-import { mockUsers } from "@/data/mockUsers";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
-  password: string;
   id: number;
   username: string;
-  role: string;
-  nombre: string;
+  rol: string;
   correo: string;
-  fechaRegistro: string;
 };
 
 type AuthContextProps = {
   user: User | null;
-  login: (credentials: { username: string; password: string }) => boolean;
-  logout: () => void;
+  isLoading: boolean;
+  fetchUser: () => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = ({ username, password }: { username: string; password: string }): boolean => {
-    const foundUser = mockUsers.find((u) => u.username === username && u.password === password);
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/me", { credentials: "include" });
+      if (!res.ok) throw new Error("No autorizado");
 
-    if (foundUser) {
-      const userWithDate: User = {
-        ...foundUser,
-        fechaRegistro: new Date().toISOString().split("T")[0],
-      };
-
-      setUser(userWithDate);
-      setUserCookie(userWithDate);
-      return true;
+      const data = await res.json();
+      setUser({
+        id: data.id,
+        username: data.username,
+        rol: data.rol,
+        correo: data.email,
+      });
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
     }
-
-    return false;
   };
 
-  const logout = () => {
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setUser(null);
-    clearUserCookie();
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, fetchUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

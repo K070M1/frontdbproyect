@@ -1,24 +1,51 @@
 "use client";
 
-import LayoutShell from '@/components/Layout/LayoutShell';
-import UserCard from '@/components/Users/UserCard';
-import { mockUsers } from '@/data/mockUsers';
-import ProtectedRoute from '@/components/Behavior/ProtectedRoute';
+import { useEffect, useState } from "react";
+import LayoutShell from "@/components/Layout/LayoutShell";
+import UserCard from "@/components/Users/UserCard";
+import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
+
+type User = {
+  id_usuario: number;
+  nombre_usuario: string;
+  correo: string;
+  rol: string;
+  fecha_registro: string;
+};
 
 export default function UsuariosPage() {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (!res.ok) throw new Error("Error al obtener usuarios");
+        const data = await res.json();
+        setUsers(Array.isArray(data) ? data : [data]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <LayoutShell>
-        <h1>Usuarios Registrados</h1>
-        {mockUsers.map((user) => (
-          <UserCard
-            key={user.id}
-            nombre={user.nombre}
-            correo={user.correo}
-            rol={user.role}
-            fechaRegistro={new Date().toISOString().split('T')[0]} // temporal (simula registro)
-          />
-        ))}
+        <h1 className="text-2xl font-bold mb-4">Usuarios Registrados</h1>
+        <div className="grid gap-4">
+          {users.map((user) => (
+            <UserCard
+              key={user.id_usuario}
+              nombre={user.nombre_usuario}
+              correo={user.correo}
+              rol={user.rol}
+              fechaRegistro={user.fecha_registro.split("T")[0]}
+            />
+          ))}
+        </div>
       </LayoutShell>
     </ProtectedRoute>
   );

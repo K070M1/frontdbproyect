@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 import UserForm from "@/components/Configuracion/UserForm";
-import { mockUsers } from "@/data/mockUsers";
 import styles from "./page.module.css";
 
 type UserData = {
@@ -14,20 +13,45 @@ type UserData = {
   correo: string;
 };
 
+type BackendUser = {
+  id_usuario: number;
+  nombre_usuario: string;
+  rol: string;
+  correo: string;
+};
+
 export default function ConfiguracionPage() {
   const [tab, setTab] = useState<"general" | "usuarios" | "roles">("general");
+  const [usuarios, setUsuarios] = useState<UserData[]>([]);
 
-  const [usuarios, setUsuarios] = useState<UserData[]>(
-    mockUsers.map((u) => ({
-      id: u.id,
-      nombre: u.username === "admin" ? "Administrador" : "Usuario",
-      rol: u.role,
-      correo: `${u.username}@example.com`,
-    }))
-  );
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api"}/users`);
+        if (!res.ok) throw new Error("Error al obtener usuarios");
+
+        const data: BackendUser[] = await res.json();
+
+        const mappedUsers = data.map((user) => ({
+          id: user.id_usuario,
+          nombre: user.nombre_usuario,
+          rol: user.rol,
+          correo: user.correo,
+        }));
+
+        setUsuarios(mappedUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
 
   const handleUpdateUsuario = (id: number, data: Omit<UserData, "id">) => {
-    setUsuarios((prev) => prev.map((u) => (u.id === id ? { ...u, ...data } : u)));
+    setUsuarios((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, ...data } : u))
+    );
     alert("Usuario actualizado correctamente.");
   };
 
@@ -65,7 +89,12 @@ export default function ConfiguracionPage() {
             {usuarios.map((user) => (
               <UserForm
                 key={user.id}
-                initialData={user}
+                initialData={{
+                  id: user.id, // <-- esto faltaba
+                  nombre: user.nombre,
+                  rol: user.rol,
+                  correo: user.correo,
+                }}
                 onSubmit={(data) => handleUpdateUsuario(user.id, data)}
               />
             ))}

@@ -1,20 +1,46 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import api from "@/services/axios";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./LoginForm.module.css";
 
+type LoginForm = {
+  correo: string;
+  clave: string;
+};
+
 export default function LoginForm() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { fetchUser } = useAuth();
 
-  const [form, setForm] = useState({
-    username: "",
-    password: "",
-  });
-
+  const [form, setForm] = useState<LoginForm>({ correo: "", clave: "" });
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginForm) => {
+      await api.post("/auth/login", data, { withCredentials: true });
+    },
+    onSuccess: async () => {
+      await fetchUser();
+      router.replace("/dashboard");
+    },
+    onError: (err: unknown) => {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || "Credenciales inválidas.");
+      } else {
+        setError("Error inesperado al iniciar sesión.");
+      }
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,42 +49,36 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const success = login({ username: form.username, password: form.password });
-
-    if (success) {
-      setError("");
-      router.push("/dashboard");
-    } else {
-      setError("Credenciales inválidas. Verifica tu usuario y contraseña.");
-    }
+    loginMutation.mutate(form);
   };
+
+  if (!mounted) return null; // Previene hydration mismatch
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <h2>Iniciar Sesión</h2>
 
-      <label htmlFor="username">Usuario</label>
+      <label>Correo</label>
       <input
-        type="text"
-        id="username"
-        name="username"
-        value={form.username}
+        type="email"
+        name="correo"
+        value={form.correo}
         onChange={handleChange}
         required
       />
 
-      <label htmlFor="password">Contraseña</label>
+      <label>Contraseña</label>
       <input
         type="password"
-        id="password"
-        name="password"
-        value={form.password}
+        name="clave"
+        value={form.clave}
         onChange={handleChange}
         required
       />
 
-      <button type="submit">Entrar</button>
+      <button type="submit" disabled={loginMutation.isPending}>
+        {loginMutation.isPending ? "Entrando..." : "Entrar"}
+      </button>
 
       {error && <p className={styles.error}>{error}</p>}
     </form>
