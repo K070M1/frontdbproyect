@@ -1,13 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-
-type User = {
-  id: number;
-  username: string;
-  rol: string;
-  correo: string;
-};
+import { User } from "@/types/entities/User";
 
 type AuthContextProps = {
   user: User | null;
@@ -24,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/me", { credentials: "include" });
+      const res = await fetch("/api/auth/me", { credentials: "include" });
       if (!res.ok) throw new Error("No autorizado");
 
       const data = await res.json();

@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import styles from './RatingForm.module.css';
 
-export default function RatingForm() {
+type RatingFormProps = {
+  id_usuario: number;
+};
+
+export default function RatingForm({ id_usuario }: RatingFormProps) {
   const [form, setForm] = useState({
     calificacion: 1,
     comentario: '',
@@ -19,8 +23,11 @@ export default function RatingForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Enviando calificación:', form);
-    // pendient- enviar data al backend
+    console.log('Enviando calificación:', {
+      id_usuario,
+      ...form,
+    });
+    // TODO: POST /calificaciones
   };
 
   return (

@@ -1,13 +1,15 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { MapContainer, TileLayer, Polygon, Popup } from "react-leaflet";
+import { Polygon, Popup } from "@/components/Map/MapShell";
 import { LatLngTuple } from "leaflet";
-import "leaflet/dist/leaflet.css";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
+import BaseMap from "@/components/Map/BaseMap";
 import { mockZonas } from "@/data/mockZonas";
+
 import styles from "./page.module.css";
+import "leaflet/dist/leaflet.css";
 
 export default function ZonaSeguraDetallePage() {
   const { id } = useParams();
@@ -24,7 +26,7 @@ export default function ZonaSeguraDetallePage() {
   // Obtener el centro de la zona segura
   const center: LatLngTuple = [zona.coordinates[0][0], zona.coordinates[0][1]];
 
-  // Convertir las coordenadas de la zona a LatLngTuple
+  // Convertir las coordenadas de la zona a LatLngTuple[]
   const polygonCoordinates: LatLngTuple[] = zona.coordinates.map(
     (coord) => [coord[0], coord[1]] as LatLngTuple
   );
@@ -35,16 +37,11 @@ export default function ZonaSeguraDetallePage() {
       <p className={styles.description}>{zona.descripcion}</p>
 
       <div className={styles.mapWrapper}>
-        <MapContainer center={center} zoom={17} className={styles.mapWrapper}>
-          {/* google maps - pendiente */}
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+        <BaseMap center={center} zoom={17}>
           <Polygon positions={polygonCoordinates} color="green" fillOpacity={0.3}>
             <Popup>{zona.nombre}</Popup>
           </Polygon>
-        </MapContainer>
+        </BaseMap>
       </div>
     </LayoutShell>
   );

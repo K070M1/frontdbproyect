@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import LayoutShell from "@/components/Layout/LayoutShell";
-import dynamic from "next/dynamic";
-import { Map } from "leaflet"; 
-import styles from "./page.module.css";
+import { Marker, Popup, useMapEvent } from "@/components/Map/MapShell";
+import { LatLngTuple } from "leaflet";
 
-const MapContainer = dynamic(() => import("react-leaflet").then((m) => m.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then((m) => m.TileLayer), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then((m) => m.Marker), { ssr: false });
+import LayoutShell from "@/components/Layout/LayoutShell";
+import BaseMap from "@/components/Map/BaseMap";
+import { useMapIcons } from "@/utils/useMapIcons";
+
+import styles from "./page.module.css";
 import "leaflet/dist/leaflet.css";
 
 export default function NuevaUbicacionPage() {
   const router = useRouter();
+  const { MARKER } = useMapIcons();
+
   const [form, setForm] = useState({
     nombre: "",
     descripcion: "",
@@ -23,7 +25,10 @@ export default function NuevaUbicacionPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "latitud" || name === "longitud" ? parseFloat(value) : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,6 +36,16 @@ export default function NuevaUbicacionPage() {
     console.log("Registrando ubicación:", form);
     router.push("/ubicaciones");
   };
+
+  const center: LatLngTuple = [form.latitud, form.longitud];
+
+  function MapClickHandler() {
+    useMapEvent("click", (event) => {
+      const { lat, lng } = event.latlng;
+      setForm((prev) => ({ ...prev, latitud: lat, longitud: lng }));
+    });
+    return null;
+  }
 
   return (
     <LayoutShell>
@@ -49,25 +64,16 @@ export default function NuevaUbicacionPage() {
         <input type="number" name="longitud" step="0.000001" value={form.longitud} onChange={handleChange} required />
 
         <div className={styles.mapWrapper}>
-          <MapContainer
-            center={[form.latitud, form.longitud]}
-            zoom={15}
-            style={{ height: "300px", width: "100%" }}
-            whenReady={(e) => {
-              const map: Map = e.target;
-              map.on("click", (event) => {
-                const { lat, lng } = event.latlng;
-                setForm((prev) => ({ ...prev, latitud: lat, longitud: lng }));
-              });
-            }}
-          >
-            {/* google maps -pendient */}
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap contributors"
-            />
-            <Marker position={[form.latitud, form.longitud]} />
-          </MapContainer>
+          <BaseMap center={center} zoom={15}>
+            <MapClickHandler />
+            <Marker position={center} icon={MARKER}>
+              <Popup>
+                <strong>{form.nombre || "Nueva Ubicación"}</strong>
+                <br />
+                {form.descripcion || "Descripción pendiente"}
+              </Popup>
+            </Marker>
+          </BaseMap>
         </div>
 
         <button type="submit" className={styles.submitButton}>

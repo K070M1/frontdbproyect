@@ -3,26 +3,39 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .header {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #111827;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .info {
-  color: #374151;
+  margin-bottom: 0.5rem;
   font-size: 0.95rem;
+  color: #374151;
+}
+
+.riesgoBajo {
+  color: #16a34a; /* verde */
+  font-weight: 600;
+}
+
+.riesgoMedio {
+  color: #f59e0b; /* amarillo */
+  font-weight: 600;
+}
+
+.riesgoAlto {
+  color: #dc2626; /* rojo */
+  font-weight: 600;
 }
 
 .favorite {
   color: #facc15;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
 }

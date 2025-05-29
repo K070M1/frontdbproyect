@@ -2,11 +2,14 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { DivIcon, LatLngTuple } from "leaflet";
-import { FaMapMarkerAlt, FaStar, FaRegStar } from "react-icons/fa";
+import { Marker, Popup } from "@/components/Map/MapShell";
+import { LatLngTuple } from "leaflet";
+import { FaStar, FaRegStar } from "react-icons/fa";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
+import BaseMap from "@/components/Map/BaseMap";
+import { useMapIcons } from "@/utils/useMapIcons";
+
 import { mockUbicaciones } from "@/data/mockUbicaciones";
 import { mockCalificaciones } from "@/data/mockCalificaciones";
 
@@ -15,6 +18,8 @@ import styles from "./page.module.css";
 export default function UbicacionDetallePage() {
   const { id } = useParams();
   const ubicacion = mockUbicaciones.find((u) => u.id.toString() === id);
+
+  const { MARKER } = useMapIcons();
 
   if (!ubicacion) {
     return (
@@ -30,32 +35,21 @@ export default function UbicacionDetallePage() {
 
   const center: LatLngTuple = [ubicacion.latitud, ubicacion.longitud];
 
-  const icon = new DivIcon({
-    html: `<div style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px;">${FaMapMarkerAlt({ color: "red", size: 20 }).props.children}</div>`,
-    className: "",
-    iconSize: [24, 24],
-  });
-
   return (
     <LayoutShell>
       <h1 className={styles.title}>{ubicacion.nombre}</h1>
       <p className={styles.description}>{ubicacion.descripcion}</p>
 
       <div className={styles.mapWrapper}>
-        <MapContainer center={center} zoom={15} style={{ height: "400px", width: "100%" }}>
-          {/* google maps - pendient*/}
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={center} icon={icon}>
+        <BaseMap center={center} zoom={15}>
+          <Marker position={center} icon={MARKER}>
             <Popup>
               <strong>{ubicacion.nombre}</strong>
               <br />
               {ubicacion.descripcion}
             </Popup>
           </Marker>
-        </MapContainer>
+        </BaseMap>
       </div>
 
       {calificaciones.length > 0 && (

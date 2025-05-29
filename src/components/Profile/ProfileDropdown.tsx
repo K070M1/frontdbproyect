@@ -20,7 +20,7 @@ export default function ProfileDropdown() {
       console.error("Error al cerrar sesión:", error);
     } finally {
       logout();
-      router.replace("/login");
+      router.replace("/auth/login");
     }
   };
 

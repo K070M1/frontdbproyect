@@ -1,15 +1,17 @@
-import { Polygon, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+"use client";
+
+import { Polygon, Tooltip } from "@/components/Map/MapShell";
+import { LatLngTuple } from "leaflet";
 
 type ZonePolygonProps = {
-  coordinates: [number, number][];
-  label?: string;
+  coordinates: LatLngTuple[];
+  label: string;
 };
 
 export default function ZonePolygon({ coordinates, label }: ZonePolygonProps) {
   return (
-    <Polygon positions={coordinates} color="green" fillOpacity={0.3}>
-      {label && <Popup>{label}</Popup>}
+    <Polygon positions={coordinates}>
+      <Tooltip sticky>{label}</Tooltip>
     </Polygon>
   );
 }

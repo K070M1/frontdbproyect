@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react';
-
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  rol: string;
-};
+import { User } from "@/types/entities/User";
 
 export function useMe() {
   const [user, setUser] = useState<User | null>(null);
@@ -15,7 +9,7 @@ export function useMe() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch('/api/me', { credentials: 'include' });
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
         if (!res.ok) {
           throw new Error('No autorizado');
         }

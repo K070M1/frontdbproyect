@@ -5,5 +5,5 @@ type EventMarkerProps = {
 };
 
 export default function EventMarker({ title }: EventMarkerProps) {
-  return <div className={styles.marker} title={title}></div>;
+  return <div className={styles.marker} title={title} />;
 }

@@ -6,7 +6,7 @@ type RatingStarsProps = {
 
 export default function RatingStars({ score }: RatingStarsProps) {
   return (
-    <div className={styles.stars}>
+    <div className={styles.stars} aria-label={`Puntuación: ${score} de 5`} title={`Puntuación: ${score}/5`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span key={i} className={i < score ? styles.filled : styles.empty}>
           ★

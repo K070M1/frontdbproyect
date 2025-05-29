@@ -53,7 +53,7 @@ export default function DashboardCharts() {
 
   const tipos = ['zona_segura', 'ruta', 'evento'];
   const promedioPorTipo = tipos.map((tipo) => {
-    const items = mockCalificaciones.filter((c) => c.tipo === tipo);
+    const items = mockCalificaciones.filter((c) => c.tipo_calificacion === tipo);
     const total = items.reduce((acc, c) => acc + c.calificacion, 0);
     return items.length > 0 ? total / items.length : 0;
   });
@@ -83,7 +83,6 @@ export default function DashboardCharts() {
     ],
   };
 
-  // Nueva: Evolución de Calificaciones
   const calificacionesPorMes = [
     { mes: 'Enero', promedio: 4.2 },
     { mes: 'Febrero', promedio: 3.8 },

@@ -1,19 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import dynamic from "next/dynamic";
 import { LatLngTuple } from "leaflet";
+
 import LayoutShell from "@/components/Layout/LayoutShell";
+import BaseMap from "@/components/Map/BaseMap";
+import { Marker, Polyline, Popup } from "@/components/Map/MapShell";
+
 import { mockRutas } from "@/data/mockRutas";
 import styles from "./page.module.css";
-
-const MapContainer = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
-const Polyline = dynamic(() => import("react-leaflet").then(m => m.Polyline), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then(m => m.Marker), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then(m => m.Popup), { ssr: false });
-
-import "leaflet/dist/leaflet.css";
 
 export default function RutaDetallePage() {
   const { id } = useParams();
@@ -29,7 +24,6 @@ export default function RutaDetallePage() {
 
   const origen: LatLngTuple = ruta.positions[0] as LatLngTuple;
   const destino: LatLngTuple = ruta.positions[ruta.positions.length - 1] as LatLngTuple;
-  const positions: LatLngTuple[] = ruta.positions as LatLngTuple[];
 
   return (
     <LayoutShell>
@@ -39,13 +33,8 @@ export default function RutaDetallePage() {
       {ruta.favorito && <p className={styles.favorite}>★ Ruta favorita</p>}
 
       <div className={styles.mapWrapper}>
-        <MapContainer center={origen} zoom={15} className={styles.mapWrapper}>
-          {/* Usar google maps- pendient */}
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Polyline positions={positions} color="blue">
+        <BaseMap center={origen} zoom={15}>
+          <Polyline positions={ruta.positions as LatLngTuple[]} color="blue">
             <Popup>Ruta: {ruta.origen} ➔ {ruta.destino}</Popup>
           </Polyline>
           <Marker position={origen}>
@@ -54,7 +43,7 @@ export default function RutaDetallePage() {
           <Marker position={destino}>
             <Popup>Destino: {ruta.destino}</Popup>
           </Marker>
-        </MapContainer>
+        </BaseMap>
       </div>
     </LayoutShell>
   );

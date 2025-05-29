@@ -23,7 +23,7 @@ export default function ProtectedRoute({
     if (!mounted || isLoading) return;
 
     if (!user) {
-      router.replace("/login");
+      router.replace("/auth/login");
     } else if (!allowedRoles.includes(user.rol)) {
       router.replace("/unauthorized");
     }

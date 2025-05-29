@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   const tokenCookie = request.cookies.get("token");
 
   if (!tokenCookie) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   try {
@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
 
   } catch (error) {
     console.error("Token inválido o expirado:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 }
 

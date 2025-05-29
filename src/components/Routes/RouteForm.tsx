@@ -27,9 +27,11 @@ export default function RouteForm() {
 
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked :
-               type === "number" ? Number(value) :
-               value,
+      [name]: type === "checkbox"
+        ? (e.target as HTMLInputElement).checked
+        : name === "riesgo" || name.startsWith("id_")
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -40,12 +42,12 @@ export default function RouteForm() {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <h2>Registrar Ruta</h2>
+      <h2 className={styles.title}>Registrar Ruta</h2>
 
       <SelectField
         label="Origen"
         name="id_origen"
-        value={form.id_origen.toString()}
+        value={form.id_origen}
         options={mockUbicaciones.map((u) => ({ value: u.id, label: u.nombre }))}
         onChange={handleChange}
       />
@@ -53,7 +55,7 @@ export default function RouteForm() {
       <SelectField
         label="Destino"
         name="id_destino"
-        value={form.id_destino.toString()}
+        value={form.id_destino}
         options={mockUbicaciones.map((u) => ({ value: u.id, label: u.nombre }))}
         onChange={handleChange}
       />
@@ -64,6 +66,8 @@ export default function RouteForm() {
         type="number"
         value={form.riesgo.toString()}
         onChange={handleChange}
+        min={1}
+        max={10}
       />
 
       <InputField

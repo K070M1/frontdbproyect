@@ -1,15 +1,17 @@
-import { Polyline, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+"use client";
+
+import { Polyline, Tooltip } from "@/components/Map/MapShell";
+import { LatLngTuple } from "leaflet";
 
 type RoutePolylineProps = {
-  positions: [number, number][];
-  label?: string;
+  positions: LatLngTuple[];
+  label: string;
 };
 
 export default function RoutePolyline({ positions, label }: RoutePolylineProps) {
   return (
-    <Polyline positions={positions} color="blue">
-      {label && <Popup>{label}</Popup>}
+    <Polyline positions={positions}>
+      <Tooltip sticky>{label}</Tooltip>
     </Polyline>
   );
 }

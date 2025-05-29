@@ -18,7 +18,7 @@ export default function LogoutPage() {
         // No bloqueamos la salida aunque falle el backend.
       } finally {
         logout(); // limpiar contexto
-        router.replace("/login");
+        router.replace("/");
       }
     };
 

@@ -5,7 +5,17 @@
 }
 
 .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .addButton {
@@ -18,10 +28,4 @@
 
 .addButton:hover {
   background-color: #1d4ed8;
-}
-
-.list {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
