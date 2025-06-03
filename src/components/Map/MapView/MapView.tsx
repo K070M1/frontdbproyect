@@ -26,13 +26,13 @@ export default function MapView() {
   return (
     <div className={styles.mapContainer}>
       <BaseMap center={center}>
-        {mockEventos.map((evento) => (
-          <Marker key={evento.id} position={evento.position} icon={icons.ALERT}>
+        {mockEventos.map((evento:any, ind) => (
+          <Marker key={(evento?.id || "s") + ind} position={evento.position || { lat: "", lng: ""}} icon={icons.ALERT}>
             <Popup>{evento.descripcion}</Popup>
           </Marker>
         ))}
 
-        {mockRutas.map((ruta) => (
+        {mockRutas.map((ruta:any) => (
           <RoutePolyline
             key={ruta.id_ruta}
             positions={ruta.positions}
@@ -40,17 +40,17 @@ export default function MapView() {
           />
         ))}
 
-        {mockZonas.map((zona) => (
+        {mockZonas.map((zona:any, zind) => (
           <ZonePolygon
-            key={zona.id}
+            key={zona?.id || "zon" + zind }
             coordinates={zona.coordinates}
             label={zona.nombre}
           />
         ))}
 
         {mockCalificaciones
-          .filter((c) => c.ubicacion)
-          .map((c) => (
+          .filter((c:any) => c.ubicacion)
+          .map((c:any) => (
             <Marker
               key={c.id}
               position={c.ubicacion!}

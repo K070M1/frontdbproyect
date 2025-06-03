@@ -10,7 +10,7 @@ type ZonePolygonProps = {
 
 export default function ZonePolygon({ coordinates, label }: ZonePolygonProps) {
   return (
-    <Polygon positions={coordinates}>
+    <Polygon positions={coordinates || []}>
       <Tooltip sticky>{label}</Tooltip>
     </Polygon>
   );

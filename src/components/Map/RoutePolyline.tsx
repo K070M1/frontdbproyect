@@ -10,7 +10,7 @@ type RoutePolylineProps = {
 
 export default function RoutePolyline({ positions, label }: RoutePolylineProps) {
   return (
-    <Polyline positions={positions}>
+    <Polyline positions={positions || []}>
       <Tooltip sticky>{label}</Tooltip>
     </Polyline>
   );
