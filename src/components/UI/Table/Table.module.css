@@ -11,5 +11,5 @@
 }
 
 .table th {
-  background-color: #f3f4f6;
+  background-color: var(--background-color-tertiary);
 }

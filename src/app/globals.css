@@ -1,8 +1,73 @@
 @import "tailwindcss";
 
 :root {
+  /* === Light Mode (Día) === */
+
+  /* Backgrounds */
   --background: #ffffff;
   --foreground: #171717;
+  --background-color-base: #f9fafb;
+  --background-color-primary: rgba(31, 41, 55, 0.75);
+  --background-color-secondary: #e0e0e0;
+  --background-color-tertiary: #f3f4f6;
+  --card-background: #ffffff;
+
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-inverted: #ffffff;
+  --text-brand: #075985;
+
+  /* Brand / Status */
+  --primary: #0ea5e9;
+  --primary-hover: #0284c7;
+  --secondary: #10b981;
+  --secondary-hover: #059669;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Neutrals */
+  --color-white: #ffffff;
+  --color-muted: #94a3b8;
+  --color-border: #e5e7eb;
+  --border-color: #d1d5db;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+
+  /* Blur Transparencies */
+  --blur-bg: rgba(255, 255, 255, 0.7);
+  --blur-bg-heavy: rgba(255, 255, 255, 0.85);
+
+  /* Fonts */
+  --font-family-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.75;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
 }
 
 @theme inline {
@@ -12,21 +77,56 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* @media (prefers-color-scheme: dark) { */
+  /* :root { */
+    /* === Dark Mode (Noche) === */
+
+    /* Backgrounds */
+    /* --background: #0a0a0a;
+    --foreground: #e5e7eb;
+    --background-color-base: #111827;
+    --background-color-primary: rgba(17, 24, 39, 0.75);
+    --background-color-secondary: #1f2937;
+    --background-color-tertiary: #374151;
+    --card-background: rgba(30, 41, 59, 0.8); */
+
+    /* Text */
+    /* --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --text-inverted: #111827;
+    --text-brand: #38bdf8; */
+
+    /* Brand / Status */
+    /* --primary: #0ea5e9;
+    --primary-hover: #0284c7;
+    --secondary: #10b981;
+    --secondary-hover: #059669;
+    --danger: #f87171;
+    --danger-hover: #b91c1c;
+    --warning: #fbbf24;
+    --info: #60a5fa; */
+
+    /* Neutrals */
+    /* --color-white: #ffffff;
+    --color-muted: #9ca3af;
+    --color-border: #4b5563;
+    --border-color: #374151;
+    --card-shadow: rgba(0, 0, 0, 0.25); */
+
+    /* Blur Transparencies */
+    /* --blur-bg: rgba(17, 24, 39, 0.6); */
+    /* --blur-bg-heavy: rgba(17, 24, 39, 0.85); */
+  /* } */
+/* } */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-sans);
 }
 
-/* // CCS de frontend\src\components\UI\Spinner.tsx */
-
+/* === Spinner Animation === */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

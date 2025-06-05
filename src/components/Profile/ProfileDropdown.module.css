@@ -7,37 +7,81 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
 }
 
-.avatar {
-  font-size: 1.5rem;
+.avatarImage {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6; /* azul suave */
 }
 
 .dropdown {
   position: absolute;
   right: 0;
   top: 100%;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: #1f2937;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   padding: 0.5rem 0;
-  min-width: 150px;
-  z-index: 10;
+  min-width: 200px;
+  z-index: 999;
+  color: #f9fafb;
+}
+
+.userInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.avatarBorder {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: #111827;
+  color: white;
+}
+
+.avatarInitials {
+  font-size: 0.85rem;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #374151;
+  margin: 0.5rem 0;
 }
 
 .item {
   display: block;
   padding: 0.5rem 1rem;
-  text-decoration: none;
-  color: #111827;
-  width: 100%;
-  text-align: left;
   background: none;
   border: none;
+  text-align: left;
+  width: 100%;
+  color: #f9fafb;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
 .item:hover {
-  background-color: #f3f4f6;
+  background-color: #374151;
 }

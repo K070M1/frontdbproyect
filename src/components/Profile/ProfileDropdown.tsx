@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/axios";
+import Image from "next/image";
 import styles from "./ProfileDropdown.module.css";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
@@ -29,14 +30,44 @@ export default function ProfileDropdown() {
     setIsOpen(false);
   };
 
+  // Generar URL del avatar usando ui-avatars.com
+  // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || "U")}&background=111827&color=fff&size=128`;
+  const avatarUrl = `https://ui-avatars.com/api/?name=U&background=111827&color=fff&size=128`;
+
   return (
     <div className={styles.container}>
-      <button className={styles.avatarButton} onClick={handleToggle}>
-        <span className={styles.avatar}>👤</span>
+      <button className={styles.avatarButton} onClick={handleToggle} aria-label="Perfil">
+        <Image
+          src={avatarUrl}
+          alt="Avatar"
+          className={styles.avatarImage}
+          width={36}
+          height={36}
+          priority
+        />
       </button>
 
       {isOpen && (
         <div className={styles.dropdown}>
+          <div className={styles.userInfoBox}>
+            <div className={styles.avatarBorder}>
+              <span className={styles.avatarInitials}>
+                {user?.username
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .substring(0, 2)
+                  .toUpperCase() || "U"}
+              </span>
+            </div>
+            <div>
+              <strong className={styles.userName}>{user?.username || "Usuario"}</strong>
+              <div className={styles.userRole}>{user?.rol || "rol"}</div>
+            </div>
+          </div>
+
+          <hr className={styles.divider} />
+
           <button onClick={() => navigateTo("/perfil")} className={styles.item}>
             Perfil
           </button>
