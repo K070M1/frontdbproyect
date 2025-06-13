@@ -13,10 +13,10 @@ export default function RutasPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("Todos");
 
-  const filteredRutas = mockRutas.filter((ruta) => {
+  const filteredRutas = mockRutas.filter((ruta:any) => {
     const matchesQuery =
-      ruta.origen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ruta.destino.toLowerCase().includes(searchQuery.toLowerCase());
+      ruta?.origen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ruta?.destino?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesFilter =
       activeFilter === "Todos" ||
@@ -45,11 +45,11 @@ export default function RutasPage() {
       />
 
       <div className={styles.list}>
-        {filteredRutas.map((ruta) => (
+        {filteredRutas.map((ruta:any) => (
           <RouteCard
             key={ruta.id_ruta}
-            origen={ruta.origen}
-            destino={ruta.destino}
+            origen={ruta?.origen}
+            destino={ruta?.destino}
             riesgo={ruta.riesgo}
             tiempo={ruta.tiempo_estimado}
             favorito={ruta.favorito}

@@ -1,75 +1,135 @@
 "use client";
 
-import { LatLngTuple } from "leaflet";
-
-import LayoutShell from "@/components/Layout/LayoutShell";
-import BaseMap from "@/components/Map/BaseMap";
-import RoutePolyline from "../RoutePolyline";
-import ZonePolygon from "../ZonePolygon";
-import { Marker, Popup } from "@/components/Map/MapShell";
-
-import { useMapIcons } from "@/utils/useMapIcons";
 import { mockEventos } from "@/data/mockEventos";
 import { mockRutas } from "@/data/mockRutas";
 import { mockZonas } from "@/data/mockZonas";
 import { mockCalificaciones } from "@/data/mockCalificaciones";
+import GoogleBaseMap from "@/components/Map/BaseMap";
+import { Marker, InfoWindow, Polyline, Polygon  } from '@/components/Map/MapShell'
+import { useMemo, useState, useEffect } from "react";
 
 import styles from "./MapView.module.css";
 
 export default function MapView() {
-  const icons = useMapIcons();
+  const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const center = useMemo(() => ({ lat: -12.188659353427697, lng: -76.97349049095168 }), []);
 
-  const center: LatLngTuple = [-12.0464, -77.0428];
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocationError("Tu navegador no soporta geolocalización.");
+      return;
+    }
 
-  if (!icons.MARKER) return <LayoutShell><p>Cargando mapa...</p></LayoutShell>;
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      (error) => {
+        let errorMessage = "";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Permiso de ubicación denegado. Habilítalo en tu navegador.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Ubicación no disponible. Verifica tu conexión o hardware.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Tiempo de espera agotado. Intenta nuevamente.";
+            break;
+          default:
+            errorMessage = "Error desconocido al obtener la ubicación.";
+        }
+        setLocationError(errorMessage || "");
+        console.error("Error de geolocalización:", error);
+      },
+      options
+    );
+  }, []);
 
   return (
     <div className={styles.mapContainer}>
-      <BaseMap center={center}>
-        {mockEventos.map((evento:any, ind) => (
-          <Marker key={(evento?.id || "s") + ind} position={evento.position || { lat: "", lng: ""}} icon={icons.ALERT}>
-            <Popup>{evento.descripcion}</Popup>
+      <GoogleBaseMap center={center} height="800px">
+        {userPosition && (
+          <Marker
+            position={userPosition}
+            icon={{
+              url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              scaledSize: new google.maps.Size(90, 90)
+            }}
+          >
+            <InfoWindow>
+              <div>¡Estás aquí!</div>
+            </InfoWindow>
+          </Marker>
+        )}
+
+        {locationError && (
+          <div className={styles.locationError}>
+            Error: {locationError}
+          </div>
+        )}
+
+        {mockEventos.map((evento: any, ind) => (
+          <Marker 
+            key={(evento?.id || "s") + ind} 
+            position={evento.position || { lat: 0, lng: 0 }}
+          >
           </Marker>
         ))}
 
-        {mockRutas.map((ruta:any) => (
-          <RoutePolyline
+        {mockRutas.map((ruta: any) => (
+          <Polyline
             key={ruta.id_ruta}
-            positions={ruta.positions}
-            label={`${ruta.origen} ➔ ${ruta.destino}`}
+            path={ruta.positions}
+            options={{
+              strokeColor: "#FF0000",
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }}
           />
         ))}
 
-        {mockZonas.map((zona:any, zind) => (
-          <ZonePolygon
-            key={zona?.id || "zon" + zind }
-            coordinates={zona.coordinates}
-            label={zona.nombre}
+        {mockZonas.map((zona: any, zind) => (
+          <Polygon
+            key={zona?.id || "zon" + zind}
+            paths={zona.coordinates}
+            options={{
+              fillColor: "#FF0000",
+              fillOpacity: 0.35,
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+            }}
           />
         ))}
 
         {mockCalificaciones
-          .filter((c:any) => c.ubicacion)
-          .map((c:any) => (
+          .filter((c: any) => c.ubicacion)
+          .map((c: any) => (
             <Marker
               key={c.id}
               position={c.ubicacion!}
-              icon={
-                c.tipo === "zona_segura"
-                  ? icons.ZONE
-                  : c.tipo === "ruta"
-                  ? icons.ROUTE
-                  : icons.MARKER
-              }
             >
-              <Popup>
-                <strong>{c.referencia}</strong>
-                <br />
-                {c.comentario}
-              </Popup>
+              <InfoWindow>
+                <div>
+                  <strong>{c.referencia}</strong>
+                  <br />
+                  {c.comentario}
+                </div>
+              </InfoWindow>
             </Marker>
           ))}
-      </BaseMap>
+      </GoogleBaseMap>
     </div>
   );
 }

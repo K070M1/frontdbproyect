@@ -1,48 +1,43 @@
 "use client";
 
-import { LatLngTuple } from "leaflet";
-import { ReactNode, useMemo } from "react";
-import { MapContainer, TileLayer } from "@/components/Map/MapShell";  // si lo centralizas también
+import { useMemo } from "react";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 
 type BaseMapProps = {
-  center: LatLngTuple;
+  center: { lat: number; lng: number };
   zoom?: number;
-  children?: ReactNode;
+  children?: React.ReactNode;
   height?: string;
-  provider?: "osm" | "google";  // Escalable a futuro
+  width?: string;
 };
 
-export default function BaseMap({
-  center,
-  zoom = 14,
-  children,
-  height = "400px",
-  provider = "osm"
-}: BaseMapProps) {
+export default function GoogleBaseMap({ center, zoom = 14, children, height = "400px", width = "100%" }: BaseMapProps) {
+  const libraries = useMemo(() => ["places"], []);
+  
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
+    libraries: libraries as any,
+  });
 
-  const tileConfig = useMemo(() => {
-    switch (provider) {
-      case "google":
-        return {
-          url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
-          attribution: "&copy; Google Maps",
-        };
-      case "osm":
-      default:
-        return {
-          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          attribution: "&copy; OpenStreetMap contributors",
-        };
-    }
-  }, [provider]);
+  if (!isLoaded) {
+    return <div>Loading map...</div>;
+  }
 
   return (
-    <div style={{ width: "100%", height }}>
-      <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%" }}>
-        <TileLayer attribution={tileConfig.attribution} url={tileConfig.url} />
+    <div style={{ width, height }}>
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        center={center || undefined}
+        zoom={zoom}
+        options={{
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false,
+        }}
+      >
         {children}
-      </MapContainer>
+      </GoogleMap>
     </div>
   );
 }
