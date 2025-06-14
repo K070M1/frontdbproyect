@@ -16,8 +16,9 @@ export default function GoogleBaseMap({ center, zoom = 14, children, height = "4
   const libraries = useMemo(() => ["places"], []);
   
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: libraries as any,
+
   });
 
   if (!isLoaded) {
@@ -25,7 +26,7 @@ export default function GoogleBaseMap({ center, zoom = 14, children, height = "4
   }
 
   return (
-    <div style={{ width, height }}>
+    <div className="h-[calc(100vh-100px)]!">
       <GoogleMap
         mapContainerStyle={{ width: "100%", height: "100%" }}
         center={center || undefined}

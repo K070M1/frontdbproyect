@@ -5,13 +5,14 @@ import { mockRutas } from "@/data/mockRutas";
 import { mockZonas } from "@/data/mockZonas";
 import { mockCalificaciones } from "@/data/mockCalificaciones";
 import GoogleBaseMap from "@/components/Map/BaseMap";
-import { Marker, InfoWindow, Polyline, Polygon  } from '@/components/Map/MapShell'
+import { Marker, InfoWindow, Polyline, Polygon } from '@/components/Map/MapShell'
 import { useMemo, useState, useEffect } from "react";
 
 import styles from "./MapView.module.css";
 
 export default function MapView() {
   const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [exPos, setExPos] = useState({ lat: -12.188659353427697, lng: -76.97349049095168 })
   const [locationError, setLocationError] = useState<string | null>(null);
   const center = useMemo(() => ({ lat: -12.188659353427697, lng: -76.97349049095168 }), []);
 
@@ -56,6 +57,8 @@ export default function MapView() {
     );
   }, []);
 
+
+
   return (
     <div className={styles.mapContainer}>
       <GoogleBaseMap center={center} height="800px">
@@ -70,6 +73,16 @@ export default function MapView() {
             <InfoWindow>
               <div>¡Estás aquí!</div>
             </InfoWindow>
+          </Marker>
+        )}
+
+        {exPos && (
+          <Marker
+            position={exPos}
+            icon={{
+              url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            }}
+          >
           </Marker>
         )}
 
@@ -114,8 +127,8 @@ export default function MapView() {
         ))}
 
         {mockCalificaciones
-          .filter((c: any) => c.ubicacion)
-          .map((c: any) => (
+          ?.filter((c: any) => c?.ubicacion)
+          ?.map((c: any) => (
             <Marker
               key={c.id}
               position={c.ubicacion!}
