@@ -45,7 +45,7 @@ export default function RutasPage() {
       />
 
       <div className={styles.list}>
-        {filteredRutas.map((ruta:any) => (
+        {mockRutas.map((ruta:any) => (
           <RouteCard
             key={ruta.id_ruta}
             origen={ruta?.origen}

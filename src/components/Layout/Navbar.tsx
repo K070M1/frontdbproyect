@@ -32,7 +32,7 @@ export default function Navbar() {
 
   return (
     <div className={styles.navWrapper}>
-      <header className={styles.navbar}>
+      <header className={`${styles.navbar} shadow-md!`}>
         <div className={styles.left}>
           <Link href={user ? "/dashboard" : "/"} className={styles.logo}>
             <FaRoute className={styles.logoIcon} />
