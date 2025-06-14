@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { useMemo, useState } from "react";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 
 
 type BaseMapProps = {
@@ -10,24 +10,30 @@ type BaseMapProps = {
   children?: React.ReactNode;
   height?: string;
   width?: string;
+  onClick?: (e: google.maps.MapMouseEvent) => void;
+  onLoad?: () => void;
 };
 
-export default function GoogleBaseMap({ center, zoom = 14, children, height = "400px", width = "100%" }: BaseMapProps) {
-  const libraries = useMemo(() => ["places"], []);
-  
-  const { isLoaded } = useLoadScript({
+export default function GoogleBaseMap({ center, zoom = 14, children, onClick, onLoad }: BaseMapProps) {
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: libraries as any,
-
+    libraries: ['places']
   });
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  if (!isLoaded) {
-    return <div>Loading map...</div>;
-  }
+  const handleMapLoad = (mapInstance: google.maps.Map) => {
+    setMap(mapInstance);
+    if (onLoad) onLoad();
+  };
+
+  if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
     <div className="h-[calc(100vh-100px)]!">
       <GoogleMap
+        onLoad={handleMapLoad} 
+        onClick={onClick}
         mapContainerStyle={{ width: "100%", height: "100%" }}
         center={center || undefined}
         zoom={zoom}

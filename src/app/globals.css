@@ -1,4 +1,6 @@
-@import "tailwindcss";
+ @import "tailwindcss";
+ @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+ @custom-variant dark (&:is(.dark *));
 
 :root {
   /* === Light Mode (Día) === */
@@ -76,49 +78,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
-
-/* @media (prefers-color-scheme: dark) { */
-  /* :root { */
-    /* === Dark Mode (Noche) === */
-
-    /* Backgrounds */
-    /* --background: #0a0a0a;
-    --foreground: #e5e7eb;
-    --background-color-base: #111827;
-    --background-color-primary: rgba(17, 24, 39, 0.75);
-    --background-color-secondary: #1f2937;
-    --background-color-tertiary: #374151;
-    --card-background: rgba(30, 41, 59, 0.8); */
-
-    /* Text */
-    /* --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
-    --text-muted: #6b7280;
-    --text-inverted: #111827;
-    --text-brand: #38bdf8; */
-
-    /* Brand / Status */
-    /* --primary: #0ea5e9;
-    --primary-hover: #0284c7;
-    --secondary: #10b981;
-    --secondary-hover: #059669;
-    --danger: #f87171;
-    --danger-hover: #b91c1c;
-    --warning: #fbbf24;
-    --info: #60a5fa; */
-
-    /* Neutrals */
-    /* --color-white: #ffffff;
-    --color-muted: #9ca3af;
-    --color-border: #4b5563;
-    --border-color: #374151;
-    --card-shadow: rgba(0, 0, 0, 0.25); */
-
-    /* Blur Transparencies */
-    /* --blur-bg: rgba(17, 24, 39, 0.6); */
-    /* --blur-bg-heavy: rgba(17, 24, 39, 0.85); */
-  /* } */
-/* } */
 
 body {
   background: var(--background);
