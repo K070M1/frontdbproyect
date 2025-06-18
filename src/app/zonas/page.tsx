@@ -9,12 +9,13 @@ import SearchBar from "@/components/Behavior/SearchBar";
 
 import { mockZonas } from "@/data/mockZonas";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function ZonasSegurasPage() {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [query, setQuery] = useState("");
 
-  const zonasFiltradas = mockZonas.filter((zona) => {
+  const zonasFiltradas = mockZonas.filter((zona:any) => {
     const matchesFiltro = activeFilter === "Todos" || zona.riesgo === activeFilter;
     const matchesQuery = zona.nombre.toLowerCase().includes(query.toLowerCase());
     return matchesFiltro && matchesQuery;
@@ -23,6 +24,13 @@ export default function ZonasSegurasPage() {
   return (
     <LayoutShell>
       <h1 className={styles.title}>Zonas Seguras</h1>
+
+      <div className="bg-indigo-500 text-white rounded-md shadow-md p-2 text-center w-40 my-3 hover:bg-white hover:text-indigo-500 hover:border hover:border-indigo-500">
+        <Link href="/zonas/nueva" className={styles.addButton}>
+          + Nueva Zona
+        </Link>
+      </div>
+
 
       <div className={styles.actions}>
         <FilterPanel
@@ -34,9 +42,9 @@ export default function ZonasSegurasPage() {
       </div>
 
       <div className={styles.list}>
-        {zonasFiltradas.map((zona) => (
+        {zonasFiltradas.map((zona:any) => (
           <ZoneCard
-            key={zona.id}
+            key={zona?.id}
             nombre={zona.nombre}
             descripcion={zona.descripcion}
           />

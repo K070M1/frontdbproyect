@@ -15,18 +15,18 @@ export default function RouteForm() {
 
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
-  const [origenCoords, setOrigenCoords] = useState(null);
-  const [destinoCoords, setDestinoCoords] = useState(null);
-  const placesService = useRef(null);
+  const [origenCoords, setOrigenCoords] = useState<any>(null);
+  const [destinoCoords, setDestinoCoords] = useState<any>(null);
+  const placesService = useRef<any>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const [route, setRoute] = useState<google.maps.DirectionsResult | null>(null);
+  const [route, setRoute] = useState<google.maps.DirectionsResult | null >(null);
 
-  const fetchPlaceDetails = (placeId, isOrigen) => {
+  const fetchPlaceDetails = (placeId:any, isOrigen:any) => {
     if (!window.google?.maps?.places) return;
     if (!placesService.current) {
       placesService.current = new google.maps.places.PlacesService(
@@ -36,7 +36,7 @@ export default function RouteForm() {
 
     placesService.current.getDetails(
       { placeId, fields: ["geometry", "name"] },
-      (place, status) => {
+      (place:any, status:any) => {
         if (status === "OK" && place?.geometry?.location) {
           const position = {
             lat: place.geometry.location.lat(),
@@ -61,14 +61,14 @@ export default function RouteForm() {
                 {
                   origin: start,
                   destination: end,
-                  travelMode: google.maps.TravelMode.DRIVING,
+                  travelMode: google.maps.TravelMode.DRIVING, // Auto
                 },
                 (result, status) => {
                   if (status === "OK") {
                     setRoute(result);
 
                     const durationInSeconds =
-                      result.routes[0]?.legs[0]?.duration?.value || 0;
+                      result?.routes[0]?.legs[0]?.duration?.value || 0;
                     const hours = Math.floor(durationInSeconds / 3600);
                     const minutes = Math.floor((durationInSeconds % 3600) / 60);
                     const seconds = durationInSeconds % 60;
@@ -93,7 +93,7 @@ export default function RouteForm() {
     );
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     const { name, value, type } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -106,7 +106,7 @@ export default function RouteForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
     console.log("Registrando ruta:", {
       ...form,
@@ -136,7 +136,6 @@ export default function RouteForm() {
               <PlacesAutocomplete
                 placeholder="Selecciona el origen"
                 onPlaceSelected={(placeId) => fetchPlaceDetails(placeId, true)}
-                className="w-full p-4 text-base border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
               />
             </div>
 
@@ -147,7 +146,6 @@ export default function RouteForm() {
               <PlacesAutocomplete
                 placeholder="Selecciona el destino"
                 onPlaceSelected={(placeId) => fetchPlaceDetails(placeId, false)}
-                className="w-full p-4 text-base border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
               />
             </div>
 
@@ -221,7 +219,7 @@ export default function RouteForm() {
             origenCoords || destinoCoords || { lat: -12.0464, lng: -77.0428 }
           }
           markers={[origenCoords, destinoCoords].filter(Boolean)}
-          directions={route}
+          directions={route || undefined}
         />
       </div>
     </div>
