@@ -32,18 +32,25 @@ export default function ProfileDropdown() {
 
   // Generar URL del avatar usando ui-avatars.com
   // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || "U")}&background=111827&color=fff&size=128`;
-  const avatarUrl = `https://ui-avatars.com/api/?name=U&background=111827&color=fff&size=128`;
+  const avatarUrl = user?.username
+    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user.username
+      )}&background=111827&color=fff&size=128`
+    : "/images/avatar-default.png";
 
   return (
     <div className={styles.container}>
-      <button className={styles.avatarButton} onClick={handleToggle} aria-label="Perfil">
-        <Image
+      <button
+        className={styles.avatarButton}
+        onClick={handleToggle}
+        aria-label="Perfil"
+      >
+        <img
           src={avatarUrl}
           alt="Avatar"
           className={styles.avatarImage}
           width={36}
           height={36}
-          priority
         />
       </button>
 
@@ -61,7 +68,9 @@ export default function ProfileDropdown() {
               </span>
             </div>
             <div>
-              <strong className={styles.userName}>{user?.username || "Usuario"}</strong>
+              <strong className={styles.userName}>
+                {user?.username || "Usuario"}
+              </strong>
               <div className={styles.userRole}>{user?.rol || "rol"}</div>
             </div>
           </div>
@@ -71,7 +80,10 @@ export default function ProfileDropdown() {
           <button onClick={() => navigateTo("/perfil")} className={styles.item}>
             Perfil
           </button>
-          <button onClick={() => navigateTo("/perfil/editar")} className={styles.item}>
+          <button
+            onClick={() => navigateTo("/perfil/editar")}
+            className={styles.item}
+          >
             Editar Perfil
           </button>
           <button onClick={handleLogout} className={styles.item}>

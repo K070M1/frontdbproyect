@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 readme_frontend.md
+
+# Ignorar archivo .bat
+/abrir_gitbash.bat
