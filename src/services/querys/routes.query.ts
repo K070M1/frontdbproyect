@@ -31,9 +31,9 @@ export const useGetRoutes = () => {
 export const useAddRoute = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (form: RouteForm) => {
+    mutationFn: async (form: any) => {
       const { data } = await axios.post(`/${ENDPOINT}`, form);
-      return data as Route;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ENDPOINT] });

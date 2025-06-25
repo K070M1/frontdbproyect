@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import InputField from "@/components/UI/InputField";
 import CheckboxField from "@/components/UI/CheckboxField";
+import { useAddRoute } from '@/services/querys/routes.query'
 import { PlacesAutocomplete } from "@/components/Map/PlaceAutcomplete";
 import BaseMap from "@/components/Map/BaseMap";
 
@@ -12,6 +13,8 @@ export default function RouteForm() {
     tiempo_estimado: "",
     favorito: false,
   });
+
+  const { mutateAsync:addRoute } = useAddRoute()
 
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
@@ -106,15 +109,18 @@ export default function RouteForm() {
     }));
   };
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
-    console.log("Registrando ruta:", {
+    const res = await addRoute({
       ...form,
       origen,
       destino,
       origenCoords,
       destinoCoords,
     });
+    if(res){
+      console.log("Ruta registrada exitosamente:", res);
+    }
   };
 
   return (
