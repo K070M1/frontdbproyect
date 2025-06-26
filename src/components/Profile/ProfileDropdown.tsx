@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/axios";
-import Image from "next/image";
+import { Avatar } from "@heroui/react";
 import styles from "./ProfileDropdown.module.css";
 
 export default function ProfileDropdown() {
@@ -14,7 +14,7 @@ export default function ProfileDropdown() {
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await api.post("/auth/logout");
     } catch (error) {
@@ -23,20 +23,15 @@ export default function ProfileDropdown() {
       logout();
       router.replace("/auth/login");
     }
-  };
+  }, [logout, router]);
 
-  const navigateTo = (path: string) => {
-    router.push(path);
-    setIsOpen(false);
-  };
-
-  // Generar URL del avatar usando ui-avatars.com
-  // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || "U")}&background=111827&color=fff&size=128`;
-  const avatarUrl = user?.username
-    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        user.username
-      )}&background=111827&color=fff&size=128`
-    : "/images/avatar-default.png";
+  const navigateTo = useCallback(
+    (path: string) => {
+      router.push(path);
+      setIsOpen(false);
+    },
+    [router]
+  );
 
   return (
     <div className={styles.container}>
@@ -45,12 +40,10 @@ export default function ProfileDropdown() {
         onClick={handleToggle}
         aria-label="Perfil"
       >
-        <img
-          src={avatarUrl}
-          alt="Avatar"
+        <Avatar
+          name={user?.username || "Usuario"}
+          size="sm"
           className={styles.avatarImage}
-          width={36}
-          height={36}
         />
       </button>
 
@@ -77,7 +70,10 @@ export default function ProfileDropdown() {
 
           <hr className={styles.divider} />
 
-          <button onClick={() => navigateTo("/perfil")} className={styles.item}>
+          <button
+            onClick={() => navigateTo("/perfil")}
+            className={styles.item}
+          >
             Perfil
           </button>
           <button

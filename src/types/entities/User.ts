@@ -3,4 +3,5 @@ export interface User {
   username: string;
   correo: string;
   rol: string;
+  avatarUrl?: string;
 }
