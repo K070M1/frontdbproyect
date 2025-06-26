@@ -6,7 +6,7 @@ import Navbar from "./Navbar";
 import Breadcrumbs from "./Breadcrumbs";
 import styles from "./LayoutShell.module.css";
 
-export default function LayoutShell({ children, active = true }: { children: React.ReactNode, active?: boolean }) {
+export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
 
   return (
@@ -15,7 +15,7 @@ export default function LayoutShell({ children, active = true }: { children: Rea
       <div className={styles.mainContainer}>
         {/* {user ? <Sidebar /> : null} */}
         <main className={styles.content}>
-          {(user && active) && <Breadcrumbs />}
+          {user && <Breadcrumbs />}
           {children}
         </main>
       </div>

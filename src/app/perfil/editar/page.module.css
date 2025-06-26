@@ -1,24 +1,28 @@
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary, #111827);
 }
 
 .form {
-  max-width: 400px;
-  margin-top: 1rem;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .submitButton {
-  margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #0070f3;
+  background-color: var(--primary, #2563eb);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.5rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .submitButton:hover {
-  background-color: #005bb5;
+  background-color: var(--primary-hover, #1e40af);
 }

@@ -5,13 +5,14 @@ import { useAuth } from "@/context/AuthContext";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import DetailView from "@/components/Forms/DetailView";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
+import Avatar from "@/components/UI/Avatar/Avatar";
 import styles from "./page.module.css";
 
 export default function PerfilPage() {
   const { user } = useAuth();
   const router = useRouter();
 
-  if (!user) return null; // protegido ya por ProtectedRoute
+  if (!user) return null;
 
   const fields = [
     { label: "Nombre", value: user.username },
@@ -26,14 +27,15 @@ export default function PerfilPage() {
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario"]}>
       <LayoutShell>
-        <h1 className={styles.title}>Perfil de Usuario</h1>
+        <div className={styles.profileHeader}>
+          <Avatar src={user.avatarUrl} name={user.username} size={80} />
+          <h1 className={styles.title}>Perfil de Usuario</h1>
+        </div>
+
         <DetailView title="Información Personal" fields={fields} />
 
-        <div style={{ marginTop: "1rem" }}>
-          <button
-            onClick={handleEditProfile}
-            className={styles.editButton}
-          >
+        <div className={styles.containerBtnEditar}>
+          <button onClick={handleEditProfile} className={styles.editButton}>
             Editar Perfil
           </button>
         </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import InputField from "@/components/UI/InputField";
-import CheckboxField from "@/components/UI/CheckboxField";
+// import InputField from "@/components/UI/InputField";
+// import CheckboxField from "@/components/UI/CheckboxField";
 import { useAddRoute } from '@/services/querys/routes.query'
 import { PlacesAutocomplete } from "@/components/Map/PlaceAutcomplete";
 import BaseMap from "@/components/Map/BaseMap";
+import styles from "./RouteForm.module.css";
 
 export default function RouteForm() {
   const [form, setForm] = useState({
@@ -18,9 +19,9 @@ export default function RouteForm() {
 
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
-  const [origenCoords, setOrigenCoords] = useState<any>(null);
-  const [destinoCoords, setDestinoCoords] = useState<any>(null);
-  const placesService = useRef<any>(null);
+  const [origenCoords, setOrigenCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [destinoCoords, setDestinoCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const placesService = useRef<google.maps.places.PlacesService | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function RouteForm() {
 
   const [route, setRoute] = useState<google.maps.DirectionsResult | null >(null);
 
-  const fetchPlaceDetails = (placeId:any, isOrigen:any) => {
+  const fetchPlaceDetails = (placeId: string, isOrigen: boolean) => {
     if (!window.google?.maps?.places) return;
     if (!placesService.current) {
       placesService.current = new google.maps.places.PlacesService(
@@ -96,7 +97,7 @@ export default function RouteForm() {
     );
   };
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -109,7 +110,7 @@ export default function RouteForm() {
     }));
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await addRoute({
       ...form,
@@ -124,15 +125,15 @@ export default function RouteForm() {
   };
 
   return (
-    <div className="grid grid-cols-20 xl:grid-cols-8 gap-8 px-20 py-6">
+    <div className={styles.container}>
       <form
         onSubmit={handleSubmit}
         className="col-span-2 flex flex-col justify-between bg-white p-8 rounded-2xl shadow-lg border border-gray-200 h-[700px]"
       >
         <div className="space-y-8">
-          <h2 className="text-4xl font-bold text-gray-800 text-center mb-8">
+          {/* <h2 className="text-4xl font-bold text-gray-800 text-center mb-8">
             Registrar Ruta
-          </h2>
+          </h2> */}
 
           <div className="space-y-6">
             <div className="space-y-2">
@@ -224,7 +225,7 @@ export default function RouteForm() {
           center={
             origenCoords || destinoCoords || { lat: -12.0464, lng: -77.0428 }
           }
-          markers={[origenCoords, destinoCoords].filter(Boolean)}
+          markers={[origenCoords, destinoCoords].filter((coords): coords is { lat: number; lng: number } => coords !== null)}
           directions={route || undefined}
         />
       </div>
