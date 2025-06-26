@@ -1,194 +1,262 @@
+/* Contenedor principal */
 .navWrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 0.5rem 0;
-  background: #f3f4f6;
-  /* box-shadow: 0 40px 112px rgba(0, 0, 0, 0.073); */
+  background: var(--bg-wrapper);
   backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  position: fixed;
+  top: 0;
+  z-index: 2000;
+  gap: 5rem;
 }
 
+/* Barra de navegación */
 .navbar {
   width: 98%;
-  height: 64px;
+  height: 3.75rem;
+  margin: 0 1%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
-  background-color: rgba(255, 255, 255, 0.75);
+  justify-content: space-between;
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #111827;
-  z-index: 100;
-  border-radius: 9999px;
-  position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast);
 }
 
+.navWrapper nav {
+  border-radius: var(--border-radius-full);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+   padding: var(--margin-xs);
+  /* box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.05); */
+}
+
+/* Logo */
 .logo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
-
+.logo:hover {
+  color: var(--accent);
+}
 .logoIcon {
   font-size: 1.5rem;
 }
 
+/* Menú hamburguesa */
 .hamburger {
   display: none;
   background: none;
   border: none;
-  color: #111827;
+  color: var(--text-primary);
   font-size: 1.5rem;
   cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.hamburger:hover {
+  color: var(--accent);
 }
 
+/* Centro / enlaces */
 .center {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   justify-content: center;
 }
-
 .menu {
   display: flex;
   list-style: none;
   gap: 1.5rem;
 }
-
 .navLink {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #111827;
+  color: var(--text-primary);
   font-weight: 500;
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
-
 .navLink:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #0ea5e9;
+  background-color: var(--hover-bg);
+  color: var(--accent);
 }
-
 .navIcon {
   font-size: 1rem;
 }
 
+/* Submenús */
 .hasSubmenu {
   position: relative;
 }
-
 .submenu {
   position: absolute;
-  top: 100%;
+  top: 100%;            /* justo abajo del trigger */
+  margin-top: -0.125rem; /* solapa ligeramente para evitar hueco */
   left: 0;
-  background-color: rgba(223, 218, 218, 0.95);
+  background-color: var(--bg-submenu);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border-radius: 0.75rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  display: none;
+  box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.1);
+  display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
-  z-index: 999999999999999 !important;
-  min-width: 160px;
+  min-width: 10rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0); /* sin desplazamiento extra */
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+  z-index: 200;
 }
-
-.hasSubmenu:hover .submenu {
-  display: flex;
+.hasSubmenu:hover .submenu,
+.hasSubmenu:focus-within .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
-
 .submenu li a {
-  padding: 0.5rem 1rem;
-  color: #111827;
-  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background-color 0.2s ease;
+  padding: 0.5rem 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
-
 .submenu li a:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #0ea5e9;
+  background-color: var(--hover-bg);
+  color: var(--accent);
 }
 
+/* Área derecha */
 .right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .iconButton {
   background: none;
   border: none;
-  color: #111827;
+  color: var(--text-primary);
   font-size: 1.1rem;
   cursor: pointer;
+  transition: color var(--transition-fast);
 }
-
+.iconButton:hover {
+  color: var(--accent);
+}
 .loginButton {
-  background-color: #0ea5e9;
-  color: #ffffff;
-  padding: 0.4rem 0.75rem;
-  border-radius: 25px;
-  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 1.25rem;
+  font-weight: 500;
   text-decoration: none;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color var(--transition-fast);
 }
-
 .loginButton:hover {
   background-color: #0284c7;
 }
-
 .userIcon {
   font-size: 1rem;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+/* Mobile menu slide */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breakpoints */
+/* ≤ 1024px: tablet */
+@media (max-width: 64rem) {
   .hamburger {
     display: block;
   }
-
   .center {
     position: absolute;
-    top: 64px;
+    top: 100%;
     left: 0;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background-color: var(--bg-navbar);
+    backdrop-filter: blur(10px);
     flex-direction: column;
     align-items: center;
     padding: 1rem 0;
     display: none;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
-    z-index: 99;
+    animation: slideDown 0.3s ease-out forwards;
   }
-
   .menuOpen {
     display: flex;
   }
-
   .menu {
     flex-direction: column;
     gap: 1rem;
   }
-
   .right {
     display: none;
+  }
+}
+
+/* ≤ 768px: mobile */
+@media (max-width: 48rem) {
+  .navbar {
+    padding: 0 1rem;
+  }
+  .navLink {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  .logo {
+    font-size: 1.125rem;
+  }
+  .logoIcon {
+    font-size: 1.25rem;
+  }
+}
+
+/* ≤ 480px: small mobile */
+@media (max-width: 30rem) {
+  .navbar {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    height: auto;
+  }
+  .center {
+    order: 3;
+    width: 100%;
+  }
+  .hamburger {
+    order: 2;
+  }
+  .left {
+    order: 1;
+  }
+  .right {
+    order: 4;
+    display: flex;
+    gap: 0.5rem;
   }
 }

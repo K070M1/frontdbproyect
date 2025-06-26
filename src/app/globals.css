@@ -2,91 +2,120 @@
  @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
  @custom-variant dark (&:is(.dark *));
 
-:root {
-  /* === Light Mode (Día) === */
+ :root {
+   /* === Light Mode (Día) === */
 
-  /* Backgrounds */
-  --background: #ffffff;
-  --foreground: #171717;
-  --background-color-base: #f9fafb;
-  --background-color-primary: rgba(31, 41, 55, 0.75);
-  --background-color-secondary: #e0e0e0;
-  --background-color-tertiary: #f3f4f6;
-  --card-background: #ffffff;
+   /* Backgrounds */
+   --background: #ffffff;
+   --foreground: #171717;
+   --background-color-base: #f9fafb;
+   --background-color-primary: rgba(31, 41, 55, 0.75);
+   --background-color-secondary: #e0e0e0;
+   --background-color-tertiary: #f3f4f6;
+   --card-background: #ffffff;
 
-  /* Text */
+   /* Text */
+   --text-primary: #111827;
+   --text-secondary: #4b5563;
+   --text-muted: #6b7280;
+   --text-inverted: #ffffff;
+   --text-brand: #075985;
+
+   /* Brand / Status */
+   --primary: #0ea5e9;
+   --primary-hover: #0284c7;
+   --secondary: #10b981;
+   --secondary-hover: #059669;
+   --danger: #dc2626;
+   --danger-hover: #b91c1c;
+   --warning: #f59e0b;
+   --info: #3b82f6;
+
+   /* Neutrals */
+   --color-white: #ffffff;
+   --color-muted: #94a3b8;
+   --color-border: #e5e7eb;
+   --border-color: #d1d5db;
+   --card-shadow: rgba(0, 0, 0, 0.05);
+
+   /* Blur Transparencies */
+   --blur-bg: rgba(255, 255, 255, 0.7);
+   --blur-bg-heavy: rgba(255, 255, 255, 0.85);
+
+   /* Fonts */
+   --font-family-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
+
+   --font-size-xs: 0.75rem;
+   --font-size-sm: 0.875rem;
+   --font-size-base: 1rem;
+   --font-size-lg: 1.125rem;
+   --font-size-xl: 1.25rem;
+   --font-size-2xl: 1.5rem;
+   --font-size-3xl: 1.875rem;
+   --font-size-4xl: 2.25rem;
+   --font-size-5xl: 3rem;
+   --font-size-6xl: 3.75rem;
+
+   --font-weight-light: 300;
+   --font-weight-normal: 400;
+   --font-weight-medium: 500;
+   --font-weight-semibold: 600;
+   --font-weight-bold: 700;
+
+   --line-height-tight: 1.2;
+   --line-height-normal: 1.5;
+   --line-height-loose: 1.75;
+
+   --radius-sm: 0.25rem;
+   --radius-md: 0.5rem;
+   --radius-lg: 0.75rem;
+
+    --padding-xs: 0.5rem;
+    --padding-sm: 0.75rem;
+    --padding-md: 1rem;
+    --padding-lg: 1.5rem;
+    --padding-xl: 2rem;
+
+    --margin-xs: 0.5rem;
+    --margin-sm: 0.75rem;
+    --margin-md: 1rem;
+    --margin-lg: 1.5rem;
+    --margin-xl: 2rem;
+
+   --color-hover: #374151;
+   --color-border-avatar: #3b82f6;
+
+  --bg-wrapper: rgba(243, 244, 246, 0.8);
+  --bg-navbar: rgba(255, 255, 255, 0.75);
+  --bg-submenu: rgba(255, 255, 255, 0.9);
   --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
-  --text-inverted: #ffffff;
-  --text-brand: #075985;
+  --accent: #0ea5e9;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --transition-fast: 0.15s ease-in-out;
+  --transition-medium: 0.3s ease-in-out;
+ }
 
-  /* Brand / Status */
-  --primary: #0ea5e9;
-  --primary-hover: #0284c7;
-  --secondary: #10b981;
-  --secondary-hover: #059669;
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+ @theme inline {
+   --color-background: var(--background);
+   --color-foreground: var(--foreground);
+   --font-sans: var(--font-geist-sans);
+   --font-mono: var(--font-geist-mono);
+ }
 
-  /* Neutrals */
-  --color-white: #ffffff;
-  --color-muted: #94a3b8;
-  --color-border: #e5e7eb;
-  --border-color: #d1d5db;
-  --card-shadow: rgba(0, 0, 0, 0.05);
+ body {
+   background: var(--background);
+   color: var(--foreground);
+   font-family: var(--font-family-sans);
+ }
 
-  /* Blur Transparencies */
-  --blur-bg: rgba(255, 255, 255, 0.7);
-  --blur-bg-heavy: rgba(255, 255, 255, 0.85);
+ /* === Spinner Animation === */
+ @keyframes spin {
+   0% {
+     transform: rotate(0deg);
+   }
 
-  /* Fonts */
-  --font-family-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
-
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  --font-size-5xl: 3rem;
-  --font-size-6xl: 3.75rem;
-
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.5;
-  --line-height-loose: 1.75;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-family-sans);
-}
-
-/* === Spinner Animation === */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+   100% {
+     transform: rotate(360deg);
+   }
+ }
