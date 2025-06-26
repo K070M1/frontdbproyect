@@ -18,7 +18,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-      setUser({  id: 1, username: "as", rol: "Ad", correo: "correo@gmailc.om" })
+      const res = await fetch("/api/auth/me", { credentials: "include" });
+      if (!res.ok) throw new Error("No autorizado");
+
+      const data = await res.json();
+      setUser({
+        id: data.id,
+        username: data.username,
+        rol: data.rol,
+        correo: data.email,
+      });
     } catch {
       setUser(null);
     } finally {
