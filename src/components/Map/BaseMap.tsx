@@ -45,7 +45,7 @@ export default function GoogleBaseMap({
   if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
-    <div className="h-[calc(100vh-100px)]!">
+    <div style={{ width: "100%", height: "100%" }}>
       <GoogleMap
         onLoad={handleMapLoad}
         onClick={onClick}
