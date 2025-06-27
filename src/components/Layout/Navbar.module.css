@@ -155,7 +155,7 @@
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
-  min-width: 10rem;
+  min-width: 11rem;
   opacity: 0;
   visibility: hidden;
   transform: translateY(0);
@@ -192,6 +192,45 @@
   transition: all 0.3s ease-in-out;
 }
 
+.right svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: var(--text-primary);
+  transition: all 0.3s ease-in-out;
+}
+
+.notificationContainer svg {
+  fill: var(--notification-icon-color);
+  transition: all 0.3s ease-in-out;
+}
+
+.notificationContainer:hover svg {
+  animation: notificationSwing 1.5s infinite;
+}
+
+@keyframes notificationSwing {
+  0% {
+    transform: rotate(0deg);
+    fill: var(--notification-icon-color);
+  }
+  25% {
+    transform: rotate(-15deg);
+    fill: var(--accent);
+  }
+  50% {
+    transform: rotate(15deg);
+    fill: var(--accent);
+  }
+  75% {
+    transform: rotate(-15deg);
+    fill: var(--accent);
+  }
+  100% {
+    transform: rotate(0deg);
+    fill: var(--notification-icon-color);
+  }
+}
+
 .iconButton {
   background: none;
   border: none;
@@ -217,33 +256,49 @@
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease-in-out;
+  text-wrap: nowrap;
+}
+
+.loginButton svg {
+  fill: var(--color-white);
 }
 
 .loginButton:hover {
-  background-color: #0284c7;
+  background-color: var(--color-hover);
 }
 
-/* Breakpoints */
-@media (max-width: 64rem) {
+
+/* Breakpoint estilo app para móvil */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    height: auto;
+  }
+
+  .left {
+    order: 1;
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .hamburger {
     display: block;
+    position: relative;
+    order: 2;
   }
 
   .center {
-    position: absolute;
-    top: 100%;
-    left: 0;
+    order: 3;
     width: 100%;
-    background-color: var(--bg-navbar);
-    backdrop-filter: blur(10px);
     flex-direction: column;
     align-items: center;
-    padding: 1rem 0;
+    background-color: var(--bg-navbar);
+    border-radius: 0.75rem;
+    padding: 1rem;
     display: none;
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    animation: slideDown 0.3s ease-out forwards;
-    transition: all 0.3s ease-in-out;
   }
 
   .menuOpen {
@@ -252,67 +307,36 @@
 
   .menu {
     flex-direction: column;
+    width: 100%;
     gap: 1rem;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .right {
-    display: none;
-  }
-}
-
-@media (max-width: 48rem) {
-  .navbar {
-    padding: 0 1rem;
-    transition: all 0.3s ease-in-out;
   }
 
   .navLink {
-    padding: 0.5rem;
-    font-size: 0.875rem;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .logo {
-    font-size: 1.125rem;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .logoIcon {
-    font-size: 1.25rem;
-    transition: all 0.3s ease-in-out;
-  }
-}
-
-@media (max-width: 30rem) {
-  .navbar {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    height: auto;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .center {
-    order: 3;
     width: 100%;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .hamburger {
-    order: 2;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .left {
-    order: 1;
-    transition: all 0.3s ease-in-out;
+    justify-content: flex-start;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
   }
 
   .right {
     order: 4;
+    width: 100%;
+    justify-content: flex-end;
     display: flex;
-    gap: 0.5rem;
-    transition: all 0.3s ease-in-out;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+  }
+
+  .loginButton {
+    width: auto;
+    font-size: 0.875rem;
+  }
+
+  .logo {
+    font-size: 1.125rem;
+  }
+
+  .logoIcon {
+    font-size: 1.25rem;
   }
 }

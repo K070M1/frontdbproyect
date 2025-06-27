@@ -122,6 +122,8 @@
 
    --text-disabled: rgba(156, 163, 175, 0.3);
    --color-disabled: rgba(209, 213, 219, 0.3);
+
+   --notification-icon-color: #53ac7b;
  }
 
  @theme inline {
