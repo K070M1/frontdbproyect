@@ -3,28 +3,31 @@
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
+  text-align: center;
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937; /* slate-800 */
+  color: #1f2937;
 }
 
 .subtitle {
   font-size: 1.25rem;
-  color: #374151; /* slate-700 */
+  color: #374151;
+  margin-top: -1rem;
 }
 
 .linksGrid {
   display: grid;
-  gap: 1.5rem;
+  gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .linkCard {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
   padding: 2rem;
   background-color: #ffffff;
@@ -46,10 +49,70 @@
 
 .linkCard p {
   font-size: 0.95rem;
-  color: #6b7280; /* slate-500 */
+  color: var(--text-muted);
 }
 
 .info {
   font-size: 0.95rem;
   color: #374151;
+}
+
+.container svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+  color: var(--primary);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .linkCard {
+    padding: 1.5rem;
+  }
+
+  .linkCard h2 {
+    font-size: 1rem;
+  }
+
+  .linkCard p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .linkCard {
+    padding: 1rem;
+  }
+
+  .linkCard h2 {
+    font-size: 0.9rem;
+  }
+
+  .linkCard p {
+    font-size: 0.8rem;
+  }
 }

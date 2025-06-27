@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/axios";
@@ -11,6 +11,7 @@ export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { user, logout } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
@@ -33,8 +34,18 @@ export default function ProfileDropdown() {
     [router]
   );
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className={styles.container}>
+    <div ref={dropdownRef} className={styles.container}>
       <button
         className={styles.avatarButton}
         onClick={handleToggle}

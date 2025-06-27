@@ -111,6 +111,16 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* Descripciones dentro de submenú */
+.submenuInfo {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  padding: 0.25rem 0.75rem;
+  pointer-events: none;
+}
+
+
 .navLink {
   display: flex;
   align-items: center;
