@@ -1,48 +1,83 @@
 "use client";
 
-import { LatLngTuple } from "leaflet";
-import { ReactNode, useMemo } from "react";
-import { MapContainer, TileLayer } from "@/components/Map/MapShell";  // si lo centralizas también
-
+import { useMemo, useState } from "react";
+import {
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 
 type BaseMapProps = {
-  center: LatLngTuple;
+  center: { lat: number; lng: number };
   zoom?: number;
-  children?: ReactNode;
+  children?: React.ReactNode;
   height?: string;
-  provider?: "osm" | "google";  // Escalable a futuro
+  width?: string;
+  onClick?: (e: google.maps.MapMouseEvent) => void;
+  onLoad?: () => void;
+  markers?: { lat: number; lng: number }[];
+  directions?: google.maps.DirectionsResult;
 };
 
-export default function BaseMap({
+export default function GoogleBaseMap({
   center,
   zoom = 14,
   children,
-  height = "400px",
-  provider = "osm"
+  onClick,
+  onLoad,
+  markers = [],
+  directions,
 }: BaseMapProps) {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries: ["places"],
+  });
 
-  const tileConfig = useMemo(() => {
-    switch (provider) {
-      case "google":
-        return {
-          url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
-          attribution: "&copy; Google Maps",
-        };
-      case "osm":
-      default:
-        return {
-          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          attribution: "&copy; OpenStreetMap contributors",
-        };
-    }
-  }, [provider]);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  const handleMapLoad = (mapInstance: google.maps.Map) => {
+    setMap(mapInstance);
+    if (onLoad) onLoad();
+  };
+
+  if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
-    <div style={{ width: "100%", height }}>
-      <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%" }}>
-        <TileLayer attribution={tileConfig.attribution} url={tileConfig.url} />
+    <div style={{ width: "100%", height: "100%" }}>
+      <GoogleMap
+        onLoad={handleMapLoad}
+        onClick={onClick}
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        center={center}
+        zoom={zoom}
+        options={{
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false,
+        }}
+      >
+        {markers.map((position, idx) => (
+          <Marker key={idx} position={position} />
+        ))}
+
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+            options={{
+              polylineOptions: {
+                strokeColor: "#4F46E5",
+                strokeOpacity: 0.8,
+                strokeWeight: 5,
+              },
+              suppressMarkers: true,
+            }}
+          />
+        )}
+
         {children}
-      </MapContainer>
+      </GoogleMap>
     </div>
   );
 }

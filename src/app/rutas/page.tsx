@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
@@ -12,11 +12,18 @@ import styles from "./page.module.css";
 export default function RutasPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("Todos");
+  const [isMounted, setIsMounted] = useState(false);
 
-  const filteredRutas = mockRutas.filter((ruta) => {
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null; // Esto evita renderizar nada hasta que el cliente esté listo
+
+  const filteredRutas = mockRutas.filter((ruta: any) => {
     const matchesQuery =
-      ruta.origen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ruta.destino.toLowerCase().includes(searchQuery.toLowerCase());
+      ruta?.origen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ruta?.destino?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesFilter =
       activeFilter === "Todos" ||
@@ -37,7 +44,10 @@ export default function RutasPage() {
         </Link>
       </div>
 
-      <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
+      <div className={styles.searchBar}>
+        <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
+      </div>
+
       <FilterPanel
         filters={["Todos", "Bajo", "Medio", "Alto"]}
         activeFilter={activeFilter}
@@ -45,16 +55,27 @@ export default function RutasPage() {
       />
 
       <div className={styles.list}>
-        {filteredRutas.map((ruta) => (
-          <RouteCard
-            key={ruta.id_ruta}
-            origen={ruta.origen}
-            destino={ruta.destino}
-            riesgo={ruta.riesgo}
-            tiempo={ruta.tiempo_estimado}
-            favorito={ruta.favorito}
-          />
-        ))}
+        {filteredRutas.length > 0 ? (
+          filteredRutas.map((ruta: any) => (
+            <RouteCard
+              key={ruta.id_ruta}
+              origen={ruta?.origen}
+              destino={ruta?.destino}
+              riesgo={ruta.riesgo}
+              tiempo={ruta.tiempo_estimado}
+              favorito={ruta.favorito}
+            />
+          ))
+        ) : (
+          <div className={styles.noResults}>
+            <p>No hay rutas que coincidan con tu búsqueda</p>
+            <p
+              style={{ fontSize: "0.9rem", marginTop: "0.5rem", opacity: 0.7 }}
+            >
+              Intenta con otros términos de búsqueda o ajusta los filtros
+            </p>
+          </div>
+        )}
       </div>
     </LayoutShell>
   );

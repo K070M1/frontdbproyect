@@ -102,10 +102,14 @@ export default function LoginForm() {
 
           <div className={styles.orSeparator}>o</div>
 
-          <button type="button" className={styles.googleButton}>
+            <button
+            type="button"
+            className={styles.googleButton}
+            disabled={loginMutation.isPending}
+            >
             <FaGoogle />
             Iniciar sesión con Google
-          </button>
+            </button>
 
           <p className={styles.loginPrompt}>
             ¿No tienes cuenta?{" "}

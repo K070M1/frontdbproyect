@@ -14,7 +14,11 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid #3b82f6; /* azul suave */
+  padding: var(--padding-xs);
+  border: 2px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropdown {
@@ -83,5 +87,5 @@
 }
 
 .item:hover {
-  background-color: #374151;
+  background-color: var(--color-hover);
 }

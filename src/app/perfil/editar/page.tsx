@@ -13,8 +13,8 @@ export default function EditarPerfilPage() {
   const router = useRouter();
 
   const [form, setForm] = useState({
-    nombre: user?.username || "",
-    correo: user?.correo || "",
+    nombre: user?.username ?? "",
+    correo: user?.correo ?? "",
     clave: "",
   });
 
@@ -28,22 +28,24 @@ export default function EditarPerfilPage() {
     if (!user) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api"}/users/${user.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          nombre_usuario: form.nombre,
-          correo: form.correo,
-          ...(form.clave && { clave: form.clave }),
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api"}/users/${user.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            nombre_usuario: form.nombre,
+            correo: form.correo,
+            ...(form.clave && { clave: form.clave }),
+          }),
+        }
+      );
 
       if (!res.ok) throw new Error("Error al actualizar perfil");
 
-      await fetchUser(); // actualizar datos en contexto
+      await fetchUser();
       router.push("/perfil");
-
     } catch (error) {
       console.error("Error al actualizar perfil:", error);
     }
@@ -54,10 +56,29 @@ export default function EditarPerfilPage() {
       <LayoutShell>
         <h1 className={styles.title}>Editar Perfil</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <InputField label="Nombre" name="nombre" value={form.nombre} onChange={handleChange} />
-          <InputField label="Correo" name="correo" type="email" value={form.correo} onChange={handleChange} />
-          <InputField label="Nueva Clave" name="clave" type="password" value={form.clave} onChange={handleChange} />
-          <button type="submit" className={styles.submitButton}>Guardar Cambios</button>
+          <InputField
+            label="Nombre"
+            name="nombre"
+            value={form.nombre}
+            onChange={handleChange}
+          />
+          <InputField
+            label="Correo"
+            name="correo"
+            type="email"
+            value={form.correo}
+            onChange={handleChange}
+          />
+          <InputField
+            label="Nueva Clave"
+            name="clave"
+            type="password"
+            value={form.clave}
+            onChange={handleChange}
+          />
+          <button type="submit" className={styles.submitButton}>
+            Guardar Cambios
+          </button>
         </form>
       </LayoutShell>
     </ProtectedRoute>

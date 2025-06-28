@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/axios";
-import Image from "next/image";
+import { Avatar } from "@heroui/react";
 import styles from "./ProfileDropdown.module.css";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { user, logout } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await api.post("/auth/logout");
     } catch (error) {
@@ -23,27 +24,37 @@ export default function ProfileDropdown() {
       logout();
       router.replace("/auth/login");
     }
-  };
+  }, [logout, router]);
 
-  const navigateTo = (path: string) => {
-    router.push(path);
-    setIsOpen(false);
-  };
+  const navigateTo = useCallback(
+    (path: string) => {
+      router.push(path);
+      setIsOpen(false);
+    },
+    [router]
+  );
 
-  // Generar URL del avatar usando ui-avatars.com
-  // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || "U")}&background=111827&color=fff&size=128`;
-  const avatarUrl = `https://ui-avatars.com/api/?name=U&background=111827&color=fff&size=128`;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className={styles.container}>
-      <button className={styles.avatarButton} onClick={handleToggle} aria-label="Perfil">
-        <Image
-          src={avatarUrl}
-          alt="Avatar"
+    <div ref={dropdownRef} className={styles.container}>
+      <button
+        className={styles.avatarButton}
+        onClick={handleToggle}
+        aria-label="Perfil"
+      >
+        <Avatar
+          name={user?.username || "Usuario"}
+          size="sm"
           className={styles.avatarImage}
-          width={36}
-          height={36}
-          priority
         />
       </button>
 
@@ -61,17 +72,25 @@ export default function ProfileDropdown() {
               </span>
             </div>
             <div>
-              <strong className={styles.userName}>{user?.username || "Usuario"}</strong>
+              <strong className={styles.userName}>
+                {user?.username || "Usuario"}
+              </strong>
               <div className={styles.userRole}>{user?.rol || "rol"}</div>
             </div>
           </div>
 
           <hr className={styles.divider} />
 
-          <button onClick={() => navigateTo("/perfil")} className={styles.item}>
+          <button
+            onClick={() => navigateTo("/perfil")}
+            className={styles.item}
+          >
             Perfil
           </button>
-          <button onClick={() => navigateTo("/perfil/editar")} className={styles.item}>
+          <button
+            onClick={() => navigateTo("/perfil/editar")}
+            className={styles.item}
+          >
             Editar Perfil
           </button>
           <button onClick={handleLogout} className={styles.item}>

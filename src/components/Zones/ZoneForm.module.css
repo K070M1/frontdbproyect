@@ -1,43 +1,284 @@
 .form {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 1rem;
+  width: 100%;
+  margin: 0;
+  padding: 1.25rem;
   border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  border-radius: 12px;
   background: white;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
-.form h2 {
-  font-size: 1.5rem;
+.formTitle {
+  font-size: 1.6rem;
   font-weight: bold;
+  color: #111827;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-.form label {
+/* Sección de sugerencias */
+.suggestions {
+  background-color: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.suggestionsTitle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
-.form input,
-.form textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
+.suggestionsList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.suggestionItem svg {
+  color: #6b46c1;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Sección de búsqueda */
+.searchSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.searchSection label {
+  font-weight: 600;
+  color: #374151;
   font-size: 0.95rem;
 }
 
-.form button {
-  background-color: #16a34a;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
+/* Grupos de input */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
 }
 
-.form button:hover {
-  background-color: #15803d;
+.inputGroup label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.inputGroup input,
+.inputGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus {
+  outline: none;
+  border-color: #6b46c1;
+  box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+}
+
+.inputGroup textarea {
+  resize: vertical;
+  min-height: 70px;
+  max-height: 100px;
+}
+
+/* Sección de polígonos */
+.polygonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.polygonSection label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.polygonOptions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.polygonButton {
+  padding: 0.5rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+}
+
+.polygonButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.polygonButton.selected {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Colores específicos para cada tipo cuando está seleccionado */
+.polygonButton.selected.rectangle {
+  border-color: #10b981;
+  background-color: #d1fae5;
+}
+
+.polygonButton.selected.circle {
+  border-color: #60a5fa;
+  background-color: #dbeafe;
+}
+
+.polygonButton.selected.polygon {
+  border-color: #fb923c;
+  background-color: #fed7aa;
+}
+
+/* Estado deshabilitado */
+.polygonButton:disabled,
+.polygonButton.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.polygonButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.polygonButton svg {
+  display: block;
+}
+
+/* Botón de limpiar */
+.clearButton {
+  background: white;
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearButton:hover:not(:disabled) {
+  background-color: #fef2f2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+.clearButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+}
+
+.clearButton:disabled:hover {
+  background: white;
+  transform: none;
+  box-shadow: none;
+}
+
+.clearButton svg {
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+/* Botón de envío */
+.submitButton {
+  background-color: #6b46c1;
+  color: white;
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.submitButton:hover {
+  background-color: #5a3bb0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .form {
+    padding: 1rem;
+  }
+
+  .suggestionsList {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .suggestionItem {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .polygonOptions {
+    gap: 0.5rem;
+  }
+
+  .polygonButton,
+  .clearButton {
+    width: 45px;
+    height: 45px;
+    padding: 0.375rem;
+  }
+
+  .clearButton svg {
+    font-size: 0.9rem;
+  }
 }

@@ -1,0 +1,16 @@
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151; /* slate-700 */
+}
+
+.iconButton:hover {
+  background-color: #f3f4f6; /* gray-100 */
+}

@@ -4,6 +4,7 @@ import "./globals.css";
 
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
+import HeroProvider from '@/providers/HeroProvider'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +28,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ReactQueryProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </ReactQueryProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <HeroProvider>
+          <ReactQueryProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ReactQueryProvider>
+        </HeroProvider>
       </body>
     </html>
   );
