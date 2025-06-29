@@ -24,16 +24,17 @@ export default function ProtectedRoute({
 
     if (!user) {
       router.replace("/auth/login");
-    } else if (!allowedRoles.includes(user.rol)) {
+    }/*  else if (!allowedRoles.includes(user.rol)) {
       router.replace("/unauthorized");
-    }
+    } */
   }, [user, isLoading, allowedRoles, router, mounted]);
 
   if (!mounted || isLoading) {
     return <p>Verificando acceso...</p>;
   }
 
-  if (!user || !allowedRoles.includes(user.rol)) {
+  /* if (!user || !allowedRoles.includes(user.rol)) { */
+  if (!user) {
     return null;
   }
 

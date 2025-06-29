@@ -22,7 +22,7 @@ export const useGetRoutes = () => {
     queryKey: [ENDPOINT],
     queryFn: async () => {
       const { data } = await axios.get(`/${ENDPOINT}`);
-      return data as Route[];
+      return data;
     }
   });
 };

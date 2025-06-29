@@ -1,13 +1,10 @@
 "use client";
-
 import { useState } from "react";
-
 import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneCard from "@/components/Zones/ZoneCard";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
 
-import { mockZonas } from "@/data/mockZonas";
 import styles from "./page.module.css";
 import Link from "next/link";
 
@@ -15,11 +12,7 @@ export default function ZonasSegurasPage() {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [query, setQuery] = useState("");
 
-  const zonasFiltradas = mockZonas.filter((zona:any) => {
-    const matchesFiltro = activeFilter === "Todos" || zona.riesgo === activeFilter;
-    const matchesQuery = zona.nombre.toLowerCase().includes(query.toLowerCase());
-    return matchesFiltro && matchesQuery;
-  });
+  const zonasFiltradas:any = [];
 
   return (
     <LayoutShell>

@@ -2,17 +2,14 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Marker, Popup, useMapEvent } from "@/components/Map/MapShell";
+import { Marker } from "@/components/Map/MapShell";
 import { LatLngTuple } from "leaflet";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
 import { useMapIcons } from "@/utils/useMapIcons";
 
-import { mockUbicaciones } from "@/data/mockUbicaciones";
-
 import styles from "./page.module.css";
-import "leaflet/dist/leaflet.css";
 
 export default function EditarUbicacionPage() {
   const { id } = useParams();
@@ -20,7 +17,7 @@ export default function EditarUbicacionPage() {
   // const mapRef = useRef<LeafletMap | null>(null);
   const icons = useMapIcons();
 
-  const ubicacion = mockUbicaciones.find((u) => u.id.toString() === id);
+  const ubicacion:any = null
 
   const [form, setForm] = useState({
     nombre: "",
@@ -33,21 +30,12 @@ export default function EditarUbicacionPage() {
     if (ubicacion) {
       setForm({
         nombre: ubicacion.nombre,
-        descripcion: ubicacion.descripcion,
-        latitud: ubicacion.latitud,
-        longitud: ubicacion.longitud,
+        descripcion: ubicacion?.descripcion,
+        latitud: ubicacion?.latitud,
+        longitud: ubicacion?.longitud,
       });
     }
   }, [ubicacion]);
-
-  // Hook para manejar clicks en el mapa
-  function MapClickHandler() {
-    useMapEvent("click", (event) => {
-      const { lat, lng } = event.latlng;
-      setForm((prev) => ({ ...prev, latitud: lat, longitud: lng }));
-    });
-    return null;
-  }
 
   if (!ubicacion) {
     return (
@@ -97,7 +85,7 @@ export default function EditarUbicacionPage() {
         <label>Longitud</label>
         <input type="number" name="longitud" step="0.000001" value={form.longitud} onChange={handleChange} required />
 
-        <div className={styles.mapContainer}>
+        {/* <div className={styles.mapContainer}>
           <BaseMap center={center} zoom={15}>
             <MapClickHandler />
             <Marker position={center} icon={icons.MARKER}>
@@ -108,7 +96,7 @@ export default function EditarUbicacionPage() {
               </Popup>
             </Marker>
           </BaseMap>
-        </div>
+        </div> */}
 
         <button type="submit" className={styles.submitButton}>
           Guardar Cambios

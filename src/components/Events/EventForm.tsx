@@ -1,59 +1,165 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import styles from "./EventForm.module.css";
 import { TipoEventoEnum } from "@/types/enums/TipoEvento";
+import BaseMap from "@/components/Map/BaseMap";
+import { useSelectableList } from '@/hooks/useList'
+import { useGetTypeEvents } from '@/services/querys/type_event.query'
+import { useAddEvent } from '@/services/querys/event.query'
+import { MapMarker, Marker, InfoWindow, Polyline, Polygon } from '@/components/Map/MapShell'
+import { FaPerson, FaPersonRunning, FaMapLocationDot, FaRoute } from 'react-icons/fa6'
+import { Button } from '@heroui/button'
 
 export default function EventForm() {
-  const [form, setForm] = useState({
-    tipo: TipoEventoEnum.Robo,
-    descripcion: "",
-  });
+  const { data: queryTypeEvent } = useGetTypeEvents();
+  const { mutateAsync: addEvent } = useAddEvent();
+  const listTypeEvents = useSelectableList(queryTypeEvent);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const defaultCenter = useMemo(() => ({ lat: -12.127, lng: -76.973 }), []);
+  const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isEditingPosition, setIsEditingPosition] = useState(false);
+  const [form, setForm] = useState<any>({ tipo: "", iconUrl: "", descripcion: ""});
+
+  const currentPositionUser = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Tu navegador no soporta geolocalización.");
+      return;
+    }
+
+    const options = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const current = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setUserPosition(current);
+      },
+      (error) => {
+        let errorMessage = "";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Permiso de ubicación denegado. Habilítalo en tu navegador.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Ubicación no disponible. Verifica tu conexión o hardware.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Tiempo de espera agotado. Intenta nuevamente.";
+            break;
+          default:
+            errorMessage = "Error desconocido al obtener la ubicación.";
+        }
+        console.error("Error de geolocalización:", errorMessage, error);
+        setLocationError(errorMessage);
+      },
+      options
+    );
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev:any) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registrando evento:", form);
-    // TODO: POST al backend
+    if(userPosition){
+      form.lat = userPosition.lat;
+      form.lng = userPosition.lng;
+    };
+    if(form.tipo) form.id_tipo_evento = parseFloat(form.tipo);
+    const res = await addEvent(form);
+    if (res) {
+      console.log("Evento guardado exitosamente:", res);
+      setForm({ tipo: "", iconUrl: "", descripcion: "" }); // Reset form
+      setUserPosition(null); // Reset position
+      setIsEditingPosition(false); // Reset editing state
+    }
   };
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    if (isEditingPosition && e.latLng) {
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      const newPosition = { lat, lng };
+      setUserPosition(newPosition);
+      setIsEditingPosition(false);
+    }
+  };
+
+  useEffect(() => {
+    if (form.tipo) {
+      const t_ev = listTypeEvents.list.find((type: any) => type.id_tipo_evento == form.tipo);
+      console.log("Tipo de evento seleccionado:", t_ev);
+      switch (t_ev?.nombre) {
+        case "Robo":
+          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iThiefMap.png"}));
+          break;
+        case "Choque":
+          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iCarMap.png"}));
+          break;
+        case "Policia":
+          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iPoliceMap.png"}));
+          break;
+        default:
+          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iWarningMap.png"}));
+          break;
+      }
+    }
+  }, [form.tipo]);
+
+  useEffect(() => {
+    currentPositionUser();
+  }, []);
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <h2 className={styles.title}>Registrar Evento</h2>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <form onSubmit={handleSubmit} className="col-span-1 p-4 border border-gray-300 bg-white rounded-lg shadow-lg">
+        <label className={styles.label}>Tipo de Evento</label>
+        <select
+          name="tipo"
+          value={form.tipo}
+          onChange={handleChange}
+          required
+          className={styles.input}
+        >
+          <option value="" disabled> Selecciona un tipo de evento</option>
+          {listTypeEvents.list.map((type:any) => (
+            <option key={type.id_tipo_evento} value={type.id_tipo_evento}>
+              {type.nombre}
+            </option>
+          ))}
+        </select>
 
-      <label className={styles.label}>Tipo de Evento</label>
-      <select
-        name="tipo"
-        value={form.tipo}
-        onChange={handleChange}
-        required
-        className={styles.input}
-      >
-        {Object.values(TipoEventoEnum).map((tipo) => (
-          <option key={tipo} value={tipo}>
-            {tipo}
-          </option>
-        ))}
-      </select>
+        <label className={styles.label}>Descripción</label>
+        <textarea
+          name="descripcion"
+          value={form.descripcion}
+          onChange={handleChange}
+          required
+          className={styles.textarea}
+        ></textarea>
 
-      <label className={styles.label}>Descripción</label>
-      <textarea
-        name="descripcion"
-        value={form.descripcion}
-        onChange={handleChange}
-        required
-        className={styles.textarea}
-      ></textarea>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <Button
+            startContent={isEditingPosition ? <FaPersonRunning className="size-4" /> : <FaPerson className="size-4" />}
+            className="flex flex-row gap-2 rounded-sm bg-indigo-600 px-4 py-3 text-sm font-medium text-white hover:cursor-pointer shadow-md!"
+            radius="md" onPress={() => setIsEditingPosition(!isEditingPosition)}
+          >
+            {isEditingPosition ? "Asignando posición..." : "Asignar Posición"}
+          </Button>
 
-      <button type="submit" className={styles.button}>
-        Guardar Evento
-      </button>
-    </form>
+          <button type="submit" className={`rounded-sm bg-blue-500 px-4 py-3 text-sm font-medium text-white hover:cursor-pointer shadow-md!`}>
+            Guardar Evento
+          </button>
+        </div>
+      </form>
+      <div className="col-span-2 h-[calc(100vh-300px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
+        <BaseMap key={`${userPosition ? userPosition.toString() : defaultCenter.toString()}${form.iconUrl}`} center={userPosition || defaultCenter} onClick={handleMapClick} >
+          {(userPosition && form.iconUrl) && <MapMarker position={userPosition} iconUrl={form.iconUrl} iconSize={{ height: 50, width: 50 }}/>}
+        </BaseMap>
+      </div>
+    </div>
   );
 }

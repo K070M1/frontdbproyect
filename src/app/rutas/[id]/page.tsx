@@ -5,14 +5,12 @@ import { LatLngTuple } from "leaflet";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
-import { Marker, Polyline, Popup } from "@/components/Map/MapShell";
 
-import { mockRutas } from "@/data/mockRutas";
 import styles from "./page.module.css";
 
 export default function RutaDetallePage() {
   const { id } = useParams();
-  const ruta = mockRutas.find((r) => r.id_ruta.toString() === String(id));
+  const ruta:any = null
 
   if (!ruta) {
     return (
@@ -32,7 +30,7 @@ export default function RutaDetallePage() {
       <p className={styles.info}><strong>Tiempo estimado:</strong> {ruta.tiempo_estimado}</p>
       {ruta.favorito && <p className={styles.favorite}>★ Ruta favorita</p>}
 
-      <div className={styles.mapWrapper}>
+      {/* <div className={styles.mapWrapper}>
         <BaseMap center={origen} zoom={15}>
           <Polyline positions={ruta.positions as LatLngTuple[]} color="blue">
             <Popup>Ruta: {ruta.origen} ➔ {ruta.destino}</Popup>
@@ -44,7 +42,7 @@ export default function RutaDetallePage() {
             <Popup>Destino: {ruta.destino}</Popup>
           </Marker>
         </BaseMap>
-      </div>
+      </div> */}
     </LayoutShell>
   );
 }

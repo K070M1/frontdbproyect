@@ -16,21 +16,6 @@ type User = {
 export default function UsuariosPage() {
   const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (!res.ok) throw new Error("Error al obtener usuarios");
-        const data = await res.json();
-        setUsers(Array.isArray(data) ? data : [data]);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <LayoutShell>
