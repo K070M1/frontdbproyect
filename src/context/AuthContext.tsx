@@ -1,6 +1,7 @@
 "use client";
 import { useLogin, useLogout } from '@/services/querys/auth.query'
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, use, useContext, useState } from "react";
+import { useAuthStore } from '@/services/auth.store'
 import { User } from "@/types/entities/User";
 
 type AuthContextProps = {
@@ -17,8 +18,7 @@ type AuthContextProps = {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | undefined>(undefined);
+  const { setUser, user, setToken, token } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const { mutateAsync: loginUser } = useLogin();
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser({ id: res?.id, username: res?.username, rol: res?.rol, correo: res?.email });
     } catch (e) {
       setUser(null);
-      setToken(undefined);
+      setToken("");
       if (e instanceof Error) {
         setErrors([e.message]);
       } else {

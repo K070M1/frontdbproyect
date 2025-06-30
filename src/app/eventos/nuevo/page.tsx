@@ -7,7 +7,7 @@ import styles from "./page.module.css";
 export default function NuevoEventoPage() {
   return (
     <LayoutShell>
-      <h1 className={styles.title}>Registrar Nuevo Evento</h1>
+      <h3 className={styles.title}>Registrar Nuevo Evento</h3>
       <EventForm />
     </LayoutShell>
   );

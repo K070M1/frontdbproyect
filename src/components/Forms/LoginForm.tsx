@@ -35,15 +35,10 @@ export default function LoginForm() {
       correo: form.correo,
       clave: form.clave
     });
-    console.log("Form submitted:", form);
-    console.log("Errors:", errors);
   };
 
   useEffect(() => {
-    if (user) {
-      console.log("User logged in:", user);
-      router.push("/dashboard");
-    }
+    if (user) router.push("/dashboard");
   }, [user]);
 
   if (!mounted) return null;
@@ -104,7 +99,7 @@ export default function LoginForm() {
 
           <p className={styles.loginPrompt}>
             ¿No tienes cuenta?{" "}
-            <Link href="/auth/register" className={styles.link}>
+            <Link href="/auth/registro" className={styles.link}>
               Regístrate
             </Link>
           </p>
