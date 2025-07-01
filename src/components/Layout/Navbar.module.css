@@ -11,6 +11,14 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* Activo */
+.active {
+  /* background-color: var(--hover-bg); */
+  background-color: rgba(92, 113, 246, 0.04);
+  color: var(--accent);
+  /* border-radius: 0.5rem; */
+}
+
 /* Barra de navegación */
 .navbar {
   width: 100%;
@@ -24,6 +32,17 @@
   transition: all 0.3s ease-in-out;
   gap: var(--gap-xs);
 }
+
+/* Refuerzo del estado activo en el texto e íconos */
+.navLink.active,
+.hasSubmenu.active > .navLink {
+  border-bottom: 3px solid var(--primary);
+  /* background-color: rgba(92, 113, 246, 0.08); */
+  color: var(--primary-500);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+
 
 .left {
   border-left: 10px solid var(--accent);
@@ -111,7 +130,6 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* Descripciones dentro de submenú */
 .submenuInfo {
   display: block;
   font-size: 0.75rem;
@@ -119,7 +137,6 @@
   padding: 0.25rem 0.75rem;
   pointer-events: none;
 }
-
 
 .navLink {
   display: flex;
@@ -267,8 +284,49 @@
   background-color: var(--color-hover);
 }
 
+/* Navegación inferior para móvil */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--bg-navbar);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border);
+  z-index: 1500;
+}
 
-/* Breakpoint estilo app para móvil */
+.bottomNavItem {
+  flex: 1;
+  text-align: center;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.bottomNavItem:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent);
+}
+
+.bottomNavItem.active {
+  background-color: var(--hover-bg);
+  color: var(--accent);
+}
+
+.bottomNavLabel {
+  font-size: 0.75rem;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;

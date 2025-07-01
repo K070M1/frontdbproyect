@@ -15,20 +15,31 @@ export default function PerfilPage() {
   if (!user) return null;
 
   const fields = [
-    { label: "Nombre", value: user.username },
-    { label: "Correo", value: user.correo },
-    { label: "Rol", value: user.rol },
+    { label: "Nombre", value: user.nombre_usuario || "No disponible" },
+    { label: "Correo", value: user.correo || "No disponible" },
+    { label: "Rol", value: user.rol || "No disponible" },
+    { label: "Estado", value: user.activo ? "Activo" : "Inactivo" },
+    {
+      label: "Fecha de Registro",
+      value: user.fecha_registro
+        ? new Date(user.fecha_registro).toLocaleDateString()
+        : "No disponible",
+    },
   ];
 
   const handleEditProfile = () => {
     router.push("/perfil/editar");
   };
 
+  const avatarSrc = user.avatar_url
+    ? `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/public/${user.avatar_url.replace(/^\/+/, "")}`
+    : undefined;
+
   return (
-    <ProtectedRoute allowedRoles={["admin", "usuario"]}>
+    <ProtectedRoute allowedRoles={["admin", "usuario", "moderador"]}>
       <LayoutShell>
         <div className={styles.profileHeader}>
-          <Avatar src={user.avatarUrl} name={user.username} size={80} />
+          <Avatar src={avatarSrc} name={user.nombre_usuario} size={80} />
           <h1 className={styles.title}>Perfil de Usuario</h1>
         </div>
 

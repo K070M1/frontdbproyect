@@ -17,7 +17,9 @@ export default function ProfileDropdown() {
 
   const handleLogout = useCallback(async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/auth/logout", null, {
+        withCredentials: true,
+      });
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     } finally {
@@ -52,7 +54,7 @@ export default function ProfileDropdown() {
         aria-label="Perfil"
       >
         <Avatar
-          name={user?.username || "Usuario"}
+          name={user?.nombre_usuario || "Usuario"}
           size="sm"
           className={styles.avatarImage}
         />
@@ -63,9 +65,9 @@ export default function ProfileDropdown() {
           <div className={styles.userInfoBox}>
             <div className={styles.avatarBorder}>
               <span className={styles.avatarInitials}>
-                {user?.username
+                {user?.nombre_usuario
                   ?.split(" ")
-                  .map((n) => n[0])
+                  .map((n: string) => n[0])
                   .join("")
                   .substring(0, 2)
                   .toUpperCase() || "U"}
@@ -73,7 +75,7 @@ export default function ProfileDropdown() {
             </div>
             <div>
               <strong className={styles.userName}>
-                {user?.username || "Usuario"}
+                {user?.nombre_usuario || "Usuario"}
               </strong>
               <div className={styles.userRole}>{user?.rol || "rol"}</div>
             </div>

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import styles from "./ProtectedRoute.module.css";
 
 export default function ProtectedRoute({
   allowedRoles,
@@ -30,7 +31,11 @@ export default function ProtectedRoute({
   }, [user, isLoading, allowedRoles, router, mounted]);
 
   if (!mounted || isLoading) {
-    return <p>Verificando acceso...</p>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner} />
+      </div>
+    );
   }
 
   if (!user || !allowedRoles.includes(user.rol)) {

@@ -5,4 +5,6 @@ export interface Usuario {
   rol: string | null;
   correo: string;
   fecha_registro: string; // ISO Date (TIMESTAMP)
+  activo: boolean;
+  avatar_url?: string;
 }

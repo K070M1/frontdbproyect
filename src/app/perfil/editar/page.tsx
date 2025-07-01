@@ -6,60 +6,64 @@ import { useAuth } from "@/context/AuthContext";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import InputField from "@/components/UI/InputField";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
+import ToastNotification from "@/components/UI/ToastNotification";
 import styles from "./page.module.css";
+import { useUpdateUser } from "@/services/querys/user.query";
 
 export default function EditarPerfilPage() {
   const { user, fetchUser } = useAuth();
   const router = useRouter();
 
   const [form, setForm] = useState({
-    nombre: user?.username ?? "",
+    nombre_usuario: user?.nombre_usuario ?? "",
     correo: user?.correo ?? "",
     clave: "",
   });
+
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const { mutate: actualizarUsuario, isPending } = useUpdateUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api"}/users/${user.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            nombre_usuario: form.nombre,
-            correo: form.correo,
-            ...(form.clave && { clave: form.clave }),
-          }),
-        }
-      );
+    const payload = {
+      nombre_usuario: form.nombre_usuario,
+      correo: form.correo,
+      ...(form.clave && { clave: form.clave }),
+    };
 
-      if (!res.ok) throw new Error("Error al actualizar perfil");
-
-      await fetchUser();
-      router.push("/perfil");
-    } catch (error) {
-      console.error("Error al actualizar perfil:", error);
-    }
+    actualizarUsuario(
+      { id: String(user.id_usuario), form: payload },
+      {
+        onSuccess: async () => {
+          setToast({ message: "✅ Perfil actualizado correctamente", type: "success" });
+          await fetchUser();
+          setTimeout(() => router.push("/perfil"), 1500);
+        },
+        onError: (error: unknown) => {
+          const msg = error instanceof Error ? error.message : "Error inesperado";
+          setToast({ message: `❌ ${msg}`, type: "error" });
+        },
+      }
+    );
   };
 
   return (
-    <ProtectedRoute allowedRoles={["admin", "usuario"]}>
+    <ProtectedRoute allowedRoles={["admin", "usuario", "moderador"]}>
       <LayoutShell>
         <h1 className={styles.title}>Editar Perfil</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <InputField
             label="Nombre"
-            name="nombre"
-            value={form.nombre}
+            name="nombre_usuario"
+            value={form.nombre_usuario}
             onChange={handleChange}
           />
           <InputField
@@ -76,10 +80,12 @@ export default function EditarPerfilPage() {
             value={form.clave}
             onChange={handleChange}
           />
-          <button type="submit" className={styles.submitButton}>
-            Guardar Cambios
+          <button type="submit" className={styles.submitButton} disabled={isPending}>
+            {isPending ? "Guardando..." : "Guardar Cambios"}
           </button>
         </form>
+
+        {toast && <ToastNotification message={toast.message} type={toast.type} />}
       </LayoutShell>
     </ProtectedRoute>
   );

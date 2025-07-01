@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ProfileDropdown from "@/components/UI/Profile/ProfileDropdown";
 import NotificationDropdown from "@/components/UI/NotificationDropdown/NotificationDropdown";
@@ -22,6 +23,7 @@ import {
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const { user } = useAuth();
   const isAdmin = user?.rol === "admin";
   const isLogged = Boolean(user);
@@ -37,7 +39,6 @@ export default function Navbar() {
     <>
       <div className={styles.navWrapper}>
         <header className={styles.navbar}>
-          {/* hamburguesa */}
           <button
             className={styles.hamburger}
             onClick={toggleMenu}
@@ -46,7 +47,6 @@ export default function Navbar() {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
 
-          {/* logo */}
           <div className={styles.left}>
             <Link href={user ? "/dashboard" : "/"} className={styles.logo}>
               <FaRoute className={styles.logoIcon} />
@@ -54,13 +54,13 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* menú de escritorio y móvil */}
-          <nav
-            className={`${styles.center} ${menuOpen ? styles.menuOpen : ""}`}
-          >
+          <nav className={`${styles.center} ${menuOpen ? styles.menuOpen : ""}`}>
             <ul className={styles.menu}>
               <li>
-                <Link href="/public/mapa" className={styles.navLink}>
+                <Link
+                  href="/public/mapa"
+                  className={`${styles.navLink} ${pathname === "/public/mapa" ? styles.active : ""}`}
+                >
                   <FaMapMarkedAlt className={styles.navIcon} />
                   Mapa
                 </Link>
@@ -70,7 +70,7 @@ export default function Navbar() {
               <li
                 className={`${styles.hasSubmenu} ${
                   openSubmenu === "rutas" ? styles.open : ""
-                }`}
+                } ${pathname.startsWith("/rutas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -105,7 +105,7 @@ export default function Navbar() {
               <li
                 className={`${styles.hasSubmenu} ${
                   openSubmenu === "zonas" ? styles.open : ""
-                }`}
+                } ${pathname.startsWith("/zonas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -131,7 +131,7 @@ export default function Navbar() {
                 <li
                   className={`${styles.hasSubmenu} ${
                     openSubmenu === "ubicaciones" ? styles.open : ""
-                  }`}
+                  } ${pathname.startsWith("/ubicaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -158,7 +158,7 @@ export default function Navbar() {
                 <li
                   className={`${styles.hasSubmenu} ${
                     openSubmenu === "calificaciones" ? styles.open : ""
-                  }`}
+                  } ${pathname.startsWith("/calificaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -189,13 +189,19 @@ export default function Navbar() {
               {isAdmin && (
                 <>
                   <li>
-                    <Link href="/eventos" className={styles.navLink}>
+                    <Link
+                      href="/eventos"
+                      className={`${styles.navLink} ${pathname === "/eventos" ? styles.active : ""}`}
+                    >
                       <FaCalendarAlt className={styles.navIcon} />
                       Eventos
                     </Link>
                   </li>
                   <li>
-                    <Link href="/configuracion" className={styles.navLink}>
+                    <Link
+                      href="/configuracion"
+                      className={`${styles.navLink} ${pathname === "/configuracion" ? styles.active : ""}`}
+                    >
                       <FaCogs className={styles.navIcon} />
                       Configuración
                     </Link>
@@ -205,7 +211,6 @@ export default function Navbar() {
             </ul>
           </nav>
 
-          {/* acciones */}
           <div className={styles.right}>
             <SearchInput onSearch={(q) => console.log("Buscar:", q)} />
             <div className={styles.notificationContainer}>
@@ -223,7 +228,6 @@ export default function Navbar() {
         </header>
       </div>
 
-      {/* menú móvil de íconos */}
       {menuOpen && (
         <div className={styles.bottomNav}>
           {[
@@ -246,7 +250,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={styles.bottomNavItem}
+              className={`${styles.bottomNavItem} ${pathname === link.href ? styles.active : ""}`}
               onClick={() => setMenuOpen(false)}
             >
               {link.icon}

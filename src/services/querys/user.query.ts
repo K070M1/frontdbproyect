@@ -1,24 +1,37 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from '../axios'
+import axios from '../axios';
+import { Usuario } from '@/types/entities/Usuario';
 
-const ENDPOINT = "users"
+const ENDPOINT = "users";
 
 // Obtener todos los usuarios
 export const useGetUsers = () => {
-  return useQuery({
+  return useQuery<Usuario[]>({
     queryKey: [ENDPOINT],
     queryFn: async () => {
-      const { data } = await axios.get(`/${ENDPOINT}`) 
-      return data
+      const { data } = await axios.get(`/${ENDPOINT}`);
+      return data;
     }
-  })
-}
+  });
+};
+
+// Obtener usuario por ID
+export const useGetUserById = (id: string) => {
+  return useQuery<Usuario>({
+    queryKey: [ENDPOINT, id],
+    queryFn: async () => {
+      const { data } = await axios.get(`/${ENDPOINT}/${id}`);
+      return data;
+    },
+    enabled: !!id, // importante (para evitar llamadas innecesarias)
+  });
+};
 
 // Registrar un nuevo usuario
 export const useAddUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (form) => {
+    mutationFn: async (form: Partial<Usuario>) => {
       const { data } = await axios.post(`/${ENDPOINT}`, form);
       return data;
     },
@@ -28,22 +41,12 @@ export const useAddUser = () => {
   });
 };
 
-// Obtener un usuario
-export const useGetUser = () => {
-  return useMutation({
-    mutationFn: async (id) => {
-      const { data } = await axios.get(`/${ENDPOINT}/${id}`);
-      return data;
-    }
-  });
-};
-
 // Actualizar un usuario
-export const useUpdateUser= () => {
+export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, form }: { id:any, form:any}) => {
-      const { data } = await axios.put(`/${ENDPOINT}/${id}`, form );
+    mutationFn: async ({ id, form }: { id: string; form: Partial<Usuario> }) => {
+      const { data } = await axios.put(`/${ENDPOINT}/${id}`, form);
       return data;
     },
     onSuccess: () => {
@@ -56,7 +59,7 @@ export const useUpdateUser= () => {
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: string) => {
       const { data } = await axios.delete(`/${ENDPOINT}/${id}`);
       return data;
     },

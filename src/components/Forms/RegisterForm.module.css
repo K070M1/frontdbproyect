@@ -29,7 +29,7 @@
 }
 
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
@@ -57,7 +57,7 @@
 .primaryButton {
   width: 100%;
   padding: 0.75rem;
-  background-color: #10b981;
+  background-color: var(--primary);
   color: white;
   font-weight: 500;
   border: none;
@@ -67,7 +67,7 @@
 }
 
 .primaryButton:hover {
-  background-color: #059669;
+  background-color: var(--primary-hover);
 }
 
 .loginPrompt {
@@ -77,7 +77,7 @@
 }
 
 .link {
-  color: #2563eb;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -93,7 +93,7 @@
 
 .rightPanel {
   flex: 1;
-  background: #f0fdf4;
+  background: var(--primary-100);
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -103,10 +103,11 @@
 .rightPanel h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: var(--text-brand);
 }
 
 .rightPanel p {
-  color: #374151;
+  color: var(--text-primary-700);
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
 }

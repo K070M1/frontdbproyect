@@ -39,7 +39,12 @@ export default function RegisterForm() {
     setError("");
 
     try {
-      await api.post("/auth/register", form);
+      await api.post("/auth/register", {
+        nombre_usuario: form.nombre,
+        correo: form.correo,
+        clave: form.clave,
+        rol: "usuario",
+      });
 
       await api.post(
         "/auth/login",
