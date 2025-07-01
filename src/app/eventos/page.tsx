@@ -8,25 +8,28 @@ import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
 import EventCard from "@/components/Events/EventCard";
 
-import { mockEventos } from "@/data/mockEventos";
-import { TipoEventoEnum } from "@/types/enums/TipoEvento";
-import { Evento } from "@/types/entities/Evento";
-import { LatLngTuple } from "leaflet";
+import { useGetEvents } from '@/services/querys/event.query'
+import { useGetTypeEvents } from '@/services/querys/type_event.query'
+import { useSelectableList } from '@/hooks/useList'
 
 import styles from "./page.module.css";
 
 export default function EventosPage() {
+  const { data: queryEvents } = useGetEvents();
+  const { data: queryTypeEvent } = useGetTypeEvents();
+  const listTypeEvents = useSelectableList(queryTypeEvent);
+  const listEvents = useSelectableList(queryEvents);
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [query, setQuery] = useState("");
+  
+  const filtros = ["Todos", ...listTypeEvents.list.map((type:any) => type.nombre)];
 
-  const filtros = ["Todos", ...Object.values(TipoEventoEnum)];
-
-  const getTipoNombre = (idTipo: number): TipoEventoEnum => {
-    const valores = Object.values(TipoEventoEnum);
-    return valores[idTipo - 1] ?? TipoEventoEnum.Otro;
+  const getTipoNombre = (idTipo: number): any => {
+    const tipo = listTypeEvents.list.find((type:any) => type.id_tipo_evento === idTipo);
+    return tipo ? tipo.nombre : "Otro";
   };
 
-  const eventosFiltrados = mockEventos.filter((evento) => {
+  const eventosFiltrados = listEvents.list.filter((evento:any) => {
     const tipoNombre = getTipoNombre(evento.id_tipo_evento);
     const matchesFiltro = activeFilter === "Todos" || tipoNombre === activeFilter;
     const matchesQuery = evento.descripcion.toLowerCase().includes(query.toLowerCase());
@@ -50,10 +53,13 @@ export default function EventosPage() {
       </div>
 
       <div className={styles.list}>
-        {eventosFiltrados.map((eventoRaw) => {
-          const evento: Evento = {
+        {eventosFiltrados.map((eventoRaw:any) => {
+          const evento = {
             ...eventoRaw,
-            ubicacion: eventoRaw.ubicacion as LatLngTuple,
+            ubicacion: {
+              lat: eventoRaw.lat,
+              lng: eventoRaw.lng,
+            }
           };
 
           return (

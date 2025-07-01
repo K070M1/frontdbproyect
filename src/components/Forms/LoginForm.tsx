@@ -2,9 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import api from "@/services/axios";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./LoginForm.module.css";
 import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
@@ -18,8 +15,7 @@ type LoginForm = {
 
 export default function LoginForm() {
   const router = useRouter();
-  const { fetchUser } = useAuth();
-
+  const { fetchUser, errors, isLoading, user } = useAuth();
   const [form, setForm] = useState<LoginForm>({ correo: "", clave: "" });
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -28,23 +24,6 @@ export default function LoginForm() {
     setMounted(true);
   }, []);
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginForm) => {
-      await api.post("/auth/login", data, { withCredentials: true });
-    },
-    onSuccess: async () => {
-      await fetchUser();
-      router.replace("/dashboard");
-    },
-    onError: (err: unknown) => {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Credenciales inválidas.");
-      } else {
-        setError("Error inesperado al iniciar sesión.");
-      }
-    },
-  });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -52,8 +31,15 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate(form);
+    fetchUser({
+      correo: form.correo,
+      clave: form.clave
+    });
   };
+
+  useEffect(() => {
+    if (user) router.push("/dashboard");
+  }, [user]);
 
   if (!mounted) return null;
 
@@ -94,10 +80,10 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            disabled={loginMutation.isPending}
+            disabled={isLoading}
             className={styles.primaryButton}
           >
-            {loginMutation.isPending ? "Entrando..." : "Entrar"}
+            {isLoading ? "Entrando..." : "Entrar"}
           </button>
 
           <div className={styles.orSeparator}>o</div>
@@ -105,7 +91,7 @@ export default function LoginForm() {
             <button
             type="button"
             className={styles.googleButton}
-            disabled={loginMutation.isPending}
+            disabled={isLoading}
             >
             <FaGoogle />
             Iniciar sesión con Google
@@ -113,7 +99,7 @@ export default function LoginForm() {
 
           <p className={styles.loginPrompt}>
             ¿No tienes cuenta?{" "}
-            <Link href="/auth/register" className={styles.link}>
+            <Link href="/auth/registro" className={styles.link}>
               Regístrate
             </Link>
           </p>

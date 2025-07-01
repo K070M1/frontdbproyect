@@ -5,7 +5,6 @@ import Link from "next/link";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
-import { mockUbicaciones } from "@/data/mockUbicaciones";
 import styles from "./page.module.css";
 
 export default function UbicacionesPage() {
@@ -14,11 +13,7 @@ export default function UbicacionesPage() {
 
   const riesgos = ["Todos", "Bajo", "Medio", "Alto"];
 
-  const filteredUbicaciones = mockUbicaciones.filter((u) => {
-    const matchesQuery = u.nombre.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = activeFilter === "Todos" || u.riesgo === activeFilter;
-    return matchesQuery && matchesFilter;
-  });
+  const filteredUbicaciones:any = []
 
   return (
     <LayoutShell>
@@ -34,7 +29,7 @@ export default function UbicacionesPage() {
       <FilterPanel filters={riesgos} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
       <div className={styles.list}>
-        {filteredUbicaciones.map((ubicacion) => (
+        {filteredUbicaciones.map((ubicacion:any) => (
           <div key={ubicacion.id} className={styles.card}>
             <h2>{ubicacion.nombre}</h2>
             <p>{ubicacion.descripcion}</p>

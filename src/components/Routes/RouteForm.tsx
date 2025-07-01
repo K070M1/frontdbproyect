@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-// import InputField from "@/components/UI/InputField";
-// import CheckboxField from "@/components/UI/CheckboxField";
+import { useState, useRef, useEffect, use } from "react";
+import { useAuth } from '@/context/AuthContext'
 import { useAddRoute } from '@/services/querys/routes.query'
 import { PlacesAutocomplete } from "@/components/Map/PlaceAutcomplete";
 import BaseMap from "@/components/Map/BaseMap";
@@ -16,7 +15,7 @@ export default function RouteForm() {
   });
 
   const { mutateAsync:addRoute } = useAddRoute()
-
+  const { user } = useAuth()
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
   const [origenCoords, setOrigenCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -112,13 +111,16 @@ export default function RouteForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     const res = await addRoute({
       ...form,
       origen,
       destino,
       origenCoords,
       destinoCoords,
+      id_usuario: user?.id,
     });
+
     if(res){
       console.log("Ruta registrada exitosamente:", res);
     }

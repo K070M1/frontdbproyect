@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { Marker, Popup } from "@/components/Map/MapShell";
+import { Marker } from "@/components/Map/MapShell";
 import { LatLngTuple } from "leaflet";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
@@ -10,14 +10,11 @@ import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
 import { useMapIcons } from "@/utils/useMapIcons";
 
-import { mockUbicaciones } from "@/data/mockUbicaciones";
-import { mockCalificaciones } from "@/data/mockCalificaciones";
-
 import styles from "./page.module.css";
 
 export default function UbicacionDetallePage() {
   const { id } = useParams();
-  const ubicacion = mockUbicaciones.find((u) => u.id.toString() === id);
+  const ubicacion:any = {}
 
   const { MARKER } = useMapIcons();
 
@@ -29,9 +26,7 @@ export default function UbicacionDetallePage() {
     );
   }
 
-  const calificaciones = mockCalificaciones.filter(
-    (c) => c.tipo === "zona_segura" && c.referencia.includes(ubicacion.nombre)
-  );
+  const calificaciones:any = [];
 
   const center: LatLngTuple = [ubicacion.latitud, ubicacion.longitud];
 
@@ -40,9 +35,9 @@ export default function UbicacionDetallePage() {
       <h1 className={styles.title}>{ubicacion.nombre}</h1>
       <p className={styles.description}>{ubicacion.descripcion}</p>
 
-      <div className={styles.mapWrapper}>
-        <BaseMap center={center} zoom={15}>
-          <Marker position={center} icon={MARKER}>
+     {/*  <div className={styles.mapWrapper}>
+        <BaseMap center={center || undefined} zoom={15}>
+          <Marker position={center || [0, 0]}>
             <Popup>
               <strong>{ubicacion.nombre}</strong>
               <br />
@@ -50,13 +45,13 @@ export default function UbicacionDetallePage() {
             </Popup>
           </Marker>
         </BaseMap>
-      </div>
+      </div> */}
 
       {calificaciones.length > 0 && (
         <>
           <h2 className={styles.title}>Calificaciones</h2>
           <div className={styles.list}>
-            {calificaciones.map((c) => (
+            {calificaciones.map((c :any) => (
               <div key={c.id} className={styles.card}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
                   {Array.from({ length: 5 }, (_, i) =>
