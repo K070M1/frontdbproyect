@@ -5,9 +5,15 @@ import { Usuario } from "@/types/entities/Usuario";
 
 const BACKEND_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`;
 
+type LoginParams = {
+  correo: string;
+  clave: string;
+};
+
 type AuthContextProps = {
   user: Usuario | null;
   isLoading: boolean;
+  login: (data: LoginParams) => Promise<{ error?: string } | null>;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -28,7 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const data = await res.json();
 
-      // Validación de datos mínimos esperados
       if (!data.id || !data.user || !data.email) {
         throw new Error("Datos incompletos del usuario");
       }
@@ -38,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         nombre_usuario: data.user,
         correo: data.email,
         rol: data.rol ?? "usuario",
-        clave: "", // nunca se expone
+        clave: "",
         fecha_registro: data.fecha_registro ?? "",
         activo: data.activo ?? true,
         avatar_url: data.avatar_url ?? undefined,
@@ -51,6 +56,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const login = async (
+    credentials: LoginParams
+  ): Promise<{ error?: string } | null> => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(credentials),
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        return { error: msg || "Error de autenticación" };
+      }
+
+      await fetchUser();
+      return null;
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "Error desconocido en login";
+      return { error: msg };
     }
   };
 
@@ -72,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, fetchUser, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, fetchUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

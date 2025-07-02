@@ -2,26 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AxiosError } from "axios";
-import api from "@/services/axios";
-import { useAuth } from "@/context/AuthContext";
+import { useRegister } from "@/hooks/useRegister";
 import styles from "./RegisterForm.module.css";
 import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 
+type RegisterForm = {
+  nombre: string;
+  correo: string;
+  clave: string;
+};
+
 export default function RegisterForm() {
   const router = useRouter();
-  const { fetchUser } = useAuth();
+  const { handleRegister, error, loading } = useRegister();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<RegisterForm>({
     nombre: "",
     correo: "",
     clave: "",
   });
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,40 +34,22 @@ export default function RegisterForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setLocalError(""); // limpia error local al escribir
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    try {
-      await api.post("/auth/register", {
-        nombre_usuario: form.nombre,
-        correo: form.correo,
-        clave: form.clave,
-        rol: "usuario",
-      });
+    const { nombre, correo, clave } = form;
+    if (!nombre || !correo || !clave) {
+      setLocalError("Todos los campos son obligatorios");
+      return;
+    }
 
-      await api.post(
-        "/auth/login",
-        {
-          correo: form.correo,
-          clave: form.clave,
-        },
-        { withCredentials: true }
-      );
+    const result = await handleRegister(nombre, correo, clave);
 
-      await fetchUser();
+    if (result.success) {
       router.replace("/perfil");
-    } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Error en el registro.");
-      } else {
-        setError("Error inesperado al registrar.");
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -115,6 +100,10 @@ export default function RegisterForm() {
             />
           </div>
 
+          {(localError || error) && (
+            <p className={styles.error}>{localError || error}</p>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -129,14 +118,13 @@ export default function RegisterForm() {
               Inicia sesión
             </Link>
           </p>
-
-          {error && <p className={styles.error}>{error}</p>}
         </form>
 
         <div className={styles.rightPanel}>
           <h2>Impulsado por la comunidad</h2>
           <p>
-            Regístrate y contribuye a mantener seguras nuestras rutas urbanas junto a miles de usuarios activos.
+            Regístrate y contribuye a mantener seguras nuestras rutas urbanas
+            junto a miles de usuarios activos.
           </p>
           <div className={styles.imageWrapper}>
             <Image

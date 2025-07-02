@@ -2,12 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useLogin } from "@/hooks/useLogin";
 import styles from "./LoginForm.module.css";
 import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 
+// Definición del tipo para el formulario de login
 type LoginForm = {
   correo: string;
   clave: string;
@@ -15,31 +16,39 @@ type LoginForm = {
 
 export default function LoginForm() {
   const router = useRouter();
-  const { fetchUser, errors, isLoading, user } = useAuth();
-  const [form, setForm] = useState<LoginForm>({ correo: "", clave: "" });
-  const [error, setError] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const { handleLogin, error, loading } = useLogin();
 
+  const [form, setForm] = useState<LoginForm>({ correo: "", clave: "" });
+  const [mounted, setMounted] = useState(false);
+  const [localError, setLocalError] = useState("");
+
+  // Marca el componente como montado para evitar errores en SSR
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Maneja el cambio en los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setLocalError(""); // Limpia error local al escribir
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Envía el formulario
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    fetchUser({
-      correo: form.correo,
-      clave: form.clave
-    });
-  };
 
-  useEffect(() => {
-    if (user) router.push("/dashboard");
-  }, [user]);
+    if (!form.correo || !form.clave) {
+      setLocalError("Todos los campos son obligatorios");
+      return;
+    }
+
+    const result = await handleLogin(form.correo, form.clave);
+
+    if (result.success) {
+      router.push("/dashboard");
+    }
+  };
 
   if (!mounted) return null;
 
@@ -78,33 +87,35 @@ export default function LoginForm() {
             />
           </div>
 
+          {(localError || error) && (
+            <p className={styles.error}>{localError || error}</p>
+          )}
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={loading}
             className={styles.primaryButton}
           >
-            {isLoading ? "Entrando..." : "Entrar"}
+            {loading ? "Entrando..." : "Entrar"}
           </button>
 
           <div className={styles.orSeparator}>o</div>
 
-            <button
+          <button
             type="button"
             className={styles.googleButton}
-            disabled={isLoading}
-            >
+            disabled={loading}
+          >
             <FaGoogle />
             Iniciar sesión con Google
-            </button>
+          </button>
 
           <p className={styles.loginPrompt}>
             ¿No tienes cuenta?{" "}
-            <Link href="/auth/registro" className={styles.link}>
+            <Link href="/auth/register" className={styles.link}>
               Regístrate
             </Link>
           </p>
-
-          {error && <p className={styles.error}>{error}</p>}
         </form>
 
         <div className={styles.rightPanel}>
