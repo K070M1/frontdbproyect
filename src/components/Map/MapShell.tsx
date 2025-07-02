@@ -7,6 +7,7 @@ type MapMarkerProps = Omit<MarkerProps, "icon"> & {
   iconUrl?: string;
   iconSize?: { width: number; height: number };
 };
+
 export const GoogleMap = dynamic(
   () => import("@react-google-maps/api").then((mod) => mod.GoogleMap),
   { ssr: false }
@@ -21,6 +22,9 @@ export const InfoWindow = dynamic(
   () => import("@react-google-maps/api").then((mod) => mod.InfoWindow),
   { ssr: false }
 );
+
+// Alias para compatibilidad con Popup
+export const Popup = InfoWindow;
 
 export const Polygon = dynamic(
   () => import("@react-google-maps/api").then((mod) => mod.Polygon),
@@ -69,7 +73,7 @@ export const MapMarker = dynamic(() => {
       }, 300);
 
       return () => clearTimeout(timeoutId);
-    }, [position, iconUrl, iconSize]);
+    }, [position, iconUrl, iconSize, icon]);
 
     if (!position || !icon) return null;
 

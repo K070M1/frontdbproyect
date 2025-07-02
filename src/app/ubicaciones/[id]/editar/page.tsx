@@ -1,107 +1,59 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Marker } from "@/components/Map/MapShell";
-import { LatLngTuple } from "leaflet";
+import { useEffect, useState } from "react";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
-import BaseMap from "@/components/Map/BaseMap";
-import { useMapIcons } from "@/utils/useMapIcons";
-
-import styles from "./page.module.css";
+import UbicacionForm from "@/components/Ubicaciones/UbicacionForm";
+import { useGetUbicacionById, useUpdateUbicacion } from "@/services/querys/ubicacion.query";
+import { ActualizarUbicacionDTO } from "@/types/dto/ActualizarUbicacionDTO";
+import { useNotify } from "@/context/NotificationContext";
 
 export default function EditarUbicacionPage() {
   const { id } = useParams();
   const router = useRouter();
-  // const mapRef = useRef<LeafletMap | null>(null);
-  const icons = useMapIcons();
+  const notify = useNotify();
 
-  const ubicacion:any = null
+  const { data: ubicacion, isLoading } = useGetUbicacionById(String(id));
+  const updateUbicacion = useUpdateUbicacion();
 
-  const [form, setForm] = useState({
-    nombre: "",
-    descripcion: "",
-    latitud: 0,
-    longitud: 0,
-  });
+  const [form, setForm] = useState<ActualizarUbicacionDTO | null>(null);
 
   useEffect(() => {
     if (ubicacion) {
       setForm({
-        nombre: ubicacion.nombre,
-        descripcion: ubicacion?.descripcion,
-        latitud: ubicacion?.latitud,
-        longitud: ubicacion?.longitud,
+        nombre: ubicacion.nombre ?? "",
+        descripcion: ubicacion.descripcion ?? "",
+        latitud: ubicacion.latitud,
+        longitud: ubicacion.longitud,
+        riesgo: ubicacion.riesgo,
       });
     }
   }, [ubicacion]);
 
-  if (!ubicacion) {
+  const handleSubmit = async (data: ActualizarUbicacionDTO) => {
+    try {
+      await updateUbicacion.mutateAsync({ id: String(id), form: data });
+      notify("success", "Ubicación actualizada correctamente.");
+      router.push("/ubicaciones");
+    } catch (error) {
+      console.error(error);
+      notify("error", "Error al actualizar la ubicación.");
+    }
+  };
+
+  if (isLoading || !form) {
     return (
       <LayoutShell>
-        <h1>Ubicación no encontrada</h1>
+        <h1>Cargando datos...</h1>
       </LayoutShell>
     );
   }
-
-  if (!icons.MARKER) {
-    return (
-      <LayoutShell>
-        <h1>Cargando mapa...</h1>
-      </LayoutShell>
-    );
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: name === "latitud" || name === "longitud" ? parseFloat(value) : value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Guardando cambios:", form);
-    router.push("/ubicaciones");
-  };
-
-  const center: LatLngTuple = [form.latitud, form.longitud];
 
   return (
     <LayoutShell>
-      <h1 className={styles.title}>Editar Ubicación: {form.nombre}</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <label>Nombre</label>
-        <input type="text" name="nombre" value={form.nombre} onChange={handleChange} required />
-
-        <label>Descripción</label>
-        <textarea name="descripcion" value={form.descripcion} onChange={handleChange} required />
-
-        <label>Latitud</label>
-        <input type="number" name="latitud" step="0.000001" value={form.latitud} onChange={handleChange} required />
-
-        <label>Longitud</label>
-        <input type="number" name="longitud" step="0.000001" value={form.longitud} onChange={handleChange} required />
-
-        {/* <div className={styles.mapContainer}>
-          <BaseMap center={center} zoom={15}>
-            <MapClickHandler />
-            <Marker position={center} icon={icons.MARKER}>
-              <Popup>
-                <strong>{form.nombre}</strong>
-                <br />
-                {form.descripcion}
-              </Popup>
-            </Marker>
-          </BaseMap>
-        </div> */}
-
-        <button type="submit" className={styles.submitButton}>
-          Guardar Cambios
-        </button>
-      </form>
+      <h1>Editar Ubicación</h1>
+      <UbicacionForm initialData={form} onSubmit={handleSubmit} />
     </LayoutShell>
   );
 }

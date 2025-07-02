@@ -17,22 +17,22 @@ const OUTPUT_DIR = path.resolve(__dirname, "../src/data");
 
 // -------- MOCK GENERATORS ---------
 
-const generateUbicaciones = (): Ubicacion[] => [
-  {
-    id_ubicacion: 1,
-    id_usuario: 2,
-    latitud: -12.0464,
-    longitud: -77.0428,
-    nombre: "Plaza de Armas",
-  },
-  {
-    id_ubicacion: 2,
-    id_usuario: 2,
-    latitud: -12.1209,
-    longitud: -77.0305,
-    nombre: "Parque Kennedy",
-  },
-];
+// const generateUbicaciones = (): Ubicacion[] => [
+//   {
+//     id_ubicacion: 1,
+//     id_usuario: 2,
+//     latitud: -12.0464,
+//     longitud: -77.0428,
+//     nombre: "Plaza de Armas",
+//   },
+//   {
+//     id_ubicacion: 2,
+//     id_usuario: 2,
+//     latitud: -12.1209,
+//     longitud: -77.0305,
+//     nombre: "Parque Kennedy",
+//   },
+// ];
 
 const generateRutas = (): Ruta[] => [
   {

@@ -4,7 +4,8 @@ import "./globals.css";
 
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
-import HeroProvider from '@/providers/HeroProvider'
+import HeroProvider from "@/providers/HeroProvider";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
         <HeroProvider>
           <ReactQueryProvider>
             <AuthProvider>
-              {children}
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
             </AuthProvider>
           </ReactQueryProvider>
         </HeroProvider>

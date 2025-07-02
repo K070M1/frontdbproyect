@@ -5,6 +5,9 @@ import Link from "next/link";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
+import { useGetUbicaciones } from "@/services/querys/ubicacion.query";
+import { Ubicacion } from "@/types/entities/Ubicacion";
+import UbicacionCard from "@/components/Ubicaciones/UbicacionCard";
 import styles from "./page.module.css";
 
 export default function UbicacionesPage() {
@@ -12,8 +15,13 @@ export default function UbicacionesPage() {
   const [activeFilter, setActiveFilter] = useState("Todos");
 
   const riesgos = ["Todos", "Bajo", "Medio", "Alto"];
+  const { data: ubicaciones = [], isLoading } = useGetUbicaciones();
 
-  const filteredUbicaciones:any = []
+  const filteredUbicaciones = ubicaciones.filter((u: Ubicacion) => {
+    const matchNombre = u.nombre?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
+    const matchRiesgo = activeFilter === "Todos" || u.riesgo === activeFilter;
+    return matchNombre && matchRiesgo;
+  });
 
   return (
     <LayoutShell>
@@ -26,26 +34,41 @@ export default function UbicacionesPage() {
       </div>
 
       <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
-      <FilterPanel filters={riesgos} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <FilterPanel
+        filters={riesgos}
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
 
-      <div className={styles.list}>
-        {filteredUbicaciones.map((ubicacion:any) => (
-          <div key={ubicacion.id} className={styles.card}>
-            <h2>{ubicacion.nombre}</h2>
-            <p>{ubicacion.descripcion}</p>
-            <p><strong>Riesgo:</strong> {ubicacion.riesgo}</p>
-
-            <div className={styles.buttons}>
-              <Link href={`/ubicaciones/${ubicacion.id}`} className={styles.viewButton}>
-                Ver Detalle
-              </Link>
-              <Link href={`/ubicaciones/${ubicacion.id}/editar`} className={styles.editButton}>
-                Editar
-              </Link>
+      {isLoading ? (
+        <p>Cargando ubicaciones...</p>
+      ) : (
+        <div className={styles.list}>
+          {filteredUbicaciones.map((ubicacion) => (
+            <div key={ubicacion.id_ubicacion}>
+              <UbicacionCard
+                nombre={ubicacion.nombre ?? "Sin nombre"}
+                descripcion={ubicacion.descripcion ?? ""}
+                riesgo={ubicacion.riesgo ?? "Medio"}
+              />
+              <div className={styles.buttons}>
+                <Link
+                  href={`/ubicaciones/${ubicacion.id_ubicacion}`}
+                  className={styles.viewButton}
+                >
+                  Ver Detalle
+                </Link>
+                <Link
+                  href={`/ubicaciones/${ubicacion.id_ubicacion}/editar`}
+                  className={styles.editButton}
+                >
+                  Editar
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </LayoutShell>
   );
 }

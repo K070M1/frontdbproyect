@@ -2,23 +2,31 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { Marker } from "@/components/Map/MapShell";
 import { LatLngTuple } from "leaflet";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
-import { useMapIcons } from "@/utils/useMapIcons";
+import { Marker, InfoWindow } from "@/components/Map/MapShell";
+import { useGetUbicacionById } from "@/services/querys/ubicacion.query";
+import { Riesgo } from "@/types/enums/Riesgo";
+import { Calificacion } from "@/types/entities/Calificacion";
 
 import styles from "./page.module.css";
 
 export default function UbicacionDetallePage() {
   const { id } = useParams();
-  const ubicacion:any = {}
+  const { data: ubicacion, isLoading, isError } = useGetUbicacionById(String(id));
 
-  const { MARKER } = useMapIcons();
+  if (isLoading) {
+    return (
+      <LayoutShell>
+        <h1>Cargando ubicación...</h1>
+      </LayoutShell>
+    );
+  }
 
-  if (!ubicacion) {
+  if (isError || !ubicacion) {
     return (
       <LayoutShell>
         <h1>Ubicación no encontrada</h1>
@@ -26,44 +34,69 @@ export default function UbicacionDetallePage() {
     );
   }
 
-  const calificaciones:any = [];
+  const lat = typeof ubicacion.latitud === "string"
+    ? parseFloat(ubicacion.latitud)
+    : Number(ubicacion.latitud);
+  const lng = typeof ubicacion.longitud === "string"
+    ? parseFloat(ubicacion.longitud)
+    : Number(ubicacion.longitud);
 
-  const center: LatLngTuple = [ubicacion.latitud, ubicacion.longitud];
+  const center: LatLngTuple = [lat, lng];
+
+  const riesgoClass = {
+    [Riesgo.Bajo]: "riesgoBajo",
+    [Riesgo.Medio]: "riesgoMedio",
+    [Riesgo.Alto]: "riesgoAlto",
+  }[ubicacion.riesgo ?? Riesgo.Medio];
+
+  const calificaciones = (ubicacion.calificaciones ?? []) as Calificacion[];
 
   return (
     <LayoutShell>
       <h1 className={styles.title}>{ubicacion.nombre}</h1>
       <p className={styles.description}>{ubicacion.descripcion}</p>
 
-     {/*  <div className={styles.mapWrapper}>
-        <BaseMap center={center || undefined} zoom={15}>
-          <Marker position={center || [0, 0]}>
-            <Popup>
+      <span className={`${styles.riesgoBadge} ${styles[riesgoClass]}`}>
+        {ubicacion.riesgo}
+      </span>
+
+      <div className={styles.mapWrapper}>
+        <BaseMap center={center} zoom={15}>
+          {/* Marcador por defecto */}
+          <Marker position={{ lat, lng }} />
+
+          {/* Ventana de información */}
+          <InfoWindow position={{ lat, lng }}>
+            <div>
               <strong>{ubicacion.nombre}</strong>
               <br />
               {ubicacion.descripcion}
-            </Popup>
-          </Marker>
+              <br />
+              Lat: {lat.toFixed(6)}
+              <br />
+              Lng: {lng.toFixed(6)}
+            </div>
+          </InfoWindow>
         </BaseMap>
-      </div> */}
+      </div>
 
       {calificaciones.length > 0 && (
         <>
           <h2 className={styles.title}>Calificaciones</h2>
           <div className={styles.list}>
-            {calificaciones.map((c :any) => (
-              <div key={c.id} className={styles.card}>
+            {calificaciones.map((c) => (
+              <div key={c.id_calificacion} className={styles.card}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
                   {Array.from({ length: 5 }, (_, i) =>
-                    i < c.calificacion ? (
-                      <FaStar key={i} color="#fbbf24" />
-                    ) : (
-                      <FaRegStar key={i} color="#d1d5db" />
-                    )
+                    i < c.calificacion ? <FaStar key={i} /> : <FaRegStar key={i} />
                   )}
-                  <span style={{ fontSize: "0.875rem", color: "#6b7280" }}>{c.fecha}</span>
+                  <span style={{ fontSize: "0.875rem", color: "#6b7280" }}>
+                    {new Date(c.fecha_registro).toLocaleDateString()}
+                  </span>
                 </div>
-                <p><strong>{c.usuario}</strong>: {c.comentario}</p>
+                <p>
+                  <strong>{c.usuario?.nombre_usuario ?? "Usuario"}</strong>: {c.comentario}
+                </p>
               </div>
             ))}
           </div>
