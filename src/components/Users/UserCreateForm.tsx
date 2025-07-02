@@ -9,7 +9,7 @@ import styles from "./UserCreateForm.module.css";
 import { Rol } from "@/types/enums/Rol";
 import Image from "next/image";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`;
 
 export default function UserCreateForm() {
   const [form, setForm] = useState({

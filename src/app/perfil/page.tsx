@@ -32,7 +32,7 @@ export default function PerfilPage() {
   };
 
   const avatarSrc = user.avatar_url
-    ? `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/public/${user.avatar_url.replace(/^\/+/, "")}`
+    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/${user.avatar_url.replace(/^\/+/, "")}`
     : undefined;
 
   return (

@@ -27,7 +27,7 @@ export default function ConfiguracionPage() {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api"}/users`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users`);
         if (!res.ok) throw new Error("Error al obtener usuarios");
 
         const data: BackendUser[] = await res.json();

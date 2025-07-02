@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { writeFileSync } from "fs";
 import path from "path";
 
-import { Ubicacion } from "@/types/entities/Ubicacion";
+// import { Ubicacion } from "@/types/entities/Ubicacion";
 import { Ruta } from "@/types/entities/Ruta";
 import { ZonaSegura } from "@/types/entities/ZonaSegura";
 import { TipoEvento } from "@/types/entities/TipoEvento";
@@ -174,7 +174,7 @@ const writeMock = (filename: string, data: object): void => {
   console.log(`✅ ${filename} generado`);
 };
 
-writeMock("mockUbicaciones.ts", generateUbicaciones());
+// writeMock("mockUbicaciones.ts", generateUbicaciones());
 writeMock("mockRutas.ts", generateRutas());
 writeMock("mockZonas.ts", generateZonas());
 writeMock("mockTipoEventos.ts", generateTipoEventos());
