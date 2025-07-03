@@ -90,7 +90,7 @@ export default function EventForm() {
 
   useEffect(() => {
     if (form.tipo) {
-      const t_ev = listTypeEvents.list.find((type: any) => type.id_tipo_evento == form.tipo);
+      const t_ev:any = listTypeEvents.list.find((type: any) => type.id_tipo_evento == form.tipo);
       console.log("Tipo de evento seleccionado:", t_ev);
       switch (t_ev?.nombre) {
         case "Robo":

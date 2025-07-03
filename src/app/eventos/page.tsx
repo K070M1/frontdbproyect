@@ -1,4 +1,7 @@
 "use client";
+import { FaExclamationTriangle, FaShieldAlt, FaCarCrash, FaClock } from "react-icons/fa";
+import { IoWarningOutline, IoPin } from "react-icons/io5";
+import { GiNinjaMask } from "react-icons/gi";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -25,7 +28,7 @@ export default function EventosPage() {
   const filtros = ["Todos", ...listTypeEvents.list.map((type:any) => type.nombre)];
 
   const getTipoNombre = (idTipo: number): any => {
-    const tipo = listTypeEvents.list.find((type:any) => type.id_tipo_evento === idTipo);
+    const tipo:any = listTypeEvents.list.find((type:any) => type.id_tipo_evento === idTipo);
     return tipo ? tipo.nombre : "Otro";
   };
 
@@ -61,12 +64,48 @@ export default function EventosPage() {
               lng: eventoRaw.lng,
             }
           };
-
           return (
             <EventCard
               key={evento.id_evento}
               evento={evento}
               tipoNombre={getTipoNombre(evento.id_tipo_evento)}
+              ubicacion={evento.ubicacion}
+              time={evento.fecha_registro}
+              Icon={() => {
+                const name = getTipoNombre(evento.id_tipo_evento);
+                switch (name) {
+                  case "Otro": return (
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 border border-gray-400 text-gray-500 bg-gray-500/10 rounded-md`}>
+                      <FaExclamationTriangle className="size-4 text-gray-500" />
+                      {name}
+                    </div>
+                  );
+                  case "Policia": return (
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 border border-blue-400 text-blue-500 bg-blue-500/10 rounded-md`}>
+                      <FaShieldAlt className="size-4 text-blue-400" />
+                      {name}
+                    </div>
+                  );
+                  case "Choque": return (
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 border border-red-400 text-red-500 bg-red-500/10 rounded-md`}>
+                      <FaCarCrash className="size-4 text-red-400" />
+                      {name}
+                    </div>
+                  );
+                  case "Robo": return (
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 border border-gray-400 text-gray-500 bg-gray-500/10 rounded-md`}>
+                      <GiNinjaMask className="size-4 text-gray-600" />
+                      {name}
+                    </div>
+                  );
+                  default: return (
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 border border-gray-400 text-gray-500 bg-gray-500/10 rounded-md`}>
+                      <IoWarningOutline className="size-4 text-gray-400" />
+                      {name}
+                    </div>
+                  );
+                }
+              }}
             />
           );
         })}
