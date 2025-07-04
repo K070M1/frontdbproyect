@@ -1,26 +1,34 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./EventForm.module.css";
 import { TipoEventoEnum } from "@/types/enums/TipoEvento";
 import BaseMap from "@/components/Map/BaseMap";
 import { useSelectableList } from '@/hooks/useList'
 import { useGetTypeEvents } from '@/services/querys/type_event.query'
-import { useAddEvent } from '@/services/querys/event.query'
+import { useAddEvent, useUpdateEvent } from '@/services/querys/event.query'
 import { MapMarker, Marker, InfoWindow, Polyline, Polygon } from '@/components/Map/MapShell'
 import { FaPerson, FaPersonRunning, FaMapLocationDot, FaRoute } from 'react-icons/fa6'
 import { Button } from '@heroui/button'
 
-export default function EventForm() {
+export default function EventForm({ evento }: { evento?: any }) {
+  const isEditing = !!evento;
+  const router = useRouter();
   const { data: queryTypeEvent } = useGetTypeEvents();
+  const { mutateAsync: updateEvent } = useUpdateEvent();
   const { mutateAsync: addEvent } = useAddEvent();
   const listTypeEvents = useSelectableList(queryTypeEvent);
 
   const defaultCenter = useMemo(() => ({ lat: -12.127, lng: -76.973 }), []);
-  const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(evento ? { lat: evento.lat, lng: evento.lng } : null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isEditingPosition, setIsEditingPosition] = useState(false);
-  const [form, setForm] = useState<any>({ tipo: "", iconUrl: "", descripcion: ""});
+  const [form, setForm] = useState<any>({ 
+    tipo: evento?.id_tipo_evento || "", 
+    iconUrl: "", 
+    descripcion: evento?.descripcion || ""
+  });
 
   const currentPositionUser = () => {
     if (!navigator.geolocation) {
@@ -69,12 +77,15 @@ export default function EventForm() {
       form.lng = userPosition.lng;
     };
     if(form.tipo) form.id_tipo_evento = parseFloat(form.tipo);
-    const res = await addEvent(form);
-    if (res) {
-      console.log("Evento guardado exitosamente:", res);
-      setForm({ tipo: "", iconUrl: "", descripcion: "" }); // Reset form
-      setUserPosition(null); // Reset position
-      setIsEditingPosition(false); // Reset editing state
+    try {
+      const res = await (isEditing ? updateEvent({ id: evento?.id_evento, form}) : addEvent(form));
+      if (res) {
+        console.log("Evento guardado exitosamente:", res);
+        // Redirigir a la página de eventos
+        router.push("/eventos");
+      }
+    } catch (error) {
+      console.error("Error al guardar el evento:", error);
     }
   };
 
@@ -110,8 +121,35 @@ export default function EventForm() {
   }, [form.tipo]);
 
   useEffect(() => {
-    currentPositionUser();
+    if (isEditing && !userPosition) {
+      currentPositionUser();
+    } else if (!isEditing) {
+      currentPositionUser();
+    }
   }, []);
+
+  // Configurar el icono cuando se está editando un evento existente
+  useEffect(() => {
+    if (isEditing && evento && listTypeEvents.list.length > 0 && !form.iconUrl) {
+      const t_ev: any = listTypeEvents.list.find((type: any) => type.id_tipo_evento == evento.id_tipo_evento);
+      if (t_ev) {
+        switch (t_ev.nombre) {
+          case "Robo":
+            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iThiefMap.png" }));
+            break;
+          case "Choque":
+            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iCarMap.png" }));
+            break;
+          case "Policia":
+            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iPoliceMap.png" }));
+            break;
+          default:
+            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iWarningMap.png" }));
+            break;
+        }
+      }
+    }
+  }, [isEditing, evento, listTypeEvents.list, form.iconUrl]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -151,7 +189,7 @@ export default function EventForm() {
           </Button>
 
           <button type="submit" className={`rounded-sm bg-blue-500 px-4 py-3 text-sm font-medium text-white hover:cursor-pointer shadow-md!`}>
-            Guardar Evento
+            {isEditing ? "Actualizar Evento" : "Guardar Evento"}
           </button>
         </div>
       </form>
