@@ -73,7 +73,7 @@ export default function GoogleBaseMap({
   if (!isLoaded) return <div>Cargando mapa...</div>;
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div className="max-w-full h-[calc(100vh-180px)]">
       <GoogleMap
         onLoad={handleMapLoad}
         onClick={onClick}

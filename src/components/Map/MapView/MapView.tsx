@@ -166,7 +166,7 @@ export default function MapView() {
       >
         {isEditingPosition ? "Cambiando posición..." : "Cambiar mi posición"}
       </Button>
-      <div className="flex flex-col gap-1 absolute bg-white/60 bottom-5 left-5 z-50 p-5 rounded-md items-center justify-center">
+      <div className="flex flex-col gap-1 absolute bg-white/60 bottom-10 left-5 z-50 p-5 rounded-md items-center justify-center">
         <h3 className="font-semibold text-center">Formulario</h3>
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
@@ -207,7 +207,7 @@ export default function MapView() {
           }
         </div>
       </div>
-      <GoogleBaseMap center={userPosition || defaultCenter} height="800px" onClick={handleMapClick} >
+      <GoogleBaseMap center={userPosition || defaultCenter} onClick={handleMapClick} >
 
         {(userPosition) && (
           <MapMarker
