@@ -13,6 +13,8 @@ import { DirectionsRenderer } from '@react-google-maps/api';
 import { useGetEvents } from '@/services/querys/event.query'
 import { useGetZones } from '@/services/querys/zone.query'
 import { useGetCalifications } from '@/services/querys/calification.query'
+import { getRouteSecure } from '@/services/querys/user.query'
+import Swal from 'sweetalert2'
 
 import styles from "./MapView.module.css";
 
@@ -32,10 +34,13 @@ export default function MapView() {
   const [showRatingsModal, setShowRatingsModal] = useState(false);
   const [modalRatings, setModalRatings] = useState<any[]>([]);
   const [modalTitle, setModalTitle] = useState('');
+  const [recommendedZones, setRecommendedZones] = useState<any[]>([]); // Zonas seguras recomendadas
+  const [isCalculatingRoute, setIsCalculatingRoute] = useState(false); // Estado de carga
 
   const { data: events } = useGetEvents();
   const { data: zones } = useGetZones();
   const { data: califications } = useGetCalifications();
+  const { mutateAsync: getRouteSecureMutation } = getRouteSecure();
 
   // Función para obtener calificaciones de un evento específico
   const getEventRatings = (eventoId: number) => {
@@ -191,33 +196,93 @@ export default function MapView() {
     }
   };
 
-  const drawRoute = () => {
-     const origin = useCurrentPosition ? userPosition : startPlace.position;
+  const drawRoute = async () => {
+    const origin = useCurrentPosition ? userPosition : startPlace.position;
 
     if (!origin || !endPlace.position) {
-      alert('Por favor selecciona ambos puntos (origen y destino)');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Faltan puntos',
+        text: 'Por favor selecciona ambos puntos (origen y destino)',
+      });
       return;
     }
 
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: origin,
-        destination: endPlace.position,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === 'OK') {
-          setDirections(result);
-        }
+    setIsCalculatingRoute(true);
+
+    try {
+      // 1. Calcular la ruta con Google Maps
+      const directionsService = new google.maps.DirectionsService();
+      
+      const directionsResult = await new Promise<google.maps.DirectionsResult>((resolve, reject) => {
+        directionsService.route(
+          {
+            origin: origin,
+            destination: endPlace.position!,
+            travelMode: google.maps.TravelMode.DRIVING,
+          },
+          (result, status) => {
+            if (status === 'OK' && result) {
+              resolve(result);
+            } else {
+              reject(new Error(`Error calculando ruta: ${status}`));
+            }
+          }
+        );
+      });
+
+      setDirections(directionsResult);
+
+      // 2. Consultar zonas seguras al backend
+      const routeData = {
+        origen: {
+          lat: origin.lat,
+          lon: origin.lng
+        },
+        destino: {
+          lat: endPlace.position.lat,
+          lon: endPlace.position.lng
+        },
+        radio_evento: 500  // metros
+      };
+
+      const secureZones = await getRouteSecureMutation(routeData as any);
+      
+      if (secureZones && secureZones.length > 0) {
+        console.log('Zonas seguras encontradas:', secureZones);
+        setRecommendedZones(secureZones);
+        Swal.fire({
+          icon: 'success',
+          title: '¡Ruta calculada!',
+          text: `Se encontraron ${secureZones.length} rutas seguras recomendadas en tu ruta (marcadas en verde).`,
+        });
+      } else {
+        console.log('No se encontraron rutas seguras en la ruta');
+        setRecommendedZones([]);
+        Swal.fire({
+          icon: 'info',
+          title: 'Ruta calculada',
+          text: 'No se encontraron rutas seguras específicas para esta ruta, pero puedes ver las zonas generales en el mapa.',
+        });
       }
-    );
+
+    } catch (error) {
+      console.error('Error al calcular ruta segura:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al calcular ruta segura',
+        text: 'Intenta nuevamente.',
+      });
+    } finally {
+      setIsCalculatingRoute(false);
+    }
   }
 
   const resetRoute = () => {
     setStartPlace({ placeId: undefined, position: undefined });
     setEndPlace({ placeId: undefined, position: undefined });
     setDirections(null);
+    setRecommendedZones([]); // Limpiar zonas recomendadas
     const startInput = document.querySelector('input[placeholder="Ingresa un punto inicial"]') as HTMLInputElement;
     const endInput = document.querySelector('input[placeholder="Ingresa un punto final"]') as HTMLInputElement;
     if (startInput) startInput.value = '';
@@ -253,6 +318,12 @@ export default function MapView() {
               <Checkbox isSelected={Boolean(useCurrentPosition)} onValueChange={setUseCurrentPosition} >
                 Usar mi posición actual
               </Checkbox>
+              {useCurrentPosition && userPosition && (
+                <p className="text-xs text-green-600 mt-1">✓ Usando tu ubicación actual</p>
+              )}
+              {useCurrentPosition && !userPosition && (
+                <p className="text-xs text-orange-600 mt-1">⚠ Obteniendo tu ubicación...</p>
+              )}
             </div>
           </div>
           <div>
@@ -260,13 +331,19 @@ export default function MapView() {
               placeholder="Ingresa un punto final"
               onPlaceSelected={(placeId) => fetchPlaceDetails(placeId, false)}
             />
+            {endPlace.position && (
+              <p className="text-xs text-green-600 mt-1">✓ Destino seleccionado</p>
+            )}
           </div>
           <Button 
             startContent={<FaRoute className="size-4"/>} 
             className="flex flex-row gap-2 rounded-sm bg-indigo-600 px-4 py-3 text-sm font-medium text-white hover:cursor-pointer shadow-md!"
-            radius="md" onPress={() => { drawRoute() }}
+            radius="md" 
+            onPress={() => { drawRoute() }}
+            isDisabled={isCalculatingRoute || (!useCurrentPosition && !startPlace.position) || !endPlace.position}
+            isLoading={isCalculatingRoute}
           >
-            Calcular ruta segura
+            {isCalculatingRoute ? 'Calculando...' : 'Calcular ruta segura'}
           </Button>
           {
             directions && (
@@ -286,6 +363,24 @@ export default function MapView() {
         {(userPosition) && (
           <MapMarker
             position={userPosition}
+          />
+        )}
+
+        {/* Marcador de punto de inicio (solo cuando NO usa ubicación actual) */}
+        {!useCurrentPosition && startPlace.position && (
+          <MapMarker
+            position={startPlace.position}
+            iconUrl="/map-icons/iPersonMap.png"
+            iconSize={{ width: 40, height: 40 }}
+          />
+        )}
+
+        {/* Marcador de destino (siempre que haya destino) */}
+        {endPlace.position && (
+          <MapMarker
+            position={endPlace.position}
+            iconUrl="/map-icons/iMetaMap.png"
+            iconSize={{ width: 40, height: 40 }}
           />
         )}
 
@@ -412,6 +507,19 @@ export default function MapView() {
             onCloseClick={() => setSelectedZone(null)}
           >
             <div>
+              {selectedZone.isRecommended && (
+                <div style={{ 
+                  backgroundColor: '#10B981', 
+                  color: 'white', 
+                  padding: '4px 8px', 
+                  borderRadius: '4px', 
+                  fontSize: '12px',
+                  marginBottom: '8px',
+                  fontWeight: 'bold'
+                }}>
+                  🎯 ZONA RECOMENDADA PARA TU RUTA
+                </div>
+              )}
               <strong>{selectedZone.nombre}</strong>
               <br />
               {selectedZone.descripcion}
@@ -442,11 +550,45 @@ export default function MapView() {
             </div>
           </InfoWindow>
         )}
+
+        {/* Renderizar zonas seguras recomendadas (con estilo destacado) */}
+        {recommendedZones?.map((zona: any, zind: number) => {
+          // Parsear el GeoJSON para obtener las coordenadas
+          let coordinates: any[] = [];
+          try {
+            const geoData = JSON.parse(zona.geojson);
+            if (geoData.type === 'Polygon' && geoData.coordinates) {
+              // Las coordenadas vienen como [lng, lat], necesitamos convertir a [lat, lng]
+              coordinates = geoData.coordinates[0].map((coord: number[]) => ({
+                lat: coord[1],
+                lng: coord[0]
+              }));
+            }
+          } catch (error) {
+            console.error('Error parsing GeoJSON for recommended zone:', zona.id_zona, error);
+          }
+
+          return coordinates.length > 0 ? (
+            <Polygon
+              key={`recommended-${zona?.id_zona || zind}`}
+              paths={coordinates}
+              options={{
+                fillColor: "#10B981", // Verde más vibrante para zonas recomendadas
+                fillOpacity: 0.6,     // Más opaco
+                strokeColor: "#059669",
+                strokeOpacity: 1,
+                strokeWeight: 3,      // Borde más grueso
+                zIndex: 1000         // Encima de las otras zonas
+              }}
+              onClick={() => setSelectedZone({...zona, isRecommended: true})}
+            />
+          ) : null;
+        })}
       </GoogleBaseMap>
 
       {/* Modal de calificaciones */}
       {showRatingsModal && (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[1000]">
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[99000]">
           <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto mx-4">
             {/* Header del modal */}
             <div className="flex justify-between items-center mb-4">
@@ -526,7 +668,7 @@ export default function MapView() {
             <div className="mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={() => setShowRatingsModal(false)}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition-colors hover:cursor-pointer"
               >
                 Cerrar
               </button>

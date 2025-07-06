@@ -8,7 +8,7 @@ import LayoutShell from "@/components/Layout/LayoutShell";
 import RatingStars from "@/components/Ratings/RatingStars";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
-
+import { FaEdit, FaTrash } from 'react-icons/fa'
 import { useGetCalifications, useDeleteCalification } from "@/services/querys/calification.query";
 import Swal from 'sweetalert2'
 import { useAuth } from "@/context/AuthContext";
@@ -111,24 +111,6 @@ export default function CalificacionesPage() {
                     <div className={styles.typeTag}>
                       {c.tipo_calificacion || 'Sin tipo'}
                     </div>
-                    <div className={styles.actions}>
-                      <Link 
-                        href={`/calificaciones/${c.id_calificacion}`}
-                        className={styles.editButton}
-                        title="Editar calificación"
-                      >
-                        ✏️
-                      </Link>
-                      {(user?.rol === "admin" || c.id_usuario === user?.id_usuario) && (
-                        <button
-                          onClick={() => handleDelete(c.id_calificacion, c.comentario || '')}
-                          className={styles.deleteButton}
-                          title="Eliminar calificación"
-                        >
-                          🗑️
-                        </button>
-                      )}
-                    </div>
                   </div>
                 </div>
                 
@@ -154,6 +136,26 @@ export default function CalificacionesPage() {
                           year: 'numeric'
                         })}
                       </span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-center">
+                      <Link 
+                        href={`/calificaciones/${c.id_calificacion}`}
+                        className={"p-2 flex flex-row gap-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"}
+                        title="Editar calificación"
+                      >
+                        <FaEdit className="text-lg" />
+                        <span>Editar</span>
+                      </Link>
+                      {(user?.rol === "admin" || c.id_usuario === user?.id_usuario) && (
+                        <button
+                          onClick={() => handleDelete(c.id_calificacion, c.comentario || '')}
+                          className={"p-2 flex flex-row gap-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"}
+                          title="Eliminar calificación"
+                        >
+                          <FaTrash className="text-lg" />
+                          <span>Eliminar</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

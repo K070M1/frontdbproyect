@@ -41,6 +41,16 @@ export const useAddUser = () => {
   });
 };
 
+export const getRouteSecure = () => {
+  return useMutation({
+    mutationFn: async (form: Partial<Usuario>) => {
+      const { data } = await axios.post(`/${ENDPOINT}/route-secure`, form);
+      return data;
+    }
+  });
+};
+
+
 // Actualizar un usuario
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
