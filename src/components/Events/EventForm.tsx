@@ -7,10 +7,11 @@ import { TipoEventoEnum } from "@/types/enums/TipoEvento";
 import BaseMap from "@/components/Map/BaseMap";
 import { useSelectableList } from '@/hooks/useList'
 import { useGetTypeEvents } from '@/services/querys/type_event.query'
-import { useAddEvent, useUpdateEvent } from '@/services/querys/event.query'
-import { MapMarker, Marker, InfoWindow, Polyline, Polygon } from '@/components/Map/MapShell'
-import { FaPerson, FaPersonRunning, FaMapLocationDot, FaRoute } from 'react-icons/fa6'
+import { useAddEvent, useUpdateEvent, useGetEvents } from '@/services/querys/event.query'
+import { MapMarker } from '@/components/Map/MapShell'
+import { FaPerson, FaPersonRunning } from 'react-icons/fa6'
 import { Button } from '@heroui/button'
+import Swal from 'sweetalert2'
 
 export default function EventForm({ evento }: { evento?: any }) {
   const isEditing = !!evento;
@@ -18,7 +19,9 @@ export default function EventForm({ evento }: { evento?: any }) {
   const { data: queryTypeEvent } = useGetTypeEvents();
   const { mutateAsync: updateEvent } = useUpdateEvent();
   const { mutateAsync: addEvent } = useAddEvent();
+  const { data: queryEvents } = useGetEvents();
   const listTypeEvents = useSelectableList(queryTypeEvent);
+  const listEvents = useSelectableList(queryEvents);
 
   const defaultCenter = useMemo(() => ({ lat: -12.127, lng: -76.973 }), []);
   const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(evento ? { lat: evento.lat, lng: evento.lng } : null);
@@ -78,14 +81,24 @@ export default function EventForm({ evento }: { evento?: any }) {
     };
     if(form.tipo) form.id_tipo_evento = parseFloat(form.tipo);
     try {
-      const res = await (isEditing ? updateEvent({ id: evento?.id_evento, form}) : addEvent(form));
-      if (res) {
-        console.log("Evento guardado exitosamente:", res);
-        // Redirigir a la página de eventos
-        router.push("/eventos");
-      }
+      Swal.fire({
+        title: "Guardando Evento",
+        text: `¿Estás seguro de ${isEditing ? "editar" : "crear"} este evento?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, guardar",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await (isEditing ? updateEvent({ id: evento?.id_evento, form }) : addEvent(form));
+          if (res) {
+            console.log("Evento guardado exitosamente:", res);
+            router.push("/eventos");
+          }
+        }
+      });
     } catch (error) {
-      console.error("Error al guardar el evento:", error);
+      Swal.fire("Error", "Ocurrió un error al guardar el evento. Inténtalo de nuevo más tarde.", "error");
     }
   };
 
@@ -99,24 +112,23 @@ export default function EventForm({ evento }: { evento?: any }) {
     }
   };
 
+  const getIconUrl = (tipo: string) => {
+    switch (tipo) {
+      case "Robo":
+        return "/map-icons/iThiefMap.png";
+      case "Choque":
+        return "/map-icons/iCarMap.png";
+      case "Policia":
+        return "/map-icons/iPoliceMap.png";
+      default:
+        return "/map-icons/iWarningMap.png";
+    }
+  }
+
   useEffect(() => {
     if (form.tipo) {
       const t_ev:any = listTypeEvents.list.find((type: any) => type.id_tipo_evento == form.tipo);
-      console.log("Tipo de evento seleccionado:", t_ev);
-      switch (t_ev?.nombre) {
-        case "Robo":
-          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iThiefMap.png"}));
-          break;
-        case "Choque":
-          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iCarMap.png"}));
-          break;
-        case "Policia":
-          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iPoliceMap.png"}));
-          break;
-        default:
-          setForm((prev:any) => ({ ...prev, iconUrl: "/map-icons/iWarningMap.png"}));
-          break;
-      }
+      setForm((prev:any) => ({ ...prev, iconUrl: getIconUrl(t_ev?.nombre) }));
     }
   }, [form.tipo]);
 
@@ -133,20 +145,7 @@ export default function EventForm({ evento }: { evento?: any }) {
     if (isEditing && evento && listTypeEvents.list.length > 0 && !form.iconUrl) {
       const t_ev: any = listTypeEvents.list.find((type: any) => type.id_tipo_evento == evento.id_tipo_evento);
       if (t_ev) {
-        switch (t_ev.nombre) {
-          case "Robo":
-            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iThiefMap.png" }));
-            break;
-          case "Choque":
-            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iCarMap.png" }));
-            break;
-          case "Policia":
-            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iPoliceMap.png" }));
-            break;
-          default:
-            setForm((prev: any) => ({ ...prev, iconUrl: "/map-icons/iWarningMap.png" }));
-            break;
-        }
+        setForm((prev: any) => ({ ...prev, iconUrl: getIconUrl(t_ev.nombre) }));
       }
     }
   }, [isEditing, evento, listTypeEvents.list, form.iconUrl]);
@@ -196,6 +195,16 @@ export default function EventForm({ evento }: { evento?: any }) {
       <div className="col-span-2 h-[calc(100vh-300px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
         <BaseMap key={`${userPosition ? userPosition.toString() : defaultCenter.toString()}${form.iconUrl}`} center={userPosition || defaultCenter} onClick={handleMapClick} >
           {(userPosition && form.iconUrl) && <MapMarker position={userPosition} iconUrl={form.iconUrl} iconSize={{ height: 50, width: 50 }}/>}
+          {
+            listEvents.list.map((event: any) => (
+              <MapMarker
+                key={event.id_evento}
+                position={{ lat: event.lat, lng: event.lng }}
+                iconUrl={getIconUrl(event.tipo_nombre)}
+                iconSize={{ height: 50, width: 50 }}
+              />
+            ))
+          }
         </BaseMap>
       </div>
     </div>

@@ -6,19 +6,22 @@ import {
   FaShieldAlt,
   FaCheckCircle,
   FaEdit,
+  FaTrash
 } from "react-icons/fa";
 
 type ZoneCardProps = {
   nombre: string;
-  descripcion: string;
+  descripcion?: string;
   direccion?: string;
   tipoPoligono?: "rectangle" | "circle" | "polygon";
   verificada?: boolean;
-  area?: string;
-  perimetro?: string;
+  area?: any;
+  perimetro?: any;
   coordenadas?: string;
   fechaCreacion?: string;
   ultimaActualizacion?: string;
+  onDelete?: () => void;
+  onEdit?: () => void;
 };
 
 export default function ZoneCard({
@@ -27,12 +30,14 @@ export default function ZoneCard({
   direccion,
   tipoPoligono = "rectangle",
   verificada = false,
-  area = "2.4 km²",
-  perimetro = "6.8 km",
-  coordenadas = "19.4326, -99.1332",
-  fechaCreacion = "15 de Marzo, 2024",
-  ultimaActualizacion = "Hace 2 días",
+  area = 0,
+  perimetro = 0,
+  coordenadas = "",
+  fechaCreacion = "",
+  onDelete = () => { },
+  onEdit = () => { }
 }: ZoneCardProps) {
+
   const renderShapeIcon = () => {
     const iconProps = {
       width: 60,
@@ -62,6 +67,34 @@ export default function ZoneCard({
         );
     }
   };
+
+  function metros2Km2(m2: number) {
+    if (!m2) return "N/A";
+    return (m2 / 1_000_000).toFixed(2) + " km²";
+  }
+
+  function metros2Km(m: number) {
+    if (!m) return "N/A";
+    return (m / 1000).toFixed(5) + " km";
+  }
+
+  function extraerCoordenadas(geojson: any) {
+    if (!geojson) return "N/A";
+    const obj = typeof geojson === "string" ? JSON.parse(geojson) : geojson;
+    // Muestra el centro o el primer punto, según tipo
+    if (obj.type === "Point") {
+      return `${obj.coordinates[1]}, ${obj.coordinates[0]}`;
+    }
+    if (obj.type === "Polygon" && obj.coordinates.length > 0) {
+      const [lng, lat] = obj.coordinates[0][0];
+      return `${lat}, ${lng}`;
+    }
+    if (obj.type === "MultiPolygon" && obj.coordinates.length > 0) {
+      const [lng, lat] = obj.coordinates[0][0][0];
+      return `${lat}, ${lng}`;
+    }
+    return "N/A";
+  }
 
   return (
     <div className={styles.card}>
@@ -97,8 +130,11 @@ export default function ZoneCard({
           Zona Segura
         </div>
         <div className={styles.actionButtons}>
-          <button className={styles.editButton}>
+          <button className={styles.editButton} onClick={onEdit}>
             <FaEdit /> Editar
+          </button>
+          <button className={styles.deleteButton} onClick={onDelete}>
+            <FaTrash /> Eliminar
           </button>
         </div>
       </div>
@@ -107,23 +143,19 @@ export default function ZoneCard({
         <div className={styles.detailsGrid}>
           <div className={styles.detailItem}>
             <span className={styles.detailLabel}>Área</span>
-            <span className={styles.detailValue}>{area}</span>
+            <span className={styles.detailValue}>{metros2Km2(area)}</span>
           </div>
           <div className={styles.detailItem}>
             <span className={styles.detailLabel}>Perímetro</span>
-            <span className={styles.detailValue}>{perimetro}</span>
+            <span className={styles.detailValue}>{metros2Km(perimetro)}</span>
           </div>
           <div className={styles.detailItem}>
             <span className={styles.detailLabel}>Coordenadas</span>
-            <span className={styles.coordinates}>{coordenadas}</span>
+            <span className={styles.coordinates}>{extraerCoordenadas(coordenadas)}</span>
           </div>
           <div className={styles.detailItem}>
             <span className={styles.detailLabel}>Creada</span>
             <span className={styles.detailValue}>{fechaCreacion}</span>
-          </div>
-          <div className={styles.detailItem} style={{ gridColumn: "span 2" }}>
-            <span className={styles.detailLabel}>Última actualización</span>
-            <span className={styles.detailValue}>{ultimaActualizacion}</span>
           </div>
         </div>
       </div>

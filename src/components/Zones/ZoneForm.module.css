@@ -251,6 +251,73 @@
   transform: translateY(0);
 }
 
+/* Sección de instrucciones */
+.instructionsSection {
+  background-color: #f0f9ff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #0ea5e9;
+}
+
+.instructionsTitle {
+  font-size: 1rem;
+  color: #0c4a6e;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.instructionsList {
+  color: #0c4a6e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.instructionsList p {
+  margin-bottom: 0.5rem;
+}
+
+.instructionsList ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.instructionsList li {
+  margin-bottom: 0.25rem;
+}
+
+/* Estado de dibujo */
+.polygonButton.drawing {
+  animation: pulse 2s infinite;
+  border-color: #f59e0b;
+  background-color: #fef3c7;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Estado de forma dibujada */
+.drawnShapeStatus {
+  background-color: #d1fae5;
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.statusText {
+  color: #065f46;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 500;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .form {

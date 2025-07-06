@@ -1,10 +1,12 @@
-import { FaClock } from "react-icons/fa";
-import { IoPin } from "react-icons/io5";
+
+import { IoPin, IoTimeOutline } from "react-icons/io5";
 
 import { Evento } from "@/types/entities/Evento";
 import { TipoEventoEnum } from "@/types/enums/TipoEvento";
 
 import { useDeleteEvent } from '@/services/querys/event.query'
+import Swal from 'sweetalert2'
+import dayjs from 'dayjs'
 import Link from "next/link";
 
 type EventCardProps = {
@@ -20,16 +22,28 @@ export default function EventCard({ evento, tipoNombre, ubicacion, time, Icon }:
   
   const handleDelete = async (id: any) => {
     try {
-      await deleteEvent(id);
-      console.log("Evento eliminado correctamente");
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará el evento permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // Llamar a la función de eliminación
+          const res = await deleteEvent(id);
+          if (res) {
+            Swal.fire("Eliminado", "El evento ha sido eliminado correctamente.", "success");
+          } else {
+            Swal.fire("Error", "No se pudo eliminar el evento. Inténtalo de nuevo más tarde.", "error");
+          }
+        }
+      })
     } catch (error) {
-      console.error("Error al eliminar el evento:", error);
+      Swal.fire("Error", "Ocurrió un error al eliminar el evento. Inténtalo de nuevo más tarde.", "error");
     }
   };
-
-  const toEdit = () => {
-
-  }
 
   return (
     <div className="block rounded-md border border-gray-300 p-4 shadow-md sm:p-6">
@@ -41,8 +55,8 @@ export default function EventCard({ evento, tipoNombre, ubicacion, time, Icon }:
             }
             {time && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <FaClock className="h-3 w-3" />
-                {time}
+                <IoTimeOutline className="size-4" />
+                {dayjs(time).format('DD/MM/YYYY HH:mm')}
               </div>
             )}
           </div>

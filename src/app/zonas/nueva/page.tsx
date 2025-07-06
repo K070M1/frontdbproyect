@@ -3,8 +3,7 @@
 import { useState } from "react";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneForm from "@/components/Zones/ZoneForm";
-import GoogleBaseMap from "@/components/Map/BaseMap";
-import { Circle, Polygon, Rectangle } from "@react-google-maps/api";
+import DrawableMap from "@/components/Map/DrawableMap";
 import styles from "./page.module.css";
 
 export default function NuevaZonaSeguraPage() {
@@ -14,6 +13,10 @@ export default function NuevaZonaSeguraPage() {
     "rectangle" | "circle" | "polygon" | null
   >(null);
   const [mapKey, setMapKey] = useState(0); // Key para forzar recarga del mapa
+  const [drawnShape, setDrawnShape] = useState<any>(null);
+  const [drawnShapeType, setDrawnShapeType] = useState<
+    "rectangle" | "circle" | "polygon" | null
+  >(null);
 
   const handleLocationSelected = (location: any) => {
     setSelectedLocation(location);
@@ -24,64 +27,53 @@ export default function NuevaZonaSeguraPage() {
     setPolygonType(type);
   };
 
+  const handleDrawingModeChange = (mode: typeof polygonType) => {
+    console.log("Page: Modo de dibujo cambiado a:", mode);
+    setPolygonType(mode);
+  };
+
+  const handleShapeDrawn = (shape: any, type: typeof polygonType) => {
+    console.log("Page: Forma dibujada:", type, shape);
+    setDrawnShape(shape);
+    setDrawnShapeType(type); // Guardar el tipo de forma dibujada
+    setPolygonType(null); // Resetear el modo de dibujo
+    
+    // Extraer el centro de la forma dibujada para centrar el mapa
+    let center;
+    if (type === "circle") {
+      center = {
+        lat: shape.getCenter().lat(),
+        lng: shape.getCenter().lng(),
+      };
+    } else if (type === "rectangle") {
+      const bounds = shape.getBounds();
+      center = {
+        lat: bounds.getCenter().lat(),
+        lng: bounds.getCenter().lng(),
+      };
+    } else if (type === "polygon") {
+      const bounds = new google.maps.LatLngBounds();
+      shape.getPath().forEach((point: any) => bounds.extend(point));
+      center = {
+        lat: bounds.getCenter().lat(),
+        lng: bounds.getCenter().lng(),
+      };
+    }
+
+    if (center) {
+      setMapCenter(center);
+      setSelectedLocation({ position: center, shape, type });
+    }
+  };
+
   const handleMapReload = () => {
     // Incrementar la key para forzar la recarga del mapa
     setMapKey((prev) => prev + 1);
-    // También limpiar el tipo de polígono
+    // Limpiar estados
     setPolygonType(null);
-  };
-
-  const renderZoneShape = () => {
-    if (!selectedLocation?.position || !polygonType) return null;
-    const center = selectedLocation.position;
-
-    const colors: Record<string, string> = {
-      rectangle: "#10b981",
-      circle: "#60a5fa",
-      polygon: "#fb923c",
-    };
-
-    const options = {
-      fillColor: colors[polygonType],
-      fillOpacity: 0.3,
-      strokeColor: colors[polygonType],
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-    };
-
-    switch (polygonType) {
-      case "circle":
-        return (
-          <Circle
-            key="circle-shape"
-            center={center}
-            radius={200}
-            options={options}
-          />
-        );
-      case "rectangle":
-        const bounds = {
-          north: center.lat + 0.002,
-          south: center.lat - 0.002,
-          east: center.lng + 0.002,
-          west: center.lng - 0.002,
-        };
-        return (
-          <Rectangle key="rectangle-shape" bounds={bounds} options={options} />
-        );
-      case "polygon":
-        const paths = [
-          { lat: center.lat + 0.002, lng: center.lng },
-          { lat: center.lat + 0.001, lng: center.lng + 0.002 },
-          { lat: center.lat - 0.001, lng: center.lng + 0.002 },
-          { lat: center.lat - 0.002, lng: center.lng },
-          { lat: center.lat - 0.001, lng: center.lng - 0.002 },
-          { lat: center.lat + 0.001, lng: center.lng - 0.002 },
-        ];
-        return <Polygon key="polygon-shape" paths={paths} options={options} />;
-    }
-
-    return null;
+    setDrawnShape(null);
+    setDrawnShapeType(null);
+    setSelectedLocation(null);
   };
 
   return (
@@ -93,17 +85,26 @@ export default function NuevaZonaSeguraPage() {
             onLocationSelected={handleLocationSelected}
             onPolygonTypeChange={handlePolygonTypeChange}
             onMapReload={handleMapReload}
+            onDrawingModeChange={handleDrawingModeChange}
+            drawnShape={drawnShape}
+            polygonType={polygonType}
+            drawnShapeType={drawnShapeType}
           />
         </div>
         <div className={styles.mapContainer}>
-          <GoogleBaseMap
-            key={mapKey} // Esto forzará la recarga del mapa cuando cambie
-            center={mapCenter}
-            zoom={16}
-            markers={selectedLocation ? [selectedLocation.position] : []}
-          >
-            {renderZoneShape()}
-          </GoogleBaseMap>
+          <h3 className={styles.mapTitle}>Mapa Interactivo</h3>
+          <p className={styles.mapInstructions}>
+            {polygonType 
+              ? `Modo de dibujo activo: ${polygonType}. Haz clic en el mapa para dibujar.`
+              : "Selecciona un tipo de figura en el formulario para comenzar a dibujar."
+            }
+          </p>
+          <DrawableMap
+            key={mapKey}
+            drawingMode={polygonType}
+            onShapeDrawn={handleShapeDrawn}
+            onMapReload={mapKey > 0}
+          />
         </div>
       </div>
     </LayoutShell>

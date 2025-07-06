@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PlacesAutocomplete } from "@/components/Map/PlaceAutcomplete";
 import styles from "./ZoneForm.module.css";
 import {
   FaHospital,
@@ -10,6 +9,10 @@ import {
   FaStore,
   FaTrash,
 } from "react-icons/fa";
+import Swal from 'sweetalert2'
+import { useGetZones, useAddZone, useUpdateZone } from '@/services/querys/zone.query'
+import { useSelectableList } from '@/hooks/useList'
+import { useRouter } from "next/navigation";
 
 type PolygonType = "rectangle" | "circle" | "polygon";
 
@@ -17,23 +20,50 @@ export default function ZoneForm({
   onLocationSelected,
   onPolygonTypeChange,
   onMapReload,
+  onDrawingModeChange,
+  drawnShape: externalDrawnShape,
+  polygonType: externalPolygonType,
+  drawnShapeType: externalDrawnShapeType,
 }: {
   onLocationSelected?: (location: any) => void;
   onPolygonTypeChange?: (type: PolygonType | null) => void;
   onMapReload?: () => void;
+  onDrawingModeChange?: (mode: PolygonType | null) => void;
+  drawnShape?: any;
+  polygonType?: PolygonType | null;
+  drawnShapeType?: PolygonType | null;
 }) {
+
+  const router = useRouter();
   const [form, setForm] = useState({ nombre: "", descripcion: "" });
-  const [selectedPolygon, setSelectedPolygon] = useState<PolygonType | null>(
-    null
-  );
-  const [selectedPlace, setSelectedPlace] = useState<{
-    placeId?: string;
-    position?: google.maps.LatLngLiteral;
-  }>({});
+  const [selectedPolygon, setSelectedPolygon] = useState<PolygonType | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [hasLocation, setHasLocation] = useState(false);
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
+  const [drawnShapeType, setDrawnShapeType] = useState<PolygonType | null>(null);
+
+  const { data: zones, refetch: refetchZones } = useGetZones();
+  const { mutateAsync: addZone } = useAddZone();
+  const { mutateAsync: updateZone } = useUpdateZone();
+
+  const listZones = useSelectableList(zones)
 
   useEffect(() => setMounted(true), []);
+
+  // Sincronizar con los estados externos
+  useEffect(() => {
+    if (externalPolygonType !== undefined) {
+      setSelectedPolygon(externalPolygonType);
+      setIsDrawingMode(externalPolygonType !== null);
+    }
+  }, [externalPolygonType]);
+
+  useEffect(() => {
+    if (externalDrawnShapeType) {
+      setDrawnShapeType(externalDrawnShapeType);
+    } else {
+      setDrawnShapeType(null);
+    }
+  }, [externalDrawnShapeType]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -42,62 +72,24 @@ export default function ZoneForm({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePlaceSelected = async (placeId: string) => {
-    if (!window.google?.maps?.places) return;
-    const placesService = new google.maps.places.PlacesService(
-      document.createElement("div")
-    );
-
-    placesService.getDetails(
-      {
-        placeId,
-        fields: ["name", "formatted_address", "geometry"],
-      },
-      (place, status) => {
-        if (status === "OK" && place) {
-          const addressParts = (place.formatted_address || "").split(",");
-          let distrito = addressParts[1]?.trim() || addressParts[0]?.trim();
-          distrito = distrito.replace(/\d+/g, "").trim();
-          const nombreFormateado = distrito
-            ? `${place.name} - ${distrito}`
-            : place.name || "";
-
-          setForm((prev) => ({ ...prev, nombre: nombreFormateado }));
-
-          const position = {
-            lat: place.geometry?.location?.lat() || 0,
-            lng: place.geometry?.location?.lng() || 0,
-          };
-
-          setSelectedPlace({ placeId, position });
-          setHasLocation(true);
-
-          if (onLocationSelected) {
-            onLocationSelected({
-              position,
-              name: place.name,
-              address: place.formatted_address,
-            });
-          }
-        }
-      }
-    );
-  };
-
   const handlePolygonSelection = (type: PolygonType) => {
-    // Solo permitir selección si hay ubicación y no hay polígono seleccionado
-    if (!hasLocation || selectedPolygon) return;
-
+    // Activar modo de dibujo
+    console.log("ZoneForm: Seleccionando tipo de polígono:", type);
     setSelectedPolygon(type);
+    setIsDrawingMode(true);
+    
+    // Notificar al componente padre para activar el modo de dibujo
     onPolygonTypeChange?.(type);
+    onDrawingModeChange?.(type);
+    console.log("ZoneForm: Callbacks llamados para tipo:", type);
   };
 
   const handleClearPolygon = () => {
-    // Limpiar el polígono seleccionado
     setSelectedPolygon(null);
+    setIsDrawingMode(false);
+    setDrawnShapeType(null);
     onPolygonTypeChange?.(null);
-
-    // Recargar el mapa para limpiar las figuras
+    onDrawingModeChange?.(null);
     if (onMapReload) {
       onMapReload();
     }
@@ -105,25 +97,87 @@ export default function ZoneForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPolygon) {
-      alert("Por favor selecciona una figura para resaltar la zona segura.");
+    if (!externalDrawnShape || !drawnShapeType) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Debes dibujar una figura en el mapa antes de guardar la zona segura.',
+      });
       return;
+    }
+
+    // Extraer datos de la forma dibujada
+    let shapeData;
+    if (drawnShapeType === "circle") {
+      shapeData = {
+        center: {
+          lat: externalDrawnShape.getCenter().lat(),
+          lng: externalDrawnShape.getCenter().lng(),
+        },
+        radius: externalDrawnShape.getRadius(),
+      };
+    } else if (drawnShapeType === "rectangle") {
+      const bounds = externalDrawnShape.getBounds();
+      shapeData = {
+        bounds: {
+          north: bounds.getNorthEast().lat(),
+          south: bounds.getSouthWest().lat(),
+          east: bounds.getNorthEast().lng(),
+          west: bounds.getSouthWest().lng(),
+        },
+      };
+    } else if (drawnShapeType === "polygon") {
+      const path = externalDrawnShape.getPath();
+      shapeData = {
+        coordinates: path.getArray().map((point: any) => ({
+          lat: point.lat(),
+          lng: point.lng(),
+        })),
+      };
     }
 
     const dataToSave = {
       ...form,
-      tipoPoligono: selectedPolygon,
-      ubicacion: selectedPlace.position,
-      placeId: selectedPlace.placeId,
+      tipoPoligono: drawnShapeType,
+      shapeData: shapeData,
     };
 
-    console.log("Registrando zona segura:", dataToSave);
-    // Aquí iría la lógica de envío al backend
+    console.log("ZoneForm: Guardando zona segura con datos:", dataToSave);
+    Swal.fire({
+      title: 'Confirmar Guardado',
+      text: `¿Estás seguro de que deseas guardar la zona segura "${form.nombre}"?`,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      icon: 'question',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await addZone(dataToSave);
+        console.log("Esto me llega ---------->", response);
+        
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Zona Segura Guardada',
+            text: `La zona segura ha sido guardada exitosamente.`,
+          });
+          console.log("Zona segura guardada:", response);
+          router.push("/zonas");
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al Guardar',
+            text: 'No se pudo guardar la zona segura. Inténtalo de nuevo.',
+          });
+        }
+        
+      }
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <h2 className={styles.formTitle}>Buscar Zona Segura</h2>
+      <h2 className={styles.formTitle}>Crear Zona Segura</h2>
 
       <div className={styles.suggestions}>
         <p className={styles.suggestionsTitle}>
@@ -145,14 +199,29 @@ export default function ZoneForm({
         </div>
       </div>
 
-      <div className={styles.searchSection}>
-        <label>Buscar lugar seguro</label>
-        <PlacesAutocomplete
-          placeholder=""
-          onPlaceSelected={handlePlaceSelected}
-          country="pe"
-        />
+      <div className={styles.instructionsSection}>
+        <h3 className={styles.instructionsTitle}>Instrucciones:</h3>
+        <div className={styles.instructionsList}>
+          <p>1. Selecciona el tipo de figura que deseas dibujar</p>
+          <p>2. Haz clic en el mapa para comenzar a dibujar</p>
+          <p>3. Completa la figura según el tipo seleccionado:</p>
+          <ul>
+            <li><strong>Rectángulo:</strong> Haz clic y arrastra</li>
+            <li><strong>Círculo:</strong> Haz clic y arrastra desde el centro</li>
+            <li><strong>Polígono:</strong> Haz clic en cada punto y doble clic para finalizar</li>
+          </ul>
+          <p>4. Completa la información de la zona y guarda</p>
+        </div>
       </div>
+
+      {/* Estado de la forma dibujada */}
+      {externalDrawnShape && drawnShapeType && (
+        <div className={styles.drawnShapeStatus}>
+          <p className={styles.statusText}>
+            ✅ Forma dibujada: <strong>{drawnShapeType}</strong>
+          </p>
+        </div>
+      )}
 
       <div className={styles.inputGroup}>
         <label>Nombre de la Zona</label>
@@ -182,7 +251,7 @@ export default function ZoneForm({
       </div>
 
       <div className={styles.polygonSection}>
-        <label>Resaltar zona segura</label>
+        <label>Seleccionar tipo de figura para dibujar</label>
         <div className={styles.polygonOptions}>
           {["rectangle", "circle", "polygon"].map((type) => (
             <button
@@ -191,20 +260,15 @@ export default function ZoneForm({
               className={`${styles.polygonButton} ${
                 selectedPolygon === type ? styles.selected : ""
               } ${selectedPolygon === type ? styles[type] : ""} ${
-                !hasLocation || (selectedPolygon && selectedPolygon !== type)
-                  ? styles.disabled
-                  : ""
+                isDrawingMode ? styles.drawing : ""
               }`}
               onClick={() => handlePolygonSelection(type as PolygonType)}
-              disabled={
-                !hasLocation ||
-                (selectedPolygon !== null && selectedPolygon !== type)
-              }
+              disabled={isDrawingMode && selectedPolygon !== type}
               title={
-                !hasLocation
-                  ? "Primero busca un lugar seguro"
-                  : selectedPolygon && selectedPolygon !== type
-                  ? "Ya has seleccionado una figura"
+                isDrawingMode && selectedPolygon === type
+                  ? "Dibuja en el mapa"
+                  : isDrawingMode
+                  ? "Termina de dibujar la figura actual"
                   : `Seleccionar ${type}`
               }
             >
@@ -250,7 +314,7 @@ export default function ZoneForm({
             type="button"
             className={styles.clearButton}
             onClick={handleClearPolygon}
-            disabled={!selectedPolygon}
+            disabled={!selectedPolygon && !externalDrawnShape}
             title="Eliminar figura del mapa"
           >
             <FaTrash />
