@@ -60,6 +60,18 @@
   text-align: center;
 }
 
+.existingZonesInfo {
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.loadingZonesInfo {
+  color: #3b82f6;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .layoutWrapper {

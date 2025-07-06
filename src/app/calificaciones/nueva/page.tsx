@@ -11,7 +11,7 @@ export default function NuevaCalificacionPage() {
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario"]}>
       <LayoutShell>
-        <RatingForm usuario={user?.username} />
+        <RatingForm id_usuario={user?.id_usuario} />
       </LayoutShell>
     </ProtectedRoute>
   );

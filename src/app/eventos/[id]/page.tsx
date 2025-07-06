@@ -51,7 +51,7 @@ export default function EventoDetallePage() {
 
   return (
    <LayoutShell>
-      <h3 className="text-center font-medium font-semibold">Editar evento</h3>
+      <h3 className="text-center font-semibold">Editar evento</h3>
       <EventForm evento={evento.length > 0 ? evento[0] : null} />
     </LayoutShell>
   );

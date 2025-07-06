@@ -4,19 +4,18 @@ import { useState } from "react";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneForm from "@/components/Zones/ZoneForm";
 import DrawableMap from "@/components/Map/DrawableMap";
+import { useGetZones } from '@/services/querys/zone.query';
 import styles from "./page.module.css";
 
 export default function NuevaZonaSeguraPage() {
   const [mapCenter, setMapCenter] = useState({ lat: -12.0464, lng: -77.0428 });
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
-  const [polygonType, setPolygonType] = useState<
-    "rectangle" | "circle" | "polygon" | null
-  >(null);
+  const [polygonType, setPolygonType] = useState<"rectangle" | "circle" | "polygon" | null>(null);
   const [mapKey, setMapKey] = useState(0); // Key para forzar recarga del mapa
   const [drawnShape, setDrawnShape] = useState<any>(null);
-  const [drawnShapeType, setDrawnShapeType] = useState<
-    "rectangle" | "circle" | "polygon" | null
-  >(null);
+  const [drawnShapeType, setDrawnShapeType] = useState<"rectangle" | "circle" | "polygon" | null>(null);
+
+  const { data: zones, isLoading: loadingZones } = useGetZones();
 
   const handleLocationSelected = (location: any) => {
     setSelectedLocation(location);
@@ -98,12 +97,23 @@ export default function NuevaZonaSeguraPage() {
               ? `Modo de dibujo activo: ${polygonType}. Haz clic en el mapa para dibujar.`
               : "Selecciona un tipo de figura en el formulario para comenzar a dibujar."
             }
+            {!loadingZones && zones && zones.length > 0 && (
+              <span className={styles.existingZonesInfo}>
+                <br />Las zonas existentes se muestran en rojo en el mapa ({zones.length} zona{zones.length !== 1 ? 's' : ''}).
+              </span>
+            )}
+            {loadingZones && (
+              <span className={styles.loadingZonesInfo}>
+                <br />Cargando zonas existentes...
+              </span>
+            )}
           </p>
           <DrawableMap
             key={mapKey}
             drawingMode={polygonType}
             onShapeDrawn={handleShapeDrawn}
             onMapReload={mapKey > 0}
+            existingZones={!loadingZones ? zones : []}
           />
         </div>
       </div>

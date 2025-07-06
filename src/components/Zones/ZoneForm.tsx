@@ -24,6 +24,9 @@ export default function ZoneForm({
   drawnShape: externalDrawnShape,
   polygonType: externalPolygonType,
   drawnShapeType: externalDrawnShapeType,
+  editMode = false,
+  initialData = null,
+  zoneId = null,
 }: {
   onLocationSelected?: (location: any) => void;
   onPolygonTypeChange?: (type: PolygonType | null) => void;
@@ -32,6 +35,9 @@ export default function ZoneForm({
   drawnShape?: any;
   polygonType?: PolygonType | null;
   drawnShapeType?: PolygonType | null;
+  editMode?: boolean;
+  initialData?: any;
+  zoneId?: string | number | null;
 }) {
 
   const router = useRouter();
@@ -48,6 +54,23 @@ export default function ZoneForm({
   const listZones = useSelectableList(zones)
 
   useEffect(() => setMounted(true), []);
+
+  // Inicializar formulario con datos existentes en modo edición
+  useEffect(() => {
+    if (editMode && initialData) {
+      setForm({
+        nombre: initialData.nombre || "",
+        descripcion: initialData.descripcion || "",
+      });
+      
+      // Si hay datos de forma existente, configurar el tipo
+      if (initialData.forma) {
+        const shapeType = initialData.forma.toLowerCase() as PolygonType;
+        setDrawnShapeType(shapeType);
+        setSelectedPolygon(shapeType);
+      }
+    }
+  }, [editMode, initialData]);
 
   // Sincronizar con los estados externos
   useEffect(() => {
@@ -97,7 +120,9 @@ export default function ZoneForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!externalDrawnShape || !drawnShapeType) {
+    
+    // En modo edición, permitir guardar sin nueva forma dibujada
+    if (!editMode && (!externalDrawnShape || !drawnShapeType)) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -106,78 +131,98 @@ export default function ZoneForm({
       return;
     }
 
-    // Extraer datos de la forma dibujada
-    let shapeData;
-    if (drawnShapeType === "circle") {
-      shapeData = {
-        center: {
-          lat: externalDrawnShape.getCenter().lat(),
-          lng: externalDrawnShape.getCenter().lng(),
-        },
-        radius: externalDrawnShape.getRadius(),
-      };
-    } else if (drawnShapeType === "rectangle") {
-      const bounds = externalDrawnShape.getBounds();
-      shapeData = {
-        bounds: {
-          north: bounds.getNorthEast().lat(),
-          south: bounds.getSouthWest().lat(),
-          east: bounds.getNorthEast().lng(),
-          west: bounds.getSouthWest().lng(),
-        },
-      };
-    } else if (drawnShapeType === "polygon") {
-      const path = externalDrawnShape.getPath();
-      shapeData = {
-        coordinates: path.getArray().map((point: any) => ({
-          lat: point.lat(),
-          lng: point.lng(),
-        })),
-      };
+    // Extraer datos de la forma dibujada (solo si hay una nueva forma)
+    let shapeData = null;
+    if (externalDrawnShape && drawnShapeType) {
+      if (drawnShapeType === "circle") {
+        shapeData = {
+          center: {
+            lat: externalDrawnShape.getCenter().lat(),
+            lng: externalDrawnShape.getCenter().lng(),
+          },
+          radius: externalDrawnShape.getRadius(),
+        };
+      } else if (drawnShapeType === "rectangle") {
+        const bounds = externalDrawnShape.getBounds();
+        shapeData = {
+          bounds: {
+            north: bounds.getNorthEast().lat(),
+            south: bounds.getSouthWest().lat(),
+            east: bounds.getNorthEast().lng(),
+            west: bounds.getSouthWest().lng(),
+          },
+        };
+      } else if (drawnShapeType === "polygon") {
+        const path = externalDrawnShape.getPath();
+        shapeData = {
+          coordinates: path.getArray().map((point: any) => ({
+            lat: point.lat(),
+            lng: point.lng(),
+          })),
+        };
+      }
     }
 
     const dataToSave = {
       ...form,
-      tipoPoligono: drawnShapeType,
-      shapeData: shapeData,
+      ...(shapeData && {
+        tipoPoligono: drawnShapeType,
+        shapeData: shapeData,
+      }),
     };
 
-    console.log("ZoneForm: Guardando zona segura con datos:", dataToSave);
+    const actionText = editMode ? 'actualizar' : 'guardar';
+    const actionPastText = editMode ? 'actualizada' : 'guardada';
+    
+    console.log(`ZoneForm: ${actionText} zona segura con datos:`, dataToSave);
+    
     Swal.fire({
-      title: 'Confirmar Guardado',
-      text: `¿Estás seguro de que deseas guardar la zona segura "${form.nombre}"?`,
+      title: `Confirmar ${editMode ? 'Actualización' : 'Guardado'}`,
+      text: `¿Estás seguro de que deseas ${actionText} la zona segura "${form.nombre}"?`,
       showCancelButton: true,
-      confirmButtonText: 'Guardar',
+      confirmButtonText: editMode ? 'Actualizar' : 'Guardar',
       cancelButtonText: 'Cancelar',
       icon: 'question',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await addZone(dataToSave);
-        console.log("Esto me llega ---------->", response);
-        
-        if (response) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Zona Segura Guardada',
-            text: `La zona segura ha sido guardada exitosamente.`,
-          });
-          console.log("Zona segura guardada:", response);
-          router.push("/zonas");
-        } else {
+        try {
+          let response;
+          if (editMode && zoneId) {
+            response = await updateZone({ id: zoneId, form: dataToSave });
+          } else {
+            response = await addZone(dataToSave);
+          }
+          
+          console.log("Respuesta del servidor:", response);
+          
+          if (response) {
+            Swal.fire({
+              icon: 'success',
+              title: `Zona Segura ${editMode ? 'Actualizada' : 'Guardada'}`,
+              text: `La zona segura ha sido ${actionPastText} exitosamente.`,
+            });
+            console.log(`Zona segura ${actionPastText}:`, response);
+            router.push("/zonas");
+          } else {
+            throw new Error('No se recibió respuesta del servidor');
+          }
+        } catch (error) {
+          console.error(`Error al ${actionText} zona:`, error);
           Swal.fire({
             icon: 'error',
-            title: 'Error al Guardar',
-            text: 'No se pudo guardar la zona segura. Inténtalo de nuevo.',
+            title: `Error al ${editMode ? 'Actualizar' : 'Guardar'}`,
+            text: `No se pudo ${actionText} la zona segura. Inténtalo de nuevo.`,
           });
         }
-        
       }
     });
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <h2 className={styles.formTitle}>Crear Zona Segura</h2>
+      <h2 className={styles.formTitle}>
+        {editMode ? 'Editar Zona Segura' : 'Crear Zona Segura'}
+      </h2>
 
       <div className={styles.suggestions}>
         <p className={styles.suggestionsTitle}>
@@ -323,7 +368,7 @@ export default function ZoneForm({
       </div>
 
       <button type="submit" className={styles.submitButton}>
-        Guardar Zona Segura
+        {editMode ? 'Actualizar Zona Segura' : 'Guardar Zona Segura'}
       </button>
     </form>
   );

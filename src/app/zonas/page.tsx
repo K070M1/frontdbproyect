@@ -6,6 +6,7 @@ import SearchBar from "@/components/Behavior/SearchBar";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { useGetZones, useDeleteZone } from '@/services/querys/zone.query'
+import { useRouter } from "next/navigation";
 import { useSelectableList } from '@/hooks/useList'
 import dayjs from 'dayjs'
 import Swal from 'sweetalert2'
@@ -15,7 +16,7 @@ import 'dayjs/locale/es';
 
 export default function ZonasSegurasPage() {
   const [query, setQuery] = useState("");
-
+  const router = useRouter();
   const { mutateAsync: deleteZone } = useDeleteZone();
   const { data: queryZones, refetch: refetchZones } = useGetZones();
   const listZones = useSelectableList(queryZones);
@@ -60,7 +61,7 @@ export default function ZonasSegurasPage() {
   }
 
   const handleEditZone = (id: any) => {
-    
+    router.push(`/zonas/${id}`);
   }
 
   return (
