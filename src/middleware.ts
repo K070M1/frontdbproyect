@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   if (!matched) return NextResponse.next();
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   const user = decodeJWT(token);
@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
   // Token expirado (opcional)
   const now = Math.floor(Date.now() / 1000);
   if (user.exp && user.exp < now) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return NextResponse.next();

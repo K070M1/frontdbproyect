@@ -59,8 +59,8 @@ export default function Navbar() {
             <ul className={styles.menu}>
               <li>
                 <Link
-                  href="/public/mapa"
-                  className={`${styles.navLink} ${pathname === "/public/mapa" ? styles.active : ""}`}
+                  href="/mapa"
+                  className={`${styles.navLink} ${pathname === "/mapa" ? styles.active : ""}`}
                 >
                   <FaMapMarkedAlt className={styles.navIcon} />
                   Mapa
@@ -228,7 +228,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className={styles.bottomNav}>
           {[
-            { href: "/public/mapa", icon: <FaMapMarkedAlt />, label: "Mapa" },
+            { href: "/mapa", icon: <FaMapMarkedAlt />, label: "Mapa" },
             { href: "/rutas", icon: <FiMapPin />, label: "Rutas" },
             { href: "/zonas", icon: <FaShieldAlt />, label: "Zonas" },
             ...(isLogged

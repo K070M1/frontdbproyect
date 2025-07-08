@@ -11,7 +11,7 @@ import { FiMapPin } from "react-icons/fi";
 
 const links = [
   {
-    href: "/public/mapa",
+    href: "/mapa",
     icon: <FaRegMap className="size-20" />,
     title: "Mapa",
     description: "Visualiza rutas y zonas seguras en tiempo real.",
