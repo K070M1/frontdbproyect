@@ -1,5 +1,5 @@
 .card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(135deg, var(--background) 0%, var(--background) 100%);
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 1.5rem;
@@ -131,6 +131,7 @@
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
@@ -217,9 +218,9 @@
 .detailsPanel {
   margin-top: 1rem;
   padding: 1rem;
-  background: #f9fafb;
+  background: var(--background-color-base);
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
 }
 
 .detailsGrid {
@@ -251,7 +252,7 @@
 .coordinates {
   font-family: monospace;
   font-size: 0.8rem;
-  background: #f3f4f6;
+  background: var(--background-color-base);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   display: inline-block;

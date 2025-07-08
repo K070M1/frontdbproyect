@@ -9,21 +9,28 @@
 }
 
 .addButton {
-  background-color: #2563eb;
-  color: white;
+  background-color: var(--primary);
+  color: var(--color-white);
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.addButton:hover {
+  background-color: var(--primary-hover);
+  transition: background-color var(--transition-medium-ease);
 }
 
 .list {
   display: grid;
   gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .card {
   background: var(--background);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
