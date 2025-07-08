@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import LayoutShell from "@/components/Layout/LayoutShell";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
-import UserForm from "@/components/Configuracion/UserForm";
+// import UserForm from "@/components/Configuracion/UserForm";
 import styles from "./page.module.css";
 
 type UserData = {
@@ -48,12 +48,12 @@ export default function ConfiguracionPage() {
     fetchUsuarios();
   }, []);
 
-  const handleUpdateUsuario = (id: number, data: Omit<UserData, "id">) => {
-    setUsuarios((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, ...data } : u))
-    );
-    alert("Usuario actualizado correctamente.");
-  };
+  // const handleUpdateUsuario = (id: number, data: Omit<UserData, "id">) => {
+  //   setUsuarios((prev) =>
+  //     prev.map((u) => (u.id === id ? { ...u, ...data } : u))
+  //   );
+  //   alert("Usuario actualizado correctamente.");
+  // };
 
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
@@ -86,18 +86,19 @@ export default function ConfiguracionPage() {
         {tab === "usuarios" && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Editar Usuarios</h2>
-            {usuarios.map((user) => (
-              <UserForm
-                key={user.id}
-                initialData={{
-                  id: user.id, // <-- esto faltaba
-                  nombre: user.nombre,
-                  rol: user.rol,
-                  correo: user.correo,
-                }}
-                onSubmit={(data) => handleUpdateUsuario(user.id, data)}
-              />
-            ))}
+            <ul className={styles.list}>
+              {usuarios.map((user) => (
+                <li key={user.id} className={styles.listItem}>
+                  {user.nombre} ({user.correo}) - {user.rol}{" "}
+                  <a
+                    href={`/usuarios/${user.id}/editar`}
+                    style={{ marginLeft: "1rem", color: "#2563eb", textDecoration: "underline" }}
+                  >
+                    Editar
+                  </a>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 

@@ -55,7 +55,7 @@
 
 .left:hover {
   animation: borderAnimation 1.2s ease-in-out infinite;
-  background-color: var(--primary-200);
+  /* background-color: var(--primary-200); */
   border-left: 10px solid var(--accent);
   border-bottom: 2px solid var(--accent);
   border-right: 10px solid var(--primary-200);
@@ -266,8 +266,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
-  background-color: var(--accent);
-  color: #fff;
+  background-color: var(--primary);
+  color: var(--color-white);
   border: none;
   border-radius: 1.25rem;
   font-weight: 500;
@@ -278,6 +278,8 @@
 
 .loginButton svg {
   fill: var(--color-white);
+  width: var(--font-size-base);
+  height: var(--font-size-base);
 }
 
 .loginButton:hover {

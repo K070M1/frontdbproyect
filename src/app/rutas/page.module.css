@@ -1,8 +1,8 @@
 .title {
   font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  color: #000000;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--margin-md);
+  color: var(--text-primary);
   text-align: left;
 }
 
@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--margin-lg);
 }
 
 .addButton {
@@ -60,13 +60,13 @@
 
 .noResults {
   text-align: center;
-  color: #64748b;
+  color: var(--text-primary);
   font-size: 1.1rem;
   margin-top: 3rem;
   padding: 2rem;
-  background: #f8fafc;
+  background: var(--card-shadow);
   border-radius: 12px;
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed var(--color-border);
 }
 
 @media (max-width: 768px) {

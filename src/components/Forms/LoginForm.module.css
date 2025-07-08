@@ -3,14 +3,14 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f3f4f6;
+  background: var(--background);
   padding: 1rem;
 }
 
 .card {
   display: flex;
   max-width: 900px;
-  background: white;
+  background: var(--background);
   border-radius: 1.25rem;
   overflow: hidden;
   /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); */

@@ -9,12 +9,12 @@
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .subtitle {
   font-size: 1.25rem;
-  color: #374151;
+  color: var(--text-muted);
   margin-top: -1rem;
 }
 
@@ -30,16 +30,16 @@
   align-items: center;
   gap: 0.5rem;
   padding: 2rem;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--background);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   text-decoration: none;
-  color: #111827;
+  color: var(--text-primary);
   transition: box-shadow 0.2s ease-in-out;
 }
 
 .linkCard:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px var(--hover-bg);
 }
 
 .linkCard h2 {
@@ -54,7 +54,7 @@
 
 .info {
   font-size: 0.95rem;
-  color: #374151;
+  color: var(--text-muted);
 }
 
 .container svg {

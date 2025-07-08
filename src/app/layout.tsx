@@ -6,6 +6,7 @@ import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import HeroProvider from "@/providers/HeroProvider";
 import { NotificationProvider } from "@/context/NotificationContext";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,21 +25,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <HeroProvider>
-          <ReactQueryProvider>
-            <AuthProvider>
-              <NotificationProvider>
-                {children}
-              </NotificationProvider>
-            </AuthProvider>
-          </ReactQueryProvider>
-        </HeroProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <HeroProvider>
+            <ReactQueryProvider>
+              <AuthProvider>
+                <NotificationProvider>{children}</NotificationProvider>
+              </AuthProvider>
+            </ReactQueryProvider>
+          </HeroProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

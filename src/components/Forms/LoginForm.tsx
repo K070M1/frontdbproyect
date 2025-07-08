@@ -7,6 +7,7 @@ import styles from "./LoginForm.module.css";
 import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
+import urlImage from "@/assets/ec9fc9bc-040a-4f70-9eb5-f1e8e8978bab.png";
 
 // Definición del tipo para el formulario de login
 type LoginForm = {
@@ -126,7 +127,7 @@ export default function LoginForm() {
           </p>
           <div className={styles.imageWrapper}>
             <Image
-              src="https://images.unsplash.com/photo-1581090700227-1e8a264f7b96"
+              src={urlImage}
               alt="Personas colaborando en comunidad"
               fill
               className={styles.image}

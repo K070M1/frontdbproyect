@@ -1,8 +1,8 @@
 .title {
   font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  color: #000000;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--margin-md);
+  color: var(--text-primary);
   text-align: left;
 }
 
@@ -10,15 +10,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--margin-lg);
 }
 
 .addButton {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: var(--padding-sm) var(--padding-lg);
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
@@ -26,8 +26,8 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
+  gap: var(--gap-xs);
+  font-size: var(--font-size-base);
 }
 
 .addButton:hover {
@@ -42,9 +42,9 @@
 
 .list {
   display: grid;
-  gap: 2rem;
+  gap: var(--gap-xxl);
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  margin-top: 2rem;
+  margin-top: var(--margin-xl);
 }
 
 .searchBar {
@@ -61,13 +61,13 @@
 .noResults {
   grid-column: 1 / -1;
   text-align: center;
-  color: #64748b;
+  color: var(--text-primary);
   font-size: 1.1rem;
   margin-top: 3rem;
   padding: 2rem;
-  background: #f8fafc;
+  background: var(--card-shadow);
   border-radius: 12px;
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed var(--color-border);
 }
 
 @media (max-width: 768px) {

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ProfileDropdown from "@/components/UI/Profile/ProfileDropdown";
-import NotificationDropdown from "@/components/UI/NotificationDropdown/NotificationDropdown";
-import SearchInput from "@/components/UI/SearchInput/SearchInput";
+// import NotificationDropdown from "@/components/UI/NotificationDropdown/NotificationDropdown";
+// import SearchInput from "@/components/UI/SearchInput/SearchInput";
 
 import { FiMapPin } from "react-icons/fi";
 import {
@@ -21,6 +21,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import styles from "./Navbar.module.css";
+import ThemeToggle from "../Utils/ThemeToggle";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -68,9 +69,8 @@ export default function Navbar() {
 
               {/* Rutas */}
               <li
-                className={`${styles.hasSubmenu} ${
-                  openSubmenu === "rutas" ? styles.open : ""
-                } ${pathname.startsWith("/rutas") ? styles.active : ""}`}
+                className={`${styles.hasSubmenu} ${openSubmenu === "rutas" ? styles.open : ""
+                  } ${pathname.startsWith("/rutas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -103,9 +103,8 @@ export default function Navbar() {
 
               {/* Zonas */}
               <li
-                className={`${styles.hasSubmenu} ${
-                  openSubmenu === "zonas" ? styles.open : ""
-                } ${pathname.startsWith("/zonas") ? styles.active : ""}`}
+                className={`${styles.hasSubmenu} ${openSubmenu === "zonas" ? styles.open : ""
+                  } ${pathname.startsWith("/zonas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -129,9 +128,8 @@ export default function Navbar() {
               {/* Ubicaciones */}
               {isLogged && (
                 <li
-                  className={`${styles.hasSubmenu} ${
-                    openSubmenu === "ubicaciones" ? styles.open : ""
-                  } ${pathname.startsWith("/ubicaciones") ? styles.active : ""}`}
+                  className={`${styles.hasSubmenu} ${openSubmenu === "ubicaciones" ? styles.open : ""
+                    } ${pathname.startsWith("/ubicaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -156,9 +154,8 @@ export default function Navbar() {
               {/* Calificaciones */}
               {isLogged && (
                 <li
-                  className={`${styles.hasSubmenu} ${
-                    openSubmenu === "calificaciones" ? styles.open : ""
-                  } ${pathname.startsWith("/calificaciones") ? styles.active : ""}`}
+                  className={`${styles.hasSubmenu} ${openSubmenu === "calificaciones" ? styles.open : ""
+                    } ${pathname.startsWith("/calificaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -212,18 +209,18 @@ export default function Navbar() {
           </nav>
 
           <div className={styles.right}>
-            <SearchInput onSearch={(q) => console.log("Buscar:", q)} />
-            <div className={styles.notificationContainer}>
-              <NotificationDropdown />
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              {/* <NotificationDropdown /> */}
+              {user ? (
+                <ProfileDropdown />
+              ) : (
+                <Link href="/auth/login" className={styles.loginButton}>
+                  <FaRegUser className={styles.userIcon} />
+                  Iniciar Sesión
+                </Link>
+              )}
             </div>
-            {user ? (
-              <ProfileDropdown />
-            ) : (
-              <Link href="/auth/login" className={styles.loginButton}>
-                <FaRegUser className={styles.userIcon} />
-                Iniciar Sesión
-              </Link>
-            )}
           </div>
         </header>
       </div>

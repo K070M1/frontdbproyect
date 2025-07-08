@@ -1,6 +1,4 @@
  @import "tailwindcss";
- @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
- @custom-variant dark (&:is(.dark *));
 
  :root {
    /* === Light Mode (Día) === */
@@ -49,6 +47,7 @@
    --color-white: #ffffff;
    --color-muted: #94a3b8;
    --color-border: #a5b4fc;
+   --color-border-2: #cbd5e1;
    --card-shadow: rgba(0, 0, 0, 0.05);
 
    /* Blur Transparencies */
@@ -58,17 +57,16 @@
    /* Fonts */
    --font-family-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
    --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
-
-   --font-size-xs: 0.75rem;
-   --font-size-sm: 0.875rem;
-   --font-size-base: 1rem;
-   --font-size-lg: 1.125rem;
-   --font-size-xl: 1.25rem;
-   --font-size-2xl: 1.5rem;
-   --font-size-3xl: 1.875rem;
-   --font-size-4xl: 2.25rem;
-   --font-size-5xl: 3rem;
-   --font-size-6xl: 3.75rem;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
 
    --font-weight-light: 300;
    --font-weight-normal: 400;
@@ -89,6 +87,12 @@
    --padding-md: 1rem;
    --padding-lg: 1.5rem;
    --padding-xl: 2rem;
+   --padding-xxl: 3rem;
+   --padding-xxxl: 4rem;
+   --padding-xxxxl: 5rem;
+   --padding-xxxxxl: 6rem;
+   --padding-xxxxxxl: 7rem;
+   --padding-xxxxxxxl: 8rem;
 
    --margin-xs: 0.5rem;
    --margin-sm: 0.75rem;
@@ -111,7 +115,6 @@
    --bg-wrapper: rgba(243, 244, 246, 0.8);
    --bg-navbar: rgba(255, 255, 255, 0.75);
    --bg-submenu: rgba(255, 255, 255, 0.9);
-   --text-primary: #111827;
    --accent: #5c71f6;
    --hover-bg: rgba(92, 113, 246, 0.1);
    --transition-fast: 0.15s ease-in-out;
@@ -126,17 +129,43 @@
    --notification-icon-color: #53ac7b;
  }
 
- @theme inline {
-   --color-background: var(--background);
-   --color-foreground: var(--foreground);
-   --font-sans: var(--font-geist-sans);
-   --font-mono: var(--font-geist-mono);
- }
+ 
+ /* === Dark Mode (Noche) === */
+.dark {
+  --background: #171717;
+  --foreground: #f3f4f6;
+  --background-color-base: #1f2937;
+  --background-color-primary: rgba(129, 140, 248, 0.2);
+  --background-color-secondary: #374151;
+  --background-color-tertiary: #1e293b;
+  --card-background: #1f2937;
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverted: #111827;
+  --text-brand: #a5b4fc;
+
+  /* --color-white: #171717; */
+  --color-muted: #6b7280;
+  --color-border: #4b5563;
+  --card-shadow: rgba(255, 255, 255, 0.05);
+
+  --blur-bg: rgba(23, 23, 23, 0.8);
+  --blur-bg-heavy: rgba(23, 23, 23, 0.9);
+
+  --bg-wrapper: rgba(17, 24, 39, 0.8);
+  --bg-navbar: rgba(31, 41, 55, 0.75);
+  --bg-submenu: rgba(31, 41, 55, 0.9);
+  --accent: #a5b4fc;
+  --hover-bg: rgba(129, 140, 248, 0.15);
+}
 
  body {
    background: var(--background);
    color: var(--foreground);
    font-family: var(--font-family-sans);
+   transition: background var(--transition-medium), color var(--transition-medium);
  }
 
  /* === Spinner Animation === */
@@ -149,3 +178,7 @@
      transform: rotate(360deg);
    }
  }
+
+ html {
+  color-scheme: light dark;
+}

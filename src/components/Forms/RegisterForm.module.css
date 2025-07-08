@@ -4,14 +4,14 @@
   align-items: center;
   padding: 2rem;
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: var(--background);
 }
 
 .card {
   display: flex;
   max-width: 960px;
   width: 100%;
-  background: white;
+  background: var(--background);
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

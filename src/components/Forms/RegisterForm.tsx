@@ -7,6 +7,7 @@ import styles from "./RegisterForm.module.css";
 import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
+import urlImage from "@/assets/ec9fc9bc-040a-4f70-9eb5-f1e8e8978bab.png";
 
 type RegisterForm = {
   nombre: string;
@@ -128,7 +129,7 @@ export default function RegisterForm() {
           </p>
           <div className={styles.imageWrapper}>
             <Image
-              src="https://images.unsplash.com/photo-1581090700227-1e8a264f7b96"
+              src={urlImage}
               alt="Personas colaborando en comunidad"
               fill
               className={styles.image}

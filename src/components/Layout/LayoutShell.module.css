@@ -13,8 +13,15 @@
 
 .content {
   flex: 1;
-  padding: 7rem 5rem;
+  padding: var(--padding-xxxxxxl) var(--padding-xxxxl);
   overflow-y: auto;
   background-color: var(--background);
-  /* border-left: 1px solid #e5e7eb; */
+  /* border-left: 1px solid var(--background-color-secondary); */
+}
+
+/* Breakpoint para móviles */
+@media (max-width: 768px) {
+  .content {
+    padding: var(--padding-lg) var(--padding-md);
+  }
 }

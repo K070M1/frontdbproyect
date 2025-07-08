@@ -48,8 +48,8 @@
 }
 
 .card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -82,7 +82,7 @@
 
 .typeTag {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -95,7 +95,7 @@
 }
 
 .comment {
-  background: #f9fafb;
+  background: var(--background);
   border-left: 4px solid #3b82f6;
   padding: 0.75rem;
   border-radius: 0 8px 8px 0;
@@ -129,7 +129,7 @@
 }
 
 .userId {
-  background: #e5e7eb;
+  background: var(--background-color-secondary);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   color: #374151;
@@ -155,7 +155,7 @@
   padding: 3rem;
   color: #9ca3af;
   font-size: 1.125rem;
-  background: #f9fafb;
+  background: var(--background-color-base);
   border-radius: 12px;
   border: 2px dashed #d1d5db;
 }
@@ -198,7 +198,7 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: #3b82f6;
+  background: var(--primary);
   color: white;
   text-decoration: none;
   font-size: 14px;
@@ -207,7 +207,7 @@
 }
 
 .editButton:hover {
-  background: #2563eb;
+  background: var(--primary-hover);
   transform: scale(1.05);
 }
 
