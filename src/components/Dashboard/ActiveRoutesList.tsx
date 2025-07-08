@@ -1,23 +1,52 @@
-import RouteCard from '@/components/Routes/RouteCard';
-import { mockRutas } from '@/data/mockRutas';
-import { mockUbicaciones } from '@/data/mockUbicaciones';
-import styles from './ActiveRoutesList.module.css';
+"use client";
+
+import RouteCard from "@/components/Routes/RouteCard";
+import styles from "./ActiveRoutesList.module.css";
+import { useGetRoutes } from "@/services/querys/routes.query";
 
 export default function ActiveRoutesList() {
-  const getNombreUbicacion = (id: number) =>
-    mockUbicaciones.find((u) => u.id_ubicacion === id)?.nombre || `Ubicación #${id}`;
+  const { data: routes = [], isLoading, isError, error } = useGetRoutes();
+
+  if (isLoading) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.title}>Rutas Activas</h2>
+        <p>Cargando rutas...</p>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.title}>Rutas Activas</h2>
+        <p style={{ color: "var(--danger)" }}>
+          {(error as Error).message || "Error al cargar rutas"}
+        </p>
+      </section>
+    );
+  }
+
+  if (routes.length === 0) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.title}>Rutas Activas</h2>
+        <p>No hay rutas activas disponibles.</p>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Rutas Activas</h2>
       <div className={styles.grid}>
-        {mockRutas.map((ruta) => (
+        {routes.map((ruta) => (
           <RouteCard
             key={ruta.id_ruta}
-            origen={getNombreUbicacion(ruta.id_origen)}
-            destino={getNombreUbicacion(ruta.id_destino)}
-            riesgo={ruta.riesgo}
-            tiempo={ruta.tiempo_estimado}
+            origen={ruta.origen}
+            destino={ruta.destino}
+            riesgo={ruta.riesgo ?? 0}
+            tiempo={ruta.tiempo_estimado ?? "N/A"}
             favorito={ruta.favorito}
           />
         ))}

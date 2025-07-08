@@ -1,31 +1,46 @@
 "use client";
 
+import { useGetEvents } from "@/services/querys/event.query";
 import EventCard from "@/components/Events/EventCard";
-import { mockEventos } from "@/data/mockEventos";
-import { TipoEventoEnum } from "@/types/enums/TipoEvento";
 import { Evento } from "@/types/entities/Evento";
-import { LatLngTuple } from "leaflet";
-
 import styles from "./EventsList.module.css";
 
 export default function EventsList() {
+  const {
+    data: events = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetEvents();
+
+  if (isLoading) {
+    return <p>Cargando eventos...</p>;
+  }
+
+  if (isError) {
+    return <p>Error al cargar eventos: {(error as Error).message}</p>;
+  }
+
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Últimos Eventos</h2>
       <div className={styles.grid}>
-        {mockEventos.map((eventoRaw) => {
-          const tipoNombre = Object.values(TipoEventoEnum)[eventoRaw.id_tipo_evento - 1] ?? "Desconocido";
-
+        {events.map((ev: any) => {
+          // Backend devuelve { id_evento, tipo_nombre, descripcion, fecha_registro, lat, lng }
           const evento: Evento = {
-            ...eventoRaw,
-            ubicacion: eventoRaw.ubicacion as LatLngTuple,
+            id_evento: ev.id_evento,
+            id_tipo_evento: ev.id_tipo_evento,
+            tipo_nombre: ev.tipo_nombre,
+            descripcion: ev.descripcion,
+            fecha_registro: ev.fecha_registro,
+            ubicacion: [ev.lat, ev.lng] as [number, number],
           };
 
           return (
             <EventCard
               key={evento.id_evento}
               evento={evento}
-              tipoNombre={tipoNombre}
+              tipoNombre={evento.tipo_nombre}
             />
           );
         })}

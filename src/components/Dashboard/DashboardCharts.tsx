@@ -1,136 +1,221 @@
 "use client";
 
-import { Bar, Pie, Line } from 'react-chartjs-2';
+import { useGetEvents } from "@/services/querys/event.query";
+import { useGetZones } from "@/services/querys/zone.query";
+import { useGetRoutes } from "@/services/querys/routes.query";
+import { useGetCalifications } from "@/services/querys/calification.query";
 import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-  LineElement,
-  PointElement,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
   Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
   Legend,
-} from 'chart.js';
-
-import { mockEstadisticas } from '@/data/mockEstadisticas';
-import { mockCalificaciones } from '@/data/mockCalificaciones';
-import styles from './DashboardCharts.module.css';
-
-ChartJS.register(
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-  LineElement,
-  PointElement,
-  Tooltip,
-  Legend
-);
+} from "recharts";
+import styles from "./DashboardCharts.module.css";
 
 export default function DashboardCharts() {
-  const incidentesData = {
-    labels: mockEstadisticas.incidentesPorDistrito.map((d) => d.distrito),
-    datasets: [
-      {
-        label: 'Incidentes Reportados',
-        data: mockEstadisticas.incidentesPorDistrito.map((d) => d.incidentes),
-        backgroundColor: '#2563eb',
-      },
-    ],
-  };
+  // Hooks de datos
+  const { data: events = [], isLoading: loadingEvents } = useGetEvents();
+  const { data: zones = [], isLoading: loadingZones } = useGetZones();
+  const { data: routes = [], isLoading: loadingRoutes } = useGetRoutes();
+  const { data: califications = [], isLoading: loadingCalifications } =
+    useGetCalifications();
 
-  const zonasSegurasData = {
-    labels: mockEstadisticas.zonasMasSeguras.map((z) => z.nombre),
-    datasets: [
-      {
-        label: 'Nivel de Seguridad',
-        data: mockEstadisticas.zonasMasSeguras.map((z) => z.nivelSeguridad),
-        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b'],
-      },
-    ],
-  };
+  const isLoading =
+    loadingEvents || loadingZones || loadingRoutes || loadingCalifications;
 
-  const tipos = ['zona_segura', 'ruta', 'evento'];
-  const promedioPorTipo = tipos.map((tipo) => {
-    const items = mockCalificaciones.filter((c) => c.tipo_calificacion === tipo);
-    const total = items.reduce((acc, c) => acc + c.calificacion, 0);
-    return items.length > 0 ? total / items.length : 0;
-  });
+  if (isLoading) {
+    return <p>Cargando gráficos...</p>;
+  }
 
-  const calificacionesData = {
-    labels: ['Zonas Seguras', 'Rutas', 'Eventos'],
-    datasets: [
-      {
-        label: 'Calificación Promedio',
-        data: promedioPorTipo,
-        backgroundColor: ['#10b981', '#3b82f6', '#f97316'],
-      },
-    ],
-  };
+  //
+  // 1. Incidentes por Tipo de Evento (usamos tipo_nombre de events)
+  //
+  const incidentesPorTipo = events.reduce<Record<string, number>>(
+    (acc, ev) => {
+      const key = ev.tipo_nombre || "Desconocido";
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
+  const incidentesPorTipoData = Object.entries(incidentesPorTipo).map(
+    ([tipo, count]) => ({ tipo, count })
+  );
+  const incidentesColors = ["#2563eb", "#ef4444", "#10b981", "#f59e0b"];
 
-  const evolucionData = {
-    labels: mockEstadisticas.evolucionIncidentes.map((e) => e.mes),
-    datasets: [
-      {
-        label: 'Evolución de Incidentes',
-        data: mockEstadisticas.evolucionIncidentes.map((e) => e.total),
-        fill: false,
-        borderColor: '#ef4444',
-        tension: 0.3,
-        pointBackgroundColor: '#ef4444',
-      },
-    ],
-  };
+  //
+  // 2. Zonas más seguras (top 5 por area_m2)
+  //
+  // zones tienen area_m2
+  const zonasSorted = [...zones]
+    .sort((a: any, b: any) => b.area_m2 - a.area_m2)
+    .slice(0, 5)
+    .map((z: any) => ({
+      nombre: z.nombre,
+      nivel: Math.round(z.area_m2),
+    }));
+  const zonaColors = ["#10b981", "#3b82f6", "#f59e0b", "#a78bfa", "#f87171"];
 
-  const calificacionesPorMes = [
-    { mes: 'Enero', promedio: 4.2 },
-    { mes: 'Febrero', promedio: 3.8 },
-    { mes: 'Marzo', promedio: 4.0 },
-    { mes: 'Abril', promedio: 4.5 },
-    { mes: 'Mayo', promedio: 4.1 },
+  //
+  // 3. Rutas favoritas vs no favoritas
+  //
+  const favCount = routes.filter((r: any) => r.favorito).length;
+  const noFavCount = routes.length - favCount;
+  const rutasData = [
+    { tipo: "Favoritas", count: favCount },
+    { tipo: "Otras", count: noFavCount },
   ];
+  const rutasColors = ["#3b82f6", "#60a5fa"];
 
-  const evolucionCalificacionesData = {
-    labels: calificacionesPorMes.map((e) => e.mes),
-    datasets: [
-      {
-        label: 'Evolución de Calificaciones',
-        data: calificacionesPorMes.map((e) => e.promedio),
-        fill: false,
-        borderColor: '#10b981',
-        tension: 0.3,
-        pointBackgroundColor: '#10b981',
-      },
-    ],
-  };
+  //
+  // 4. Evolución de Incidentes (por mes)
+  //
+  const incidenteByMonth = events.reduce<Record<string, number>>((acc, ev) => {
+    const date = new Date(ev.fecha_registro);
+    const month = date.toLocaleString("default", { month: "short" });
+    acc[month] = (acc[month] || 0) + 1;
+    return acc;
+  }, {});
+  const evolucionIncidentesData = Object.entries(incidenteByMonth).map(
+    ([mes, total]) => ({ mes, total })
+  );
+
+  //
+  // 5. Evolución de Calificaciones (por mes, a partir de califications.created_at)
+  //
+  const califByMonth = califications.reduce<Record<string, number[]>>(
+    (acc, c: any) => {
+      const date = new Date(c.created_at);
+      const month = date.toLocaleString("default", { month: "short" });
+      (acc[month] = acc[month] || []).push(c.calificacion);
+      return acc;
+    },
+    {}
+  );
+  const evolucionCalificacionesData = Object.entries(califByMonth).map(
+    ([mes, arr]) => ({
+      mes,
+      promedio: Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10,
+    })
+  );
 
   return (
     <section className={styles.section}>
       <div className={styles.grid}>
+        {/* Incidentes por Tipo de Evento */}
         <div className={styles.chartContainer}>
-          <h2 className={styles.chartTitle}>Incidentes por Distrito</h2>
-          <Bar data={incidentesData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+          <h2 className={styles.chartTitle}>Incidentes por Tipo</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={incidentesPorTipoData}
+                dataKey="count"
+                nameKey="tipo"
+                outerRadius={100}
+                label
+              >
+                {incidentesPorTipoData.map((_, idx) => (
+                  <Cell
+                    key={idx}
+                    fill={incidentesColors[idx % incidentesColors.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
+        {/* Zonas Más Seguras */}
         <div className={styles.chartContainer}>
-          <h2 className={styles.chartTitle}>Zonas Más Seguras</h2>
-          <Pie data={zonasSegurasData} options={{ responsive: true }} />
+          <h2 className={styles.chartTitle}>Top Zonas por Área</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={zonasSorted}>
+              <XAxis dataKey="nombre" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="nivel">
+                {zonasSorted.map((_, idx) => (
+                  <Cell
+                    key={idx}
+                    fill={zonaColors[idx % zonaColors.length]}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
+        {/* Rutas Favoritas vs Otras */}
         <div className={styles.chartContainer}>
-          <h2 className={styles.chartTitle}>Calificación Promedio por Tipo</h2>
-          <Bar data={calificacionesData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+          <h2 className={styles.chartTitle}>Rutas Favoritas</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={rutasData}
+                dataKey="count"
+                nameKey="tipo"
+                innerRadius={50}
+                outerRadius={80}
+                label
+              >
+                {rutasData.map((_, idx) => (
+                  <Cell
+                    key={idx}
+                    fill={rutasColors[idx % rutasColors.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
+        {/* Evolución de Incidentes */}
         <div className={styles.chartContainer}>
           <h2 className={styles.chartTitle}>Evolución de Incidentes</h2>
-          <Line data={evolucionData} options={{ responsive: true, plugins: { legend: { display: true } } }} />
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={evolucionIncidentesData}>
+              <XAxis dataKey="mes" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="total"
+                stroke="#ef4444"
+                dot={{ r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
+        {/* Evolución de Calificaciones */}
         <div className={styles.chartContainer}>
           <h2 className={styles.chartTitle}>Evolución de Calificaciones</h2>
-          <Line data={evolucionCalificacionesData} options={{ responsive: true, plugins: { legend: { display: true } } }} />
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={evolucionCalificacionesData}>
+              <XAxis dataKey="mes" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="promedio"
+                stroke="#10b981"
+                dot={{ r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </section>
