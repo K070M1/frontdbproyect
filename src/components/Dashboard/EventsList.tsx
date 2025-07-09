@@ -24,7 +24,7 @@ export default function EventsList() {
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Últimos Eventos</h2>
-      <div className={styles.grid}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {events.map((ev: any) => {
           // Backend devuelve { id_evento, tipo_nombre, descripcion, fecha_registro, lat, lng }
           const evento: Evento = {
