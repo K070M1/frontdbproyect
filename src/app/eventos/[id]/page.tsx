@@ -1,16 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { LatLngTuple } from "leaflet";
 
 import BaseMap from "@/components/Map/BaseMap";
 import { useMapIcons } from "@/utils/useMapIcons";
 import EventForm from "@/components/Events/EventForm";
 import { Marker, Popup } from "@/components/Map/MapShell";
 import { useGetEvent } from '@/services/querys/event.query'
+import styles from "./page.module.css";
 import { useEffect, useState } from "react";
-
-
 
 export default function EventoDetallePage() {
   const { id } = useParams();

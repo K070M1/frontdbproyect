@@ -15,25 +15,25 @@ export const metadata = {
 const links = [
   {
     href: "/mapa",
-    icon: <FaRegMap className="size-20" />,
+    icon: <FaRegMap className="size-20!" />,
     title: "Mapa",
     description: "Visualiza rutas y zonas seguras en tiempo real.",
   },
   {
     href: "/rutas",
-    icon: <FiMapPin className="size-20" />,
+    icon: <FiMapPin className="size-20!" />,
     title: "Rutas",
     description: "Consulta rutas disponibles con su nivel de riesgo.",
   },
   {
     href: "/zonas",
-    icon: <IoIosSend className="size-20" />,
+    icon: <IoIosSend className="size-20!" />,
     title: "Zonas Seguras",
     description: "Descubre las zonas más seguras de tu ciudad.",
   },
   {
     href: "/eventos",
-    icon: <FaRegCalendarAlt className="size-20" />,
+    icon: <FaRegCalendarAlt className="size-20!" />,
     title: "Eventos",
     description: "Revisa eventos recientes que afectan la seguridad.",
   },
