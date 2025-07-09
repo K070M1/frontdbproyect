@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import DetailView from "@/components/Forms/DetailView";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 import Avatar from "@/components/UI/Avatar/Avatar";
@@ -37,7 +36,7 @@ export default function PerfilPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario", "moderador"]}>
-      <LayoutShell>
+      <div className={styles.container}>
         <div className={styles.profileHeader}>
           <Avatar src={avatarSrc} name={user.nombre_usuario} size={80} />
           <h1 className={styles.title}>Perfil de Usuario</h1>
@@ -50,7 +49,7 @@ export default function PerfilPage() {
             Editar Perfil
           </button>
         </div>
-      </LayoutShell>
+      </div>
     </ProtectedRoute>
   );
 }

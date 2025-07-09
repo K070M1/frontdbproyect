@@ -6,7 +6,6 @@ import { GiNinjaMask } from "react-icons/gi";
 import { useState } from "react";
 import Link from "next/link";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
 import EventCard from "@/components/Events/EventCard";
@@ -40,7 +39,7 @@ export default function EventosPage() {
   });
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Eventos Registrados</h1>
 
       <div className={styles.actions}>
@@ -110,6 +109,6 @@ export default function EventosPage() {
           );
         })}
       </div>
-    </LayoutShell>
+    </div>
   );
 }

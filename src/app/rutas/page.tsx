@@ -2,7 +2,6 @@
 import { useGetRoutes } from '@/services/querys/routes.query'
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
 import RouteCard from "@/components/Routes/RouteCard";
@@ -22,7 +21,7 @@ export default function RutasPage() {
 
   if (!isMounted) return null;
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Rutas</h1>
 
       <div className={styles.actions}>
@@ -64,6 +63,6 @@ export default function RutasPage() {
           </div>
         )}
       </div>
-    </LayoutShell>
+    </div>
   );
 }

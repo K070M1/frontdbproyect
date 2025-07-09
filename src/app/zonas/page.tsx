@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneCard from "@/components/Zones/ZoneCard";
 import SearchBar from "@/components/Behavior/SearchBar";
 import Link from "next/link";
@@ -61,22 +60,22 @@ export default function ZonasSegurasPage() {
 
   if (isLoading) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <p>Cargando zonas seguras...</p>
-      </LayoutShell>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <p>Error al cargar zonas: {(error as Error).message}</p>
-      </LayoutShell>
+      </div>
     );
   }
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Zonas Seguras</h1>
 
       <div className={styles.actions}>
@@ -117,6 +116,6 @@ export default function ZonasSegurasPage() {
           </div>
         )}
       </div>
-    </LayoutShell>
+    </div>
   );
 }

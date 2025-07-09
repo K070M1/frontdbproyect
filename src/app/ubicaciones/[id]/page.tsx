@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { LatLngTuple } from "leaflet";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
 import { Marker, InfoWindow } from "@/components/Map/MapShell";
 import { useGetUbicacionById } from "@/services/querys/ubicacion.query";
@@ -20,17 +19,17 @@ export default function UbicacionDetallePage() {
 
   if (isLoading) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Cargando ubicación...</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   if (isError || !ubicacion) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Ubicación no encontrada</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
@@ -52,7 +51,7 @@ export default function UbicacionDetallePage() {
   const calificaciones = (ubicacion.calificaciones ?? []) as Calificacion[];
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>{ubicacion.nombre}</h1>
       <p className={styles.description}>{ubicacion.descripcion}</p>
 
@@ -102,6 +101,6 @@ export default function UbicacionDetallePage() {
           </div>
         </>
       )}
-    </LayoutShell>
+    </div>
   );
 }

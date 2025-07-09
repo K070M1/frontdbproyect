@@ -1,11 +1,12 @@
 "use client";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
+import { useRouter } from "next/navigation";
 import UbicacionForm from "@/components/Ubicaciones/UbicacionForm";
 import { useAddUbicacion } from "@/services/querys/ubicacion.query";
-import { useRouter } from "next/navigation";
 import { useNotify } from "@/context/NotificationContext";
 import { CrearUbicacionDTO } from "@/types/dto/CrearUbicacionDTO";
+
+import styles from "./page.module.css";
 
 export default function NuevaUbicacionPage() {
   const router = useRouter();
@@ -24,9 +25,9 @@ export default function NuevaUbicacionPage() {
   };
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1>Registrar Nueva Ubicación</h1>
       <UbicacionForm onSubmit={handleCreateUbicacion} />
-    </LayoutShell>
+    </div>
   );
 }

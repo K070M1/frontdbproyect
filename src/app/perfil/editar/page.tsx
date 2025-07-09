@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import InputField from "@/components/UI/InputField";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 import ToastNotification from "@/components/UI/ToastNotification";
@@ -57,7 +56,7 @@ export default function EditarPerfilPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario", "moderador"]}>
-      <LayoutShell>
+      <div className={styles.container}>
         <h1 className={styles.title}>Editar Perfil</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <InputField
@@ -86,7 +85,7 @@ export default function EditarPerfilPage() {
         </form>
 
         {toast && <ToastNotification message={toast.message} type={toast.type} />}
-      </LayoutShell>
+      </div>
     </ProtectedRoute>
   );
 }

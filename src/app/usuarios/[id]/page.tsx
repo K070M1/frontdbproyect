@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import styles from "./page.module.css";
 import ToastNotification from "@/components/UI/ToastNotification";
 import { useGetUserById } from "@/services/querys/user.query";
@@ -11,7 +10,7 @@ export default function UsuarioDetallePage() {
   const { data: user, error, isLoading } = useGetUserById(id);
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Detalle de Usuario #{id}</h1>
 
       {error && (
@@ -34,6 +33,6 @@ export default function UsuarioDetallePage() {
           <p className={styles.info}><strong>Estado:</strong> {user.activo ? "Activo" : "Inactivo"}</p>
         </>
       )}
-    </LayoutShell>
+    </div>
   );
 }

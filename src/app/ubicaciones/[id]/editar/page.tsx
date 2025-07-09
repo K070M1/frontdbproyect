@@ -3,11 +3,12 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import UbicacionForm from "@/components/Ubicaciones/UbicacionForm";
 import { useGetUbicacionById, useUpdateUbicacion } from "@/services/querys/ubicacion.query";
 import { ActualizarUbicacionDTO } from "@/types/dto/ActualizarUbicacionDTO";
 import { useNotify } from "@/context/NotificationContext";
+
+import styles from "./page.module.css";
 
 export default function EditarUbicacionPage() {
   const { id } = useParams();
@@ -44,16 +45,16 @@ export default function EditarUbicacionPage() {
 
   if (isLoading || !form) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Cargando datos...</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1>Editar Ubicación</h1>
       <UbicacionForm initialData={form} onSubmit={handleSubmit} />
-    </LayoutShell>
+    </div>
   );
 }

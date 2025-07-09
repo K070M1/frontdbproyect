@@ -1,13 +1,16 @@
-"use client";
-
+// frontend/src/app/page.tsx
 import Link from "next/link";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import Card from "@/components/UI/Card/Card";
 import styles from "./page.module.css";
 
 import { FaRegMap, FaRegCalendarAlt } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import { FiMapPin } from "react-icons/fi";
+
+export const metadata = {
+  title: "TranquiRutas",
+  description: "Explora rutas, zonas seguras y eventos.",
+};
 
 const links = [
   {
@@ -38,34 +41,32 @@ const links = [
 
 export default function HomePage() {
   return (
-    <LayoutShell>
-      <section className={styles.container}>
-        <h1 className={styles.title}>Bienvenido a TranquiRutas</h1>
-        <p className={styles.subtitle}>
-          Explora rutas, zonas seguras y eventos sin necesidad de registrarte.
+    <main className={styles.container}>
+      <h1 className={styles.title}>Bienvenido a TranquiRutas</h1>
+      <p className={styles.subtitle}>
+        Explora rutas, zonas seguras y eventos sin necesidad de registrarte.
+      </p>
+
+      <div className={styles.linksGrid}>
+        {links.map(({ href, icon, title, description }) => (
+          <Link href={href} key={href} className={styles.linkCard}>
+            {icon}
+            <h2>{title}</h2>
+            <p>{description}</p>
+          </Link>
+        ))}
+      </div>
+
+      <Card>
+        <p className={styles.info}>
+          ¿Quieres participar activamente?{" "}
+          <strong>
+            Registra rutas, califica zonas o gestiona eventos
+          </strong>{" "}
+          iniciando sesión o creando una cuenta.{" "}
+          <strong>¡Crea tu cuenta ahora!</strong>
         </p>
-
-        <div className={styles.linksGrid}>
-          {links.map(({ href, icon, title, description }) => (
-            <Link href={href} key={href} className={styles.linkCard}>
-              {icon}
-              <h2>{title}</h2>
-              <p>{description}</p>
-            </Link>
-          ))}
-        </div>
-
-        <Card>
-          <p className={styles.info}>
-            ¿Quieres participar activamente?{" "}
-            <strong>
-              Registra rutas, califica zonas o gestiona eventos
-            </strong>{" "}
-            iniciando sesión o creando una cuenta.{" "}
-            <strong>¡Crea tu cuenta ahora!</strong>
-          </p>
-        </Card>
-      </section>
-    </LayoutShell>
+      </Card>
+    </main>
   );
 }

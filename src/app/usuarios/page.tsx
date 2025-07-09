@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import UserCard from "@/components/Users/UserCard";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 import Link from "next/link";
@@ -39,7 +38,7 @@ export default function UsuariosPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
-      <LayoutShell>
+      <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Usuarios Registrados</h1>
           <Link href="/usuarios/nuevo" className={styles.addButton}>
@@ -101,7 +100,7 @@ export default function UsuariosPage() {
             />
           ))}
         </div>
-      </LayoutShell>
+      </div>
     </ProtectedRoute>
   );
 }

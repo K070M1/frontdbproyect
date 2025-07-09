@@ -1,7 +1,6 @@
 "use client";
 
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
-import LayoutShell from "@/components/Layout/LayoutShell";
 
 import DashboardStats from "@/components/Dashboard/DashboardStats";
 import ActiveRoutesList from "@/components/Dashboard/ActiveRoutesList";
@@ -19,35 +18,34 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario"]}>
-      <LayoutShell>
-        <h1 className={styles.title}>Dashboard</h1>
+      {/* Nota: NO hay LayoutShell aquí, ya lo envuelve app/layout.tsx */}
+      <h1 className={styles.title}>Dashboard</h1>
 
+      <section className={styles.section}>
+        <DashboardStats />
+      </section>
+
+      {user?.rol === "admin" && (
         <section className={styles.section}>
-          <DashboardStats />
+          <DashboardCharts />
         </section>
+      )}
 
-        {user?.rol === "admin" && (
-          <section className={styles.section}>
-            <DashboardCharts />
-          </section>
-        )}
+      <section className={styles.section}>
+        <ActiveRoutesList />
+      </section>
 
-        <section className={styles.section}>
-          <ActiveRoutesList />
-        </section>
+      <section className={styles.section}>
+        <EventsList />
+      </section>
 
-        <section className={styles.section}>
-          <EventsList />
-        </section>
+      <section className={styles.section}>
+        <SafeZonesList />
+      </section>
 
-        <section className={styles.section}>
-          <SafeZonesList />
-        </section>
-
-        <section className={styles.section}>
-          <RatingsList />
-        </section>
-      </LayoutShell>
+      <section className={styles.section}>
+        <RatingsList />
+      </section>
     </ProtectedRoute>
   );
 }

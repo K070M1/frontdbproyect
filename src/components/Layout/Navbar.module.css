@@ -283,7 +283,7 @@
 }
 
 .loginButton:hover {
-  background-color: var(--color-hover);
+  background-color: var(--primary-hover);
 }
 
 /* Navegación inferior para móvil */

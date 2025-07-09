@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneForm from "@/components/Zones/ZoneForm";
 import DrawableMap from "@/components/Map/DrawableMap";
 import { useGetZones } from '@/services/querys/zone.query';
@@ -76,7 +75,7 @@ export default function NuevaZonaSeguraPage() {
   };
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Registrar Nueva Zona Segura</h1>
       <div className={styles.layoutWrapper}>
         <div className={styles.formContainer}>
@@ -117,6 +116,6 @@ export default function NuevaZonaSeguraPage() {
           />
         </div>
       </div>
-    </LayoutShell>
+    </div>
   );
 }

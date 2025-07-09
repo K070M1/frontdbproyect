@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react'
 import { useParams } from "next/navigation";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import ZoneForm from "@/components/Zones/ZoneForm";
 import DrawableMap from "@/components/Map/DrawableMap";
 import { useGetZone, useGetZones } from "@/services/querys/zone.query";
@@ -114,22 +113,22 @@ export default function ZonaSeguraDetallePage() {
 
   if (isPending) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Cargando zona...</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   if (!zona) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Zona no encontrada</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Editar Zona Segura: {zona.nombre}</h1>
       <div className={styles.layoutWrapper}>
         <div className={styles.formContainer}>
@@ -174,6 +173,6 @@ export default function ZonaSeguraDetallePage() {
           />
         </div>
       </div>
-    </LayoutShell>
+    </div>
   );
 }

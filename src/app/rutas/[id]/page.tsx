@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { LatLngTuple } from "leaflet";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
 
 import styles from "./page.module.css";
@@ -14,9 +13,9 @@ export default function RutaDetallePage() {
 
   if (!ruta) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Ruta no encontrada</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
@@ -24,7 +23,7 @@ export default function RutaDetallePage() {
   const destino: LatLngTuple = ruta.positions[ruta.positions.length - 1] as LatLngTuple;
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>{ruta.origen} ➔ {ruta.destino}</h1>
       <p className={styles.info}><strong>Riesgo:</strong> {ruta.riesgo}</p>
       <p className={styles.info}><strong>Tiempo estimado:</strong> {ruta.tiempo_estimado}</p>
@@ -43,6 +42,6 @@ export default function RutaDetallePage() {
           </Marker>
         </BaseMap>
       </div> */}
-    </LayoutShell>
+    </div>
   );
 }

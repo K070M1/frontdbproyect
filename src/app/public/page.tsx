@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import Card from "@/components/UI/Card/Card";
-import styles from "../page.module.css"; // Reutilizas el page.module.css del raíz
+import styles from "../page.module.css";
 
 export default function PublicLandingPage() {
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <section className={styles.container}>
         <h1 className={styles.title}>Explora Rutas y Zonas Seguras</h1>
         <p className={styles.subtitle}>
@@ -42,6 +41,6 @@ export default function PublicLandingPage() {
           </p>
         </Card>
       </section>
-    </LayoutShell>
+    </div>
   );
 }

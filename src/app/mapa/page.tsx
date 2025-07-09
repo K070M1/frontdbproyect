@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import styles from "./mapa.module.css";
 const MapView = dynamic(() => import("@/components/Map/MapView/MapView"), {
   ssr: false,
@@ -9,10 +8,10 @@ const MapView = dynamic(() => import("@/components/Map/MapView/MapView"), {
 
 export default function PublicMapaPage() {
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <section className={styles.container}>
         <MapView />
       </section>
-    </LayoutShell>
+    </div>
   );
 }

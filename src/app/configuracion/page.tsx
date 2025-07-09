@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 // import UserForm from "@/components/Configuracion/UserForm";
 import styles from "./page.module.css";
@@ -57,7 +56,6 @@ export default function ConfiguracionPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
-      <LayoutShell>
         <h1 className={styles.title}>Configuración</h1>
 
         <div className={styles.tabs}>
@@ -112,7 +110,6 @@ export default function ConfiguracionPage() {
             </ul>
           </section>
         )}
-      </LayoutShell>
     </ProtectedRoute>
   );
 }

@@ -4,11 +4,12 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import DetailView from "@/components/Forms/DetailView";
 import RatingStars from "@/components/Ratings/RatingStars";
 import { useGetCalification } from '@/services/querys/calification.query'
 import Form from '@/components/Ratings/RatingForm'
+
+import styles from "./page.module.css";
 
 export default function CalificacionDetallePage() {
   const { id } = useParams();
@@ -31,9 +32,7 @@ export default function CalificacionDetallePage() {
   if (isPending) {
     return (
       <ProtectedRoute allowedRoles={["admin", "usuario"]}>
-        <LayoutShell>
           <h1>Cargando...</h1>
-        </LayoutShell>
       </ProtectedRoute>
     );
   }
@@ -46,9 +45,9 @@ export default function CalificacionDetallePage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario"]}>
-      <LayoutShell>
+      <div className={styles.container}>
         <Form initialData={calification} />
-      </LayoutShell>
+      </div>
     </ProtectedRoute>
   );
 }

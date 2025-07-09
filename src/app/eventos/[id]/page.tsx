@@ -3,13 +3,14 @@
 import { useParams } from "next/navigation";
 import { LatLngTuple } from "leaflet";
 
-import LayoutShell from "@/components/Layout/LayoutShell";
 import BaseMap from "@/components/Map/BaseMap";
 import { useMapIcons } from "@/utils/useMapIcons";
 import EventForm from "@/components/Events/EventForm";
 import { Marker, Popup } from "@/components/Map/MapShell";
 import { useGetEvent } from '@/services/querys/event.query'
 import { useEffect, useState } from "react";
+
+
 
 export default function EventoDetallePage() {
   const { id } = useParams();
@@ -35,24 +36,24 @@ export default function EventoDetallePage() {
 
   if (!evento) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Evento no encontrado</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   if (isPending) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Cargando evento...</h1>
-      </LayoutShell>
+      </div>
     );
   }
 
   return (
-   <LayoutShell>
+   <div className={styles.container}>
       <h3 className="text-center font-semibold">Editar evento</h3>
       <EventForm evento={evento.length > 0 ? evento[0] : null} />
-    </LayoutShell>
+    </div>
   );
 }

@@ -1,26 +1,17 @@
+// frontend/src/app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import { AuthProvider } from "@/context/AuthContext";
-import HeroProvider from "@/providers/HeroProvider";
-import { NotificationProvider } from "@/context/NotificationContext";
-import { ThemeProvider } from "next-themes";
+import { Geist, Geist_Mono } from "next/font/google";
+import WebProviders from "@/components/WebProviders";
+import LayoutShell from "@/components/Layout/LayoutShell";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DB Frontend Proyect",
-  description: "Pending description...",
+  title: "TranquiRutas - Rutas Seguras",
+  description: "Aplicación para la gestión de rutas seguras",
 };
 
 export default function RootLayout({
@@ -31,15 +22,9 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <HeroProvider>
-            <ReactQueryProvider>
-              <AuthProvider>
-                <NotificationProvider>{children}</NotificationProvider>
-              </AuthProvider>
-            </ReactQueryProvider>
-          </HeroProvider>
-        </ThemeProvider>
+        <WebProviders>
+          <LayoutShell>{children}</LayoutShell>
+        </WebProviders>
       </body>
     </html>
   );

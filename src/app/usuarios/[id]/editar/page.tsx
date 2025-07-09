@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import InputField from "@/components/UI/InputField";
 import ToastNotification from "@/components/UI/ToastNotification";
 import { useGetUserById, useUpdateUser } from "@/services/querys/user.query";
@@ -71,7 +70,7 @@ export default function EditarUsuarioPage() {
   };
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Editar Usuario #{id}</h1>
 
       {toast && <ToastNotification message={toast.message} type={toast.type} />}
@@ -132,6 +131,6 @@ export default function EditarUsuarioPage() {
           </button>
         </form>
       )}
-    </LayoutShell>
+    </div>
   );
 }

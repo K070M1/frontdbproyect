@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
 import { useGetUbicaciones } from "@/services/querys/ubicacion.query";
@@ -24,7 +23,7 @@ export default function UbicacionesPage() {
   });
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1 className={styles.title}>Ubicaciones</h1>
 
       <div className={styles.actions}>
@@ -69,6 +68,6 @@ export default function UbicacionesPage() {
           ))}
         </div>
       )}
-    </LayoutShell>
+    </div>
   );
 }

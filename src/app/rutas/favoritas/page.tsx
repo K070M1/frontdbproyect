@@ -1,7 +1,6 @@
 "use client";
 
 import { useGetRoutes } from "@/services/querys/routes.query";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import RouteCard from "@/components/Routes/RouteCard";
 import styles from "./page.module.css";
 
@@ -10,21 +9,21 @@ export default function RutasFavoritasPage() {
 
   if (isLoading) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Rutas Favoritas</h1>
         <p>Cargando rutas...</p>
-      </LayoutShell>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Rutas Favoritas</h1>
         <p style={{ color: "var(--danger)" }}>
           {(error as Error).message || "Error al cargar rutas"}
         </p>
-      </LayoutShell>
+      </div>
     );
   }
 
@@ -33,15 +32,15 @@ export default function RutasFavoritasPage() {
 
   if (favoritas.length === 0) {
     return (
-      <LayoutShell>
+      <div className={styles.container}>
         <h1>Rutas Favoritas</h1>
         <p>No tienes rutas marcadas como favoritas.</p>
-      </LayoutShell>
+      </div>
     );
   }
 
   return (
-    <LayoutShell>
+    <div className={styles.container}>
       <h1>Rutas Favoritas</h1>
       <div className={styles.grid}>
         {favoritas.map((ruta) => (
@@ -55,6 +54,6 @@ export default function RutasFavoritasPage() {
           />
         ))}
       </div>
-    </LayoutShell>
+    </div>
   );
 }

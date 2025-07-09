@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
-import LayoutShell from "@/components/Layout/LayoutShell";
 import RatingStars from "@/components/Ratings/RatingStars";
 import FilterPanel from "@/components/Behavior/FilterPanel";
 import SearchBar from "@/components/Behavior/SearchBar";
@@ -72,7 +71,6 @@ export default function CalificacionesPage() {
 
   return (
     <ProtectedRoute allowedRoles={["admin", "usuario"]}>
-      <LayoutShell>
         <h1 className={styles.title}>Calificaciones</h1>
 
         <div className={styles.actions}>
@@ -163,7 +161,6 @@ export default function CalificacionesPage() {
             ))
           )}
         </div>
-      </LayoutShell>
     </ProtectedRoute>
   );
 }
