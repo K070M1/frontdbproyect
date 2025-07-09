@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -5,11 +6,10 @@ import { useState, useEffect } from "react";
 import { useLogin } from "@/hooks/useLogin";
 import styles from "./LoginForm.module.css";
 import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
-import Link from "next/link";
 import Image from "next/image";
 import urlImage from "@/assets/ec9fc9bc-040a-4f70-9eb5-f1e8e8978bab.png";
+import { useModalStore } from "@/store/modalStore";
 
-// Definición del tipo para el formulario de login
 type LoginForm = {
   correo: string;
   clave: string;
@@ -18,40 +18,38 @@ type LoginForm = {
 export default function LoginForm() {
   const router = useRouter();
   const { handleLogin, error, loading } = useLogin();
+  const setModal = useModalStore((s) => s.setModal);
 
   const [form, setForm] = useState<LoginForm>({ correo: "", clave: "" });
   const [mounted, setMounted] = useState(false);
   const [localError, setLocalError] = useState("");
 
-  // Marca el componente como montado para evitar errores en SSR
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Maneja el cambio en los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setLocalError(""); // Limpia error local al escribir
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setLocalError("");
   };
 
-  // Envía el formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!form.correo || !form.clave) {
       setLocalError("Todos los campos son obligatorios");
       return;
     }
-
     const result = await handleLogin(form.correo, form.clave);
-
     if (result.success) {
       router.push("/dashboard");
     }
   };
 
   if (!mounted) return null;
+
+  const openRegister = () => {
+    setModal("register");
+  };
 
   return (
     <div className={styles.container}>
@@ -113,9 +111,13 @@ export default function LoginForm() {
 
           <p className={styles.loginPrompt}>
             ¿No tienes cuenta?{" "}
-            <Link href="/auth/register" className={styles.link}>
+            <button
+              type="button"
+              onClick={openRegister}
+              className={styles.link}
+            >
               Regístrate
-            </Link>
+            </button>
           </p>
         </form>
 
@@ -137,5 +139,5 @@ export default function LoginForm() {
         </div>
       </div>
     </div>
-  );
+);
 }

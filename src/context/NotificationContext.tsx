@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 type NotificationType = "info" | "success" | "warning" | "error";
 
@@ -17,19 +23,26 @@ interface NotificationContextValue {
   clear: () => void;
 }
 
-const NotificationContext = createContext<NotificationContextValue | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextValue | undefined>(
+  undefined
+);
 
 let counter = 0;
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const notify = (type: NotificationType, message: string) => {
     const newNotification: Notification = {
       id: ++counter,
       type,
       message,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(), // solo se usará en cliente
     };
     setNotifications((prev) => [newNotification, ...prev]);
   };
@@ -38,9 +51,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     setNotifications([]);
   };
 
+  const contextValue = { notifications, notify, clear };
+
   return (
-    <NotificationContext.Provider value={{ notifications, notify, clear }}>
-      {children}
+    <NotificationContext.Provider value={contextValue}>
+      {mounted ? children : null}
     </NotificationContext.Provider>
   );
 }

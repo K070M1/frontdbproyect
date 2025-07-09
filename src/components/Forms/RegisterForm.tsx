@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useRegister } from "@/hooks/useRegister";
 import styles from "./RegisterForm.module.css";
 import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
-import Link from "next/link";
 import Image from "next/image";
 import urlImage from "@/assets/ec9fc9bc-040a-4f70-9eb5-f1e8e8978bab.png";
+import { useModalStore } from "@/store/modalStore";
 
 type RegisterForm = {
   nombre: string;
@@ -18,13 +18,13 @@ type RegisterForm = {
 export default function RegisterForm() {
   const router = useRouter();
   const { handleRegister, error, loading } = useRegister();
+  const setModal = useModalStore((s) => s.setModal);
 
   const [form, setForm] = useState<RegisterForm>({
     nombre: "",
     correo: "",
     clave: "",
   });
-
   const [localError, setLocalError] = useState("");
   const [mounted, setMounted] = useState(false);
 
@@ -33,25 +33,25 @@ export default function RegisterForm() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setLocalError(""); // limpia error local al escribir
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setLocalError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const { nombre, correo, clave } = form;
     if (!nombre || !correo || !clave) {
       setLocalError("Todos los campos son obligatorios");
       return;
     }
-
     const result = await handleRegister(nombre, correo, clave);
-
     if (result.success) {
       router.replace("/perfil");
     }
+  };
+
+  const openLogin = () => {
+    setModal("login");
   };
 
   if (!mounted) return null;
@@ -115,9 +115,13 @@ export default function RegisterForm() {
 
           <p className={styles.loginPrompt}>
             ¿Ya tienes cuenta?{" "}
-            <Link href="/auth/login" className={styles.link}>
+            <button
+              type="button"
+              onClick={openLogin}
+              className={styles.link}
+            >
               Inicia sesión
-            </Link>
+            </button>
           </p>
         </form>
 
@@ -139,5 +143,5 @@ export default function RegisterForm() {
         </div>
       </div>
     </div>
-  );
+);
 }

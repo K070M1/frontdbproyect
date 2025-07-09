@@ -1,0 +1,101 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  animation: fadeInBackdrop 0.3s ease-in-out both;
+}
+
+.modal {
+  background: var(--background);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 90vw;
+  width: 900px;
+  position: relative;
+  box-shadow: 0 10px 40px var(--shadow-primary-3xl);
+  animation: fadeInModal 0.3s ease-in-out both;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.closeButton:hover {
+  transform: scale(1.2);
+  color: var(--accent-color);
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOutBackdrop {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fadeOutModal {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.9); }
+}
+
+.open .backdrop {
+  animation: fadeInBackdrop 0.3s ease-in-out both;
+}
+.open .modal {
+  animation: fadeInModal 0.3s ease-in-out both;
+}
+
+.close .backdrop {
+  animation: fadeOutBackdrop 0.2s ease-in-out both;
+}
+.close .modal {
+  animation: fadeOutModal 0.2s ease-in-out both;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .closeButton {
+    font-size: 1.2rem;
+    top: 0.3rem;
+    right: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .closeButton {
+    font-size: 1rem;
+    top: 0.2rem;
+    right: 0.2rem;
+  }
+}

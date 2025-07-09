@@ -40,7 +40,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  // Token expirado (opcional)
   const now = Math.floor(Date.now() / 1000);
   if (user.exp && user.exp < now) {
     return NextResponse.redirect(new URL("/auth/login", request.url));

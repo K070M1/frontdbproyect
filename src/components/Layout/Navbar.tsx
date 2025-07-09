@@ -1,3 +1,4 @@
+// frontend/src/components/Layout/Navbar.tsx
 "use client";
 
 import { useState } from "react";
@@ -5,8 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ProfileDropdown from "@/components/UI/Profile/ProfileDropdown";
-// import NotificationDropdown from "@/components/UI/NotificationDropdown/NotificationDropdown";
-// import SearchInput from "@/components/UI/SearchInput/SearchInput";
 
 import { FiMapPin } from "react-icons/fi";
 import {
@@ -22,6 +21,10 @@ import {
 } from "react-icons/fa";
 import styles from "./Navbar.module.css";
 import ThemeToggle from "../Utils/ThemeToggle";
+import LoginModal from "@/components/UI/Modal/LoginModal";
+import LoginForm from "@/components/Forms/LoginForm";
+import RegisterModal from "@/components/UI/Modal/RegisterModal";
+import RegisterForm from "@/components/Forms/RegisterForm";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -30,11 +33,16 @@ export default function Navbar() {
   const isLogged = Boolean(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
-  const toggleSubmenu = (key: string) => {
+  const toggleSubmenu = (key: string) =>
     setOpenSubmenu((prev) => (prev === key ? null : key));
-  };
+  const openLogin = () => setShowLogin(true);
+  const closeLogin = () => setShowLogin(false);
+  const openRegister = () => setShowRegister(true);
+  const closeRegister = () => setShowRegister(false);
 
   return (
     <>
@@ -62,7 +70,9 @@ export default function Navbar() {
               <li>
                 <Link
                   href="/mapa"
-                  className={`${styles.navLink} ${pathname === "/mapa" ? styles.active : ""}`}
+                  className={`${styles.navLink} ${
+                    pathname === "/mapa" ? styles.active : ""
+                  }`}
                 >
                   <FaMapMarkedAlt className={styles.navIcon} />
                   Mapa
@@ -129,9 +139,7 @@ export default function Navbar() {
                 <li
                   className={`${styles.hasSubmenu} ${
                     openSubmenu === "ubicaciones" ? styles.open : ""
-                  } ${
-                    pathname.startsWith("/ubicaciones") ? styles.active : ""
-                  }`}
+                  } ${pathname.startsWith("/ubicaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -158,9 +166,7 @@ export default function Navbar() {
                 <li
                   className={`${styles.hasSubmenu} ${
                     openSubmenu === "calificaciones" ? styles.open : ""
-                  } ${
-                    pathname.startsWith("/calificaciones") ? styles.active : ""
-                  }`}
+                  } ${pathname.startsWith("/calificaciones") ? styles.active : ""}`}
                 >
                   <span
                     className={styles.navLink}
@@ -218,16 +224,19 @@ export default function Navbar() {
           </nav>
 
           <div className={styles.right}>
-            <div className="flex items-center gap-4">
+            <div className={styles.actions}>
               <ThemeToggle />
-              {/* <NotificationDropdown /> */}
               {user ? (
                 <ProfileDropdown />
               ) : (
-                <Link href="/auth/login" className={styles.loginButton}>
-                  <FaRegUser className={styles.userIcon} />
-                  Iniciar Sesión
-                </Link>
+                <>
+                  <button className={styles.loginButton} onClick={openLogin}>
+                    <FaRegUser className={styles.userIcon} /> Iniciar Sesión
+                  </button>
+                  <button className={styles.registerButton} onClick={openRegister}>
+                    Registrarse
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -253,27 +262,18 @@ export default function Navbar() {
               ? [
                   {
                     href: "/calificaciones",
-                    icon: <FaStar />,
-                    label: "Calificaciones",
+                    icon: <FaStar />, label: "Calificaciones",
                   },
                 ]
               : []),
             ...(isAdmin
               ? [
-                  {
-                    href: "/eventos",
-                    icon: <FaCalendarAlt />,
-                    label: "Eventos",
-                  },
+                  { href: "/eventos", icon: <FaCalendarAlt />, label: "Eventos" },
                 ]
               : []),
             ...(isAdmin
               ? [
-                  {
-                    href: "/configuracion",
-                    icon: <FaCogs />,
-                    label: "Configuración",
-                  },
+                  { href: "/configuracion", icon: <FaCogs />, label: "Configuración" },
                 ]
               : []),
           ].map((link) => (
@@ -291,6 +291,14 @@ export default function Navbar() {
           ))}
         </div>
       )}
+
+      <LoginModal isOpen={showLogin} onClose={closeLogin}>
+        <LoginForm />
+      </LoginModal>
+
+      <RegisterModal isOpen={showRegister} onClose={closeRegister}>
+        <RegisterForm />
+      </RegisterModal>
     </>
   );
 }
