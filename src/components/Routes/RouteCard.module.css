@@ -196,3 +196,59 @@
   min-width: 80px;
   text-align: center;
 }
+
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.editButton:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.deleteButton:hover {
+  background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+  transform: translateY(-1px);
+}

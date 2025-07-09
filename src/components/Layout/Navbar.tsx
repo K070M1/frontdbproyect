@@ -55,7 +55,9 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <nav className={`${styles.center} ${menuOpen ? styles.menuOpen : ""}`}>
+          <nav
+            className={`${styles.center} ${menuOpen ? styles.menuOpen : ""}`}
+          >
             <ul className={styles.menu}>
               <li>
                 <Link
@@ -69,8 +71,9 @@ export default function Navbar() {
 
               {/* Rutas */}
               <li
-                className={`${styles.hasSubmenu} ${openSubmenu === "rutas" ? styles.open : ""
-                  } ${pathname.startsWith("/rutas") ? styles.active : ""}`}
+                className={`${styles.hasSubmenu} ${
+                  openSubmenu === "rutas" ? styles.open : ""
+                } ${pathname.startsWith("/rutas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -90,11 +93,6 @@ export default function Navbar() {
                   </li>
                   {isLogged && (
                     <li>
-                      <Link href="/rutas/favoritas">Favoritas</Link>
-                    </li>
-                  )}
-                  {isLogged && (
-                    <li>
                       <Link href="/rutas/nueva">Nueva Ruta</Link>
                     </li>
                   )}
@@ -103,8 +101,9 @@ export default function Navbar() {
 
               {/* Zonas */}
               <li
-                className={`${styles.hasSubmenu} ${openSubmenu === "zonas" ? styles.open : ""
-                  } ${pathname.startsWith("/zonas") ? styles.active : ""}`}
+                className={`${styles.hasSubmenu} ${
+                  openSubmenu === "zonas" ? styles.open : ""
+                } ${pathname.startsWith("/zonas") ? styles.active : ""}`}
               >
                 <span
                   className={styles.navLink}
@@ -128,8 +127,11 @@ export default function Navbar() {
               {/* Ubicaciones */}
               {isLogged && (
                 <li
-                  className={`${styles.hasSubmenu} ${openSubmenu === "ubicaciones" ? styles.open : ""
-                    } ${pathname.startsWith("/ubicaciones") ? styles.active : ""}`}
+                  className={`${styles.hasSubmenu} ${
+                    openSubmenu === "ubicaciones" ? styles.open : ""
+                  } ${
+                    pathname.startsWith("/ubicaciones") ? styles.active : ""
+                  }`}
                 >
                   <span
                     className={styles.navLink}
@@ -154,8 +156,11 @@ export default function Navbar() {
               {/* Calificaciones */}
               {isLogged && (
                 <li
-                  className={`${styles.hasSubmenu} ${openSubmenu === "calificaciones" ? styles.open : ""
-                    } ${pathname.startsWith("/calificaciones") ? styles.active : ""}`}
+                  className={`${styles.hasSubmenu} ${
+                    openSubmenu === "calificaciones" ? styles.open : ""
+                  } ${
+                    pathname.startsWith("/calificaciones") ? styles.active : ""
+                  }`}
                 >
                   <span
                     className={styles.navLink}
@@ -188,7 +193,9 @@ export default function Navbar() {
                   <li>
                     <Link
                       href="/eventos"
-                      className={`${styles.navLink} ${pathname === "/eventos" ? styles.active : ""}`}
+                      className={`${styles.navLink} ${
+                        pathname === "/eventos" ? styles.active : ""
+                      }`}
                     >
                       <FaCalendarAlt className={styles.navIcon} />
                       Eventos
@@ -197,7 +204,9 @@ export default function Navbar() {
                   <li>
                     <Link
                       href="/configuracion"
-                      className={`${styles.navLink} ${pathname === "/configuracion" ? styles.active : ""}`}
+                      className={`${styles.navLink} ${
+                        pathname === "/configuracion" ? styles.active : ""
+                      }`}
                     >
                       <FaCogs className={styles.navIcon} />
                       Configuración
@@ -232,22 +241,48 @@ export default function Navbar() {
             { href: "/rutas", icon: <FiMapPin />, label: "Rutas" },
             { href: "/zonas", icon: <FaShieldAlt />, label: "Zonas" },
             ...(isLogged
-              ? [{ href: "/ubicaciones", icon: <FaMapMarkedAlt />, label: "Ubicaciones" }]
+              ? [
+                  {
+                    href: "/ubicaciones",
+                    icon: <FaMapMarkedAlt />,
+                    label: "Ubicaciones",
+                  },
+                ]
               : []),
             ...(isLogged
-              ? [{ href: "/calificaciones", icon: <FaStar />, label: "Calificaciones" }]
+              ? [
+                  {
+                    href: "/calificaciones",
+                    icon: <FaStar />,
+                    label: "Calificaciones",
+                  },
+                ]
               : []),
             ...(isAdmin
-              ? [{ href: "/eventos", icon: <FaCalendarAlt />, label: "Eventos" }]
+              ? [
+                  {
+                    href: "/eventos",
+                    icon: <FaCalendarAlt />,
+                    label: "Eventos",
+                  },
+                ]
               : []),
             ...(isAdmin
-              ? [{ href: "/configuracion", icon: <FaCogs />, label: "Configuración" }]
+              ? [
+                  {
+                    href: "/configuracion",
+                    icon: <FaCogs />,
+                    label: "Configuración",
+                  },
+                ]
               : []),
           ].map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`${styles.bottomNavItem} ${pathname === link.href ? styles.active : ""}`}
+              className={`${styles.bottomNavItem} ${
+                pathname === link.href ? styles.active : ""
+              }`}
               onClick={() => setMenuOpen(false)}
             >
               {link.icon}

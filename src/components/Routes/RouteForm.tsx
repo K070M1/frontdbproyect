@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, use } from "react";
-import { useAuth } from '@/context/AuthContext'
-import { useAddRoute } from '@/services/querys/routes.query'
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useAddRoute } from "@/services/querys/routes.query";
 import { PlacesAutocomplete } from "@/components/Map/PlaceAutcomplete";
 import BaseMap from "@/components/Map/BaseMap";
 import styles from "./RouteForm.module.css";
@@ -14,12 +14,20 @@ export default function RouteForm() {
     favorito: false,
   });
 
-  const { mutateAsync:addRoute } = useAddRoute()
-  const { user } = useAuth()
+  const { mutateAsync: addRoute } = useAddRoute();
+  const { user } = useAuth();
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
-  const [origenCoords, setOrigenCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [destinoCoords, setDestinoCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [origenAddress, setOrigenAddress] = useState("");
+  const [destinoAddress, setDestinoAddress] = useState("");
+  const [origenCoords, setOrigenCoords] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [destinoCoords, setDestinoCoords] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const placesService = useRef<google.maps.places.PlacesService | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -27,7 +35,19 @@ export default function RouteForm() {
     setIsMounted(true);
   }, []);
 
-  const [route, setRoute] = useState<google.maps.DirectionsResult | null >(null);
+  const [route, setRoute] = useState<google.maps.DirectionsResult | null>(null);
+
+  const getRiskLevel = (value: number) => {
+    if (value <= 3) return "bajo";
+    if (value <= 7) return "medio";
+    return "alto";
+  };
+
+  const getRiskLabel = (value: number) => {
+    if (value <= 3) return "Bajo";
+    if (value <= 7) return "Medio";
+    return "Alto";
+  };
 
   const fetchPlaceDetails = (placeId: string, isOrigen: boolean) => {
     if (!window.google?.maps?.places) return;
@@ -38,19 +58,39 @@ export default function RouteForm() {
     }
 
     placesService.current.getDetails(
-      { placeId, fields: ["geometry", "name"] },
-      (place:any, status:any) => {
+      {
+        placeId,
+        fields: [
+          "geometry",
+          "name",
+          "formatted_address",
+          "address_components",
+          "vicinity",
+        ],
+      },
+      (place: any, status: any) => {
         if (status === "OK" && place?.geometry?.location) {
           const position = {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
           };
 
+          // Extraer componentes de dirección para un formato más detallado
+          let detailedAddress = place.formatted_address || "";
+
+          // Si quieres puedes procesar address_components para más detalle
+          if (place.address_components) {
+            // Aquí podrías extraer distrito, ciudad, etc. de forma más específica
+            // pero formatted_address ya incluye toda esta información
+          }
+
           if (isOrigen) {
             setOrigen(place.name || "");
+            setOrigenAddress(detailedAddress);
             setOrigenCoords(position);
           } else {
             setDestino(place.name || "");
+            setDestinoAddress(detailedAddress);
             setDestinoCoords(position);
           }
 
@@ -111,32 +151,46 @@ export default function RouteForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
+    // Convertir el riesgo de 1-10 a 1-5 para la base de datos
+    const riesgoNormalizado = Math.ceil(form.riesgo / 2);
+
     const res = await addRoute({
       ...form,
+      riesgo: riesgoNormalizado,
       origen,
       destino,
+      origenAddress,
+      destinoAddress,
       origenCoords,
       destinoCoords,
       id_usuario: user?.id,
     });
 
-    if(res){
+    if (res) {
       console.log("Ruta registrada exitosamente:", res);
     }
   };
+
+  const formatTimeDisplay = (tiempo: string) => {
+    if (!tiempo) return { hours: "--", minutes: "--", seconds: "--" };
+    const [h, m, s] = tiempo.split(":");
+    return {
+      hours: h || "--",
+      minutes: m || "--",
+      seconds: s || "--",
+    };
+  };
+
+  const timeDisplay = formatTimeDisplay(form.tiempo_estimado);
 
   return (
     <div className={styles.container}>
       <form
         onSubmit={handleSubmit}
-        className="col-span-2 flex flex-col justify-between bg-white p-8 rounded-2xl shadow-lg border border-gray-200 h-[700px]"
+        className={`${styles.formContainer} col-span-2`}
       >
         <div className="space-y-8">
-          {/* <h2 className="text-4xl font-bold text-gray-800 text-center mb-8">
-            Registrar Ruta
-          </h2> */}
-
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-base font-semibold text-gray-700 block">
@@ -162,22 +216,36 @@ export default function RouteForm() {
               <label className="text-base font-semibold text-gray-700 block">
                 Nivel de Riesgo
               </label>
-              <div className="flex items-center space-x-3">
-                <input
-                  name="riesgo"
-                  type="range"
-                  value={form.riesgo}
-                  onChange={handleChange}
-                  min={1}
-                  max={10}
-                  className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                />
-                <span className="text-2xl font-bold text-indigo-600 min-w-[3ch] text-center">
-                  {form.riesgo}
+              <div className={styles.riskContainer}>
+                <div className={styles.riskSliderWrapper}>
+                  <input
+                    name="riesgo"
+                    type="range"
+                    value={form.riesgo}
+                    onChange={handleChange}
+                    min={1}
+                    max={10}
+                    className={`${styles.riskSlider} ${
+                      styles[getRiskLevel(form.riesgo)]
+                    }`}
+                  />
+                  <div className={styles.riskMarkers}>
+                    <span className={styles.marker}></span>
+                    <span className={styles.marker}></span>
+                    <span className={styles.marker}></span>
+                  </div>
+                </div>
+                <span
+                  className={`${styles.riskValue} ${
+                    styles[getRiskLevel(form.riesgo)]
+                  }`}
+                >
+                  {getRiskLabel(form.riesgo)}
                 </span>
               </div>
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <div className={styles.riskLabels}>
                 <span>Bajo</span>
+                <span>Medio</span>
                 <span>Alto</span>
               </div>
             </div>
@@ -187,26 +255,46 @@ export default function RouteForm() {
                 <label className="text-base font-semibold text-gray-700 block">
                   Tiempo Estimado
                 </label>
-                <input
-                  name="tiempo_estimado"
-                  value={form.tiempo_estimado}
-                  readOnly
-                  className="w-full p-4 text-base border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono"
-                  placeholder="HH:MM:SS"
-                />
+                <div className={styles.timeDisplay}>
+                  <div className={styles.timeUnit}>
+                    <span className={styles.timeNumber}>
+                      {timeDisplay.hours}
+                    </span>
+                    <span className={styles.timeLabel}>Horas</span>
+                  </div>
+                  <span className={styles.timeSeparator}>:</span>
+                  <div className={styles.timeUnit}>
+                    <span className={styles.timeNumber}>
+                      {timeDisplay.minutes}
+                    </span>
+                    <span className={styles.timeLabel}>Minutos</span>
+                  </div>
+                  <span className={styles.timeSeparator}>:</span>
+                  <div className={styles.timeUnit}>
+                    <span className={styles.timeNumber}>
+                      {timeDisplay.seconds}
+                    </span>
+                    <span className={styles.timeLabel}>Segundos</span>
+                  </div>
+                </div>
               </div>
             )}
 
-            <div className="pt-4">
-              <label className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors">
+            <div className={styles.favoriteContainer}>
+              <label className={styles.favoriteLabel}>
                 <input
                   type="checkbox"
                   name="favorito"
                   checked={form.favorito}
                   onChange={handleChange}
-                  className="w-5 h-5 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2"
+                  className={styles.favoriteCheckbox}
                 />
-                <span className="text-base font-medium text-gray-700">
+                <span className={styles.favoriteBox}>
+                  <span className={styles.favoriteStar}>
+                    {form.favorito ? "★" : "☆"}
+                  </span>
+                </span>
+                <span className={styles.favoriteText}>
                   Marcar como ruta favorita
                 </span>
               </label>
@@ -214,10 +302,7 @@ export default function RouteForm() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-        >
+        <button type="submit" className={styles.submitButton}>
           Guardar Ruta
         </button>
       </form>
@@ -227,7 +312,9 @@ export default function RouteForm() {
           center={
             origenCoords || destinoCoords || { lat: -12.0464, lng: -77.0428 }
           }
-          markers={[origenCoords, destinoCoords].filter((coords): coords is { lat: number; lng: number } => coords !== null)}
+          markers={[origenCoords, destinoCoords].filter(
+            (coords): coords is { lat: number; lng: number } => coords !== null
+          )}
           directions={route || undefined}
         />
       </div>

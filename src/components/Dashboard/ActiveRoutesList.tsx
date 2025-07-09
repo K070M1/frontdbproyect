@@ -3,6 +3,7 @@
 import RouteCard from "@/components/Routes/RouteCard";
 import styles from "./ActiveRoutesList.module.css";
 import { useGetRoutes } from "@/services/querys/routes.query";
+import { Ruta } from "@/types/entities/Ruta";
 
 export default function ActiveRoutesList() {
   const { data: routes = [], isLoading, isError, error } = useGetRoutes();
@@ -10,7 +11,7 @@ export default function ActiveRoutesList() {
   if (isLoading) {
     return (
       <section className={styles.section}>
-        <h2 className={styles.title}>Rutas Activas</h2>
+        <h2 className={styles.title}>Rutas</h2>
         <p>Cargando rutas...</p>
       </section>
     );
@@ -40,7 +41,7 @@ export default function ActiveRoutesList() {
     <section className={styles.section}>
       <h2 className={styles.title}>Rutas Activas</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {routes.map((ruta) => (
+        {routes.map((ruta: Ruta) => (
           <RouteCard
             key={ruta.id_ruta}
             origen={ruta.origen}

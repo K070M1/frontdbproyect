@@ -3,9 +3,13 @@ import styles from "./RouteCard.module.css";
 type RouteCardProps = {
   origen: string;
   destino: string;
+  origenDireccion?: string;
+  destinoDireccion?: string;
   riesgo: number;
   tiempo: string;
   favorito?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 const riesgoCategoria = (valor: number) => {
@@ -45,6 +49,8 @@ export default function RouteCard({
   riesgo,
   tiempo,
   favorito,
+  onEdit,
+  onDelete,
 }: RouteCardProps) {
   const riesgoData = riesgoCategoria(riesgo);
   const formattedTime = formatTime(tiempo);
@@ -86,6 +92,17 @@ export default function RouteCard({
         <div className={styles.timeContainer}>
           <span className={styles.timeLabel}>Tiempo Estimado</span>
           <div className={styles.timeValue}>{formattedTime}</div>
+        </div>
+      </div>
+
+      <div className={styles.cardFooter}>
+        <div className={styles.actionButtons}>
+          <button className={styles.editButton} onClick={onEdit}>
+            ✏️ Editar
+          </button>
+          <button className={styles.deleteButton} onClick={onDelete}>
+            🗑️ Eliminar
+          </button>
         </div>
       </div>
     </div>
