@@ -1,12 +1,13 @@
 "use client";
 
+import { ReactNode } from "react";
 import { useModalStore } from "@/store/modalStore";
 import LoginModal from "@/components/UI/Modal/LoginModal";
 import RegisterModal from "@/components/UI/Modal/RegisterModal";
 import LoginForm from "@/components/Forms/LoginForm";
 import RegisterForm from "@/components/Forms/RegisterForm";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({ children }: { children: ReactNode }) {
   const { openModal, setModal } = useModalStore();
 
   return (

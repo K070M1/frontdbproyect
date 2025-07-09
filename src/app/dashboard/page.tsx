@@ -3,10 +3,10 @@
 import ProtectedRoute from "@/components/Behavior/ProtectedRoute";
 
 import DashboardStats from "@/components/Dashboard/DashboardStats";
-import ActiveRoutesList from "@/components/Dashboard/ActiveRoutesList";
-import EventsList from "@/components/Dashboard/EventsList";
-import SafeZonesList from "@/components/Dashboard/SafeZonesList";
-import RatingsList from "@/components/Ratings/RatingsList";
+// import ActiveRoutesList from "@/components/Dashboard/ActiveRoutesList";
+// import EventsList from "@/components/Dashboard/EventsList";
+// import SafeZonesList from "@/components/Dashboard/SafeZonesList";
+// import RatingsList from "@/components/Ratings/RatingsList";
 import DashboardCharts from "@/components/Dashboard/DashboardCharts";
 
 import { useAuth } from "@/context/AuthContext";
@@ -31,21 +31,21 @@ export default function DashboardPage() {
         </section>
       )}
 
-      <section className={styles.section}>
+      {/* <section className={styles.section}>
         <ActiveRoutesList />
-      </section>
+      </section> */}
 
-      <section className={styles.section}>
+      {/* <section className={styles.section}>
         <EventsList />
-      </section>
+      </section> */}
 
-      <section className={styles.section}>
+      {/* <section className={styles.section}>
         <SafeZonesList />
-      </section>
+      </section> */}
 
-      <section className={styles.section}>
+      {/* <section className={styles.section}>
         <RatingsList />
-      </section>
+      </section> */}
     </ProtectedRoute>
   );
 }

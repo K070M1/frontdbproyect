@@ -1,10 +1,11 @@
+// frontend/src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import WebProviders from "@/components/WebProviders";
-import ClientLayout from "@/components/Layout/ClientLayout";
-import LayoutShell from "@/components/Layout/LayoutShell";
+import AppProviders from "@/providers/AppProviders";
+import PageLayout from "@/components/Layout/PageLayout";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -19,9 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <WebProviders>
-          <ClientLayout>
-            <LayoutShell>{children}</LayoutShell>
-          </ClientLayout>
+          <AppProviders>
+            <PageLayout>{children}</PageLayout>
+          </AppProviders>
         </WebProviders>
       </body>
     </html>
