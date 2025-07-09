@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { GoogleMap, DrawingManager, Polygon, Circle, Rectangle, useJsApiLoader } from "@react-google-maps/api";
+import { 
+  GoogleMap, 
+  DrawingManager, 
+  Polygon, 
+  Circle, 
+  // Rectangle, 
+  useJsApiLoader 
+} from "@react-google-maps/api";
 
 const libraries: ("drawing" | "places")[] = ["drawing", "places"];
 

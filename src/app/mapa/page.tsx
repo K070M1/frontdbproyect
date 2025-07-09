@@ -9,9 +9,9 @@ const MapView = dynamic(() => import("@/components/Map/MapView/MapView"), {
 export default function PublicMapaPage() {
   return (
     <div className={styles.container}>
-      <section className={styles.container}>
+      {/* <section className={styles.section_container}> */}
         <MapView />
-      </section>
+      {/* </section> */}
     </div>
   );
 }
