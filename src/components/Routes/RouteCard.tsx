@@ -15,24 +15,25 @@ type RouteCardProps = {
 const riesgoCategoria = (valor: number) => {
   if (valor <= 2)
     return {
-      label: "Bajo Riesgo",
+      label: "BAJO RIESGO",
       className: styles.riesgoBajo,
-      icon: "🟢",
+      dotClass: styles.dotBajo,
     };
   if (valor <= 4)
     return {
-      label: "Riesgo Medio",
+      label: "RIESGO MEDIO",
       className: styles.riesgoMedio,
-      icon: "🟡",
+      dotClass: styles.dotMedio,
     };
   return {
-    label: "Alto Riesgo",
+    label: "ALTO RIESGO",
     className: styles.riesgoAlto,
-    icon: "🔴",
+    dotClass: styles.dotAlto,
   };
 };
 
 const formatTime = (tiempo: string) => {
+  if (!tiempo) return "--";
   const parts = tiempo.split(":");
   const hours = parseInt(parts[0]);
   const minutes = parseInt(parts[1]);
@@ -46,6 +47,8 @@ const formatTime = (tiempo: string) => {
 export default function RouteCard({
   origen,
   destino,
+  origenDireccion,
+  destinoDireccion,
   riesgo,
   tiempo,
   favorito,
@@ -58,52 +61,63 @@ export default function RouteCard({
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <div className={styles.routeDirection}>
-          <div className={styles.header}>
-            <span>{origen}</span>
-            <span className={styles.arrow}>→</span>
-            <span>{destino}</span>
-          </div>
-          <div className={styles.locations}>
-            <div className={styles.location}>
-              <div className={`${styles.locationIcon} ${styles.origin}`}></div>
-              <span>Desde: {origen}</span>
-            </div>
-            <div className={styles.location}>
-              <div
-                className={`${styles.locationIcon} ${styles.destination}`}
-              ></div>
-              <span>Hasta: {destino}</span>
-            </div>
-          </div>
+        <div className={styles.routeTitle}>
+          <span className={styles.routeText}>
+            {origen} <span className={styles.arrow}>→</span> {destino}
+          </span>
         </div>
-        {favorito && <div className={styles.favorite}>★</div>}
+        {favorito && <span className={styles.favoriteStar}>⭐</span>}
       </div>
 
-      <div className={styles.cardBody}>
-        <div className={styles.riskContainer}>
-          <span className={styles.riskLabel}>Nivel de Riesgo</span>
+      <div className={styles.routeDetails}>
+        <div className={styles.locationItem}>
+          <div className={styles.locationDot}></div>
+          <div className={styles.locationContent}>
+            <span className={styles.locationLabel}>Desde: {origen}</span>
+            {origenDireccion && (
+              <span className={styles.locationAddress}>{origenDireccion}</span>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.locationItem}>
+          <div
+            className={`${styles.locationDot} ${styles.destinationDot}`}
+          ></div>
+          <div className={styles.locationContent}>
+            <span className={styles.locationLabel}>Hasta: {destino}</span>
+            {destinoDireccion && (
+              <span className={styles.locationAddress}>{destinoDireccion}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.cardMetrics}>
+        <div className={styles.metricGroup}>
+          <span className={styles.metricTitle}>NIVEL DE RIESGO</span>
           <div className={`${styles.riskBadge} ${riesgoData.className}`}>
-            <div className={styles.riskIcon}></div>
-            {riesgoData.label}
+            <span className={riesgoData.dotClass}>●</span>
+            <span>{riesgoData.label}</span>
           </div>
         </div>
 
-        <div className={styles.timeContainer}>
-          <span className={styles.timeLabel}>Tiempo Estimado</span>
-          <div className={styles.timeValue}>{formattedTime}</div>
+        <div className={styles.metricGroup}>
+          <span className={styles.metricTitle}>TIEMPO ESTIMADO</span>
+          <div className={styles.timeBadge}>{formattedTime}</div>
         </div>
       </div>
 
-      <div className={styles.cardFooter}>
-        <div className={styles.actionButtons}>
-          <button className={styles.editButton} onClick={onEdit}>
-            ✏️ Editar
-          </button>
-          <button className={styles.deleteButton} onClick={onDelete}>
-            🗑️ Eliminar
-          </button>
-        </div>
+      <div className={styles.cardActions}>
+        <button className={styles.actionButton} onClick={onEdit}>
+          ✏️ Editar
+        </button>
+        <button
+          className={`${styles.actionButton} ${styles.deleteButton}`}
+          onClick={onDelete}
+        >
+          🗑️ Eliminar
+        </button>
       </div>
     </div>
   );
