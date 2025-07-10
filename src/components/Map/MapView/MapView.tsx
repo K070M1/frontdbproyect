@@ -1,7 +1,13 @@
 "use client";
 
 import GoogleBaseMap from "@/components/Map/BaseMap";
-import { MapMarker, Marker, InfoWindow, Polyline, Polygon } from '@/components/Map/MapShell'
+import { 
+  MapMarker, 
+  // Marker, 
+  InfoWindow, 
+  // Polyline, 
+  Polygon 
+} from '@/components/Map/MapShell'
 import { useMemo, useState, useEffect, useRef } from "react";
 import { FaPerson, FaPersonRunning, FaMapLocationDot, FaRoute } from 'react-icons/fa6'
 
@@ -432,17 +438,16 @@ export default function MapView() {
                 const eventRatings = getEventRatings(selectedEvent.id_evento);
                 const avgRating = getAverageRating(eventRatings);
                 return (
-                  <div style={{ marginTop: '8px' }}>
-                    <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+                  <div className={styles.ratingWrapper}>
+                    <div className={styles.eventRatingInfo}>
                       📊 {eventRatings.length} calificaciones
                       {eventRatings.length > 0 && (
-                        <span style={{ color: '#fbbf24' }}> ⭐ {avgRating}</span>
+                        <span className={styles.ratingStar}> ⭐ {avgRating}</span>
                       )}
                     </div>
                     <button
                       onClick={() => showEventRatings(selectedEvent)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                      style={{ fontSize: '12px' }}
+                      className={styles.ratingButton}
                     >
                       {eventRatings.length === 0 ? "Sin calificaciones" : "Ver calificaciones"}
                     </button>
@@ -508,15 +513,7 @@ export default function MapView() {
           >
             <div>
               {selectedZone.isRecommended && (
-                <div style={{ 
-                  backgroundColor: '#10B981', 
-                  color: 'white', 
-                  padding: '4px 8px', 
-                  borderRadius: '4px', 
-                  fontSize: '12px',
-                  marginBottom: '8px',
-                  fontWeight: 'bold'
-                }}>
+                <div className={styles.zoneRecommended}>
                   🎯 ZONA RECOMENDADA PARA TU RUTA
                 </div>
               )}
@@ -530,17 +527,16 @@ export default function MapView() {
                 const zoneRatings = getZoneRatings(selectedZone.id_zona);
                 const avgRating = getAverageRating(zoneRatings);
                 return (
-                  <div style={{ marginTop: '8px' }}>
-                    <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+                  <div className={styles.ratingWrapper}>
+                    <div className={styles.ratingInfoBox}>
                       📊 {zoneRatings.length} calificaciones
                       {zoneRatings.length > 0 && (
-                        <span style={{ color: '#fbbf24' }}> ⭐ {avgRating}</span>
+                        <span className={styles.ratingStar}> ⭐ {avgRating}</span>
                       )}
                     </div>
                     <button
                       onClick={() => showZoneRatings(selectedZone)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                      style={{ fontSize: '12px' }}
+                      className={styles.ratingButton}
                     >
                       {zoneRatings.length === 0 ? "Sin calificaciones" : "Ver calificaciones"}
                     </button>
@@ -657,7 +653,7 @@ export default function MapView() {
 
                     {/* Comentario */}
                     <p className="text-gray-700 text-sm leading-relaxed">
-                      "{rating.comentario}"
+                      {rating.comentario}
                     </p>
                   </div>
                 ))
