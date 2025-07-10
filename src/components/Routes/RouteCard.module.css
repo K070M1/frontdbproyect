@@ -28,7 +28,7 @@
 }
 
 .routeText {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #111827;
   display: flex;
@@ -43,7 +43,7 @@
 }
 
 .favoriteStar {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: #fbbf24;
 }
 
@@ -84,13 +84,13 @@
 }
 
 .locationLabel {
-  font-size: 0.8125rem;
+  font-size: 0.9rem;
   color: #374151;
   font-weight: 500;
 }
 
 .locationAddress {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #6b7280;
   line-height: 1.4;
   word-break: break-word;
@@ -113,7 +113,7 @@
 }
 
 .metricTitle {
-  font-size: 0.625rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
@@ -124,9 +124,9 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -138,7 +138,7 @@
 
 .dotBajo {
   color: #10b981;
-  font-size: 0.625rem;
+  font-size: 0.85rem;
 }
 
 .riesgoMedio {
@@ -148,7 +148,7 @@
 
 .dotMedio {
   color: #f59e0b;
-  font-size: 0.625rem;
+  font-size: 0.85rem;
 }
 
 .riesgoAlto {
@@ -158,15 +158,15 @@
 
 .dotAlto {
   color: #ef4444;
-  font-size: 0.625rem;
+  font-size: 0.85rem;
 }
 
 .timeBadge {
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 1rem;
   background-color: #ede9fe;
   color: #6d28d9;
   border-radius: 20px;
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -184,10 +184,10 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0.875rem;
+  padding: 0.6rem 0.875rem;
   border: none;
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  border-radius: 10px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
