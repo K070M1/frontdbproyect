@@ -1,0 +1,28 @@
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.info {
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.favorite {
+  color: #facc15;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.mapWrapper {
+  margin-top: 1rem;
+  height: 400px;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

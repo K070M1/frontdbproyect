@@ -1,0 +1,27 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--background);
+}
+
+.mainContainer {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  padding: var(--padding-xxxxxl) var(--padding-xxl);
+  overflow-y: auto;
+  background-color: var(--background);
+  /* border-left: 1px solid var(--background-color-secondary); */
+}
+
+/* Breakpoint para móviles */
+@media (max-width: 768px) {
+  .content {
+    padding: var(--padding-lg) var(--padding-md);
+  }
+}

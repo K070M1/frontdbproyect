@@ -1,0 +1,94 @@
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.addButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.addButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.card {
+  background: var(--background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  /* height: 500px; */
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.viewButton {
+  padding: var(--gap-xs) var(--gap-sm);
+  border-radius: 8px;
+  background: var(--color-green-100);
+  border: 1px solid var(--color-green-300);
+  color: var(--color-green-700);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xxs);
+}
+
+.viewButton:hover {
+  background: var(--color-green-200);
+  transform: translateY(-1px);
+}
+
+.editButton {
+  background-color: #f59e0b;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.deleteButton {
+  background-color: #dc2626;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+

@@ -1,0 +1,80 @@
+/* BUTTON EDITAR */
+.editButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.editButton:hover {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+
+.editButton svg {
+  font-size: 0.9rem;
+}
+
+/* BUTTON ELIMINAR */
+.deleteButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.deleteButton:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+.card {
+  background-color: var(--background-color-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--padding-md);
+  margin-bottom: var(--margin-md);
+  box-shadow: 0 2px 4px var(--card-shadow);
+  transition: transform var(--transition-medium);
+  font-family: var(--font-family-sans);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  margin-bottom: var(--gap-xs);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.card p {
+  margin: 0.25rem 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-sm);
+  margin-top: var(--gap-md);
+}

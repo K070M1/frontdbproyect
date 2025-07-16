@@ -1,0 +1,450 @@
+.mapContainer {
+  width: 100%;
+  height: calc(100vh - 200px);
+  position: relative;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Iconos pequeños */
+.iconSmall {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Botón "Cambiar mi posición" */
+.togglePositionButton {
+  position: absolute;
+  top: var(--padding-xl);
+  left: var(--padding-md);
+  z-index: 50;
+  display: flex;
+  gap: var(--gap-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--primary);
+  padding: var(--padding-sm) var(--padding-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  /* color: var(--text-inverted); */
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--shadow-primary-sm);
+  transition: transform var(--transition-fast);
+}
+
+.togglePositionButton:hover {
+  transform: scale(1.1) rotate(2deg);
+}
+
+/* Contenedor del formulario */
+.formContainer {
+  position: absolute;
+  bottom: var(--padding-lg);
+  left: var(--padding-md);
+  z-index: 50;
+  padding: var(--padding-lg);
+  border-radius: var(--radius-md);
+  background-color: var(--blur-bg-heavy);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  align-items: center;
+}
+
+/* Título del formulario */
+.formTitle {
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* Grupo de campos */
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  width: 100%;
+}
+
+.autocompleteInput {
+  width: 100%;
+}
+
+.checkboxContainer {
+  margin: 0 var(--padding-sm);
+}
+
+/* Estados de texto */
+.statusSuccess {
+  margin-top: var(--gap-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-green-600);
+}
+
+.statusWarning {
+  margin-top: var(--gap-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-orange-600);
+}
+
+/* Botón "Calcular ruta segura" */
+.calculateButton {
+  display: flex;
+  gap: var(--gap-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--primary);
+  padding: var(--padding-sm) var(--padding-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  /* color: var(--text-inverted); */
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--shadow-primary-sm);
+  border: none;
+  transition: background-color var(--transition-fast);
+}
+
+.calculateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botón "Limpiar ruta segura" */
+.clearButton {
+  display: flex;
+  gap: var(--gap-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--danger);
+  padding: var(--padding-sm) var(--padding-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  /* color: var(--text-inverted); */
+  color: white;
+  cursor: pointer;
+  box-shadow: var(--shadow-primary-sm);
+  border: none;
+  transition: background-color var(--transition-fast);
+}
+
+.clearButton:hover {
+  background-color: var(--danger-hover);
+}
+
+/* Error de ubicación */
+.locationError {
+  position: absolute;
+  top: var(--padding-md);
+  right: var(--padding-md);
+  background-color: var(--danger);
+  /* color: var(--text-inverted); */
+  color: white;
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-primary-sm);
+}
+
+/* Contenido de InfoWindow */
+.infoWindowContent {
+  padding: var(--padding-sm);
+  background-color: var(--card-background);
+  border-radius: var(--radius-md);
+  /* box-shadow: var(--shadow-primary-md); */
+}
+
+/* Ratings */
+.ratingWrapper {
+  margin-top: var(--gap-xs);
+  color: var(--text-secondary);
+  /* background-color: var(--card-background); */
+}
+
+.eventRatingInfo,
+.ratingInfoBox {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--gap-xs);
+}
+
+.ratingStar {
+  color: var(--color-yellow-500);
+}
+
+.ratingButton {
+  background-color: var(--primary);
+  /* color: var(--text-inverted); */
+  color: white;
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.ratingButton:hover {
+  background-color: var(--primary-hover);
+}
+
+
+/* Zona recomendada */
+.zoneRecommended {
+  background-color: var(--secondary);
+  /* color: var(--text-inverted); */
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--gap-sm);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+}
+
+/* Modal de calificaciones */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99000;
+}
+
+.modalContent {
+  background-color: var(--background);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-lg);
+  max-width: 28rem;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin: 0 var(--padding-md);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--gap-md);
+}
+
+.modalTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.modalCloseButton {
+  font-size: var(--font-size-xl);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modalSummary {
+  margin-bottom: var(--gap-md);
+  padding: var(--padding-sm);
+  background-color: var(--background-color-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.modalSummaryInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalSummaryStars {
+  display: flex;
+  gap: var(--gap-xs);
+}
+
+.modalList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.noRatings {
+  text-align: center;
+  padding: var(--padding-lg) 0;
+  color: var(--text-muted);
+}
+
+.ratingCard {
+  border: 1px solid var(--color-border-2);
+  border-radius: var(--radius-sm);
+  padding: var(--padding-sm);
+}
+
+.ratingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap-xs);
+}
+
+.ratingStars {
+  display: flex;
+  gap: var(--gap-xs);
+}
+
+.starActive {
+  color: var(--color-yellow-500);
+}
+
+.starInactive {
+  color: var(--text-muted);
+}
+
+.ratingText {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.ratingDate {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.ratingComment {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.modalFooter {
+  margin-top: var(--gap-md);
+  border-top: 1px solid var(--color-border-2);
+  padding-top: var(--gap-sm);
+}
+
+.modalCloseAction {
+  width: 100%;
+  background-color: var(--background-color-secondary);
+  color: var(--text-primary);
+  padding: var(--padding-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.modalCloseAction:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* Ajustes para vista móvil */
+@media (max-width: 640px) {
+  .mapContainer {
+    height: calc(100vh - 60px);
+  }
+
+  .togglePositionButton {
+    top: var(--padding-md);
+    left: var(--padding-sm);
+    padding: 0.5rem var(--padding-sm);
+    font-size: var(--font-size-xs);
+    gap: var(--gap-xs);
+  }
+
+  .iconSmall {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .formContainer {
+    bottom: var(--padding-md);
+    left: var(--padding-sm);
+    right: var(--padding-sm);
+    padding: var(--padding-md);
+    gap: var(--gap-xs);
+  }
+
+  .formFields {
+    gap: var(--gap-sm);
+  }
+
+  .fieldGroup {
+    gap: var(--gap-xs);
+  }
+
+  .autocompleteInput {
+    font-size: var(--font-size-sm);
+  }
+
+  .statusSuccess,
+  .statusWarning {
+    font-size: var(--font-size-xxs);
+  }
+
+  .calculateButton,
+  .clearButton {
+    padding: 0.5rem var(--padding-md);
+    font-size: var(--font-size-xs);
+  }
+
+  .locationError {
+    top: var(--padding-sm);
+    right: var(--padding-sm);
+    font-size: var(--font-size-xs);
+    padding: var(--padding-xs);
+  }
+
+  .infoWindowContent {
+    font-size: var(--font-size-sm);
+  }
+
+  .ratingButton {
+    padding: 0.2rem 0.5rem;
+    font-size: var(--font-size-xxs);
+  }
+
+  .zoneRecommended {
+    padding: 0.2rem 0.4rem;
+    font-size: var(--font-size-xxs);
+  }
+
+  /* Modal */
+  .modalContent {
+    max-width: 90%;
+    padding: var(--padding-md);
+  }
+  .modalTitle {
+    font-size: var(--font-size-base);
+  }
+  .modalCloseButton {
+    font-size: var(--font-size-lg);
+  }
+  .modalSummary {
+    padding: var(--padding-xs);
+  }
+  .ratingCard {
+    padding: var(--padding-xs);
+  }
+  .ratingText,
+  .ratingDate {
+    font-size: var(--font-size-xxs);
+  }
+  .ratingComment {
+    font-size: var(--font-size-xs);
+  }
+  .modalCloseAction {
+    padding: var(--padding-xs);
+    font-size: var(--font-size-xs);
+  }
+}

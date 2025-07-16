@@ -1,0 +1,13 @@
+.marker {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.marker:hover {
+  transform: scale(1.2);
+}

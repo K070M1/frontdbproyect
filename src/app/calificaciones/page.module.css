@@ -1,0 +1,243 @@
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.list {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .headerRight {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.card {
+  background-color: var(--form-background);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-primary-sm);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-primary-lg);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.ratingSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scoreText {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.typeTag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.cardBody {
+  margin-bottom: 1rem;
+}
+
+.comment {
+  background: var(--background);
+  border-left: 4px solid var(--color-green-500);
+  padding: 0.75rem;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.cardFooter {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.reference {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.reference strong {
+  color: var(--text-primary);
+}
+
+.metadata {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+}
+
+.userId {
+  background: var(--background-color-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.date {
+  color: var(--color-gray-600);
+  font-weight: 400;
+}
+
+.loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-gray-600);
+  font-size: 1.125rem;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-gray-600);
+  font-size: 1.125rem;
+  background: var(--background-color-base);
+  border-radius: 12px;
+  border: 2px dashed var(--color-border);
+}
+
+.addButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.addButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Actions */
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-xs);
+}
+
+.editButton {
+  padding: var(--gap-xs) var(--gap-sm);
+  border-radius: 8px;
+  background: var(--color-yellow-100);
+  border: 1px solid var(--color-yellow-300);
+  color: var(--color-yellow-700);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xxs);
+}
+
+.editButton:hover {
+  background: var(--color-yellow-200);
+  transform: translateY(-1px);
+}
+
+.editButton svg {
+  font-size: var(--font-size-base);
+}
+
+.deleteButton {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: var(--color-red-100);
+  border: 1px solid var(--color-red-300);
+  color: var(--color-red-700);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xxs);
+}
+
+.deleteButton:hover {
+  background: var(--color-red-200);
+  transform: translateY(-1px);
+}

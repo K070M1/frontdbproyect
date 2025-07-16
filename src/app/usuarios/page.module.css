@@ -1,0 +1,119 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.addButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.addButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.selectInput {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  transition: border-color 0.3s ease;
+}
+
+.selectInput:hover {
+  border-color: var(--primary-500);
+}
+
+.selectInput:focus {
+  border-color: var(--primary-600);
+  outline: none;
+}
+
+.selectInput option {
+  background-color: var(--background);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border: none;
+}
+
+.selectInput option:hover {
+  background-color: var(--primary-100);
+}
+
+.selectInput option:checked {
+  background-color: var(--primary-500);
+  color: white;
+}
+
+/* Diseño móvil */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    text-align: left;
+  }
+
+  .addButton {
+    width: 100%;
+    text-align: center;
+  }
+
+  .list {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .searchInput,
+  .selectInput {
+    width: 100%;
+  }
+}

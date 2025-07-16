@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-top: -1rem;
+}
+
+.linksGrid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.linkCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  background-color: var(--background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.linkCard:hover {
+  box-shadow: 0 4px 10px var(--hover-bg);
+}
+
+.linkCard h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.linkCard p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.info {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.container svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+  color: var(--primary);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .linkCard {
+    padding: 1.5rem;
+  }
+
+  .linkCard h2 {
+    font-size: 1rem;
+  }
+
+  .linkCard p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .linkCard {
+    padding: 1rem;
+  }
+
+  .linkCard h2 {
+    font-size: 0.9rem;
+  }
+
+  .linkCard p {
+    font-size: 0.8rem;
+  }
+}

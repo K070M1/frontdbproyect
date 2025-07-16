@@ -1,0 +1,339 @@
+@import "tailwindcss";
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+
+:root {
+  /* === Light Mode (Día) === */
+
+  /* Backgrounds */
+  --background: #ffffff;
+  --foreground: #000005;
+  --form-background: #ffffff;            /* fondo de formularios */
+  --container-background: #f9fafb;       /* fondo principal de contenedores */
+
+
+  --background-light: #f8f9fa;         /* fondo general muy claro */
+  --background-medium: #e9ecef;        /* secciones intermedias */
+  --background-dark: #dee2e6;          /* líneas, bordes suaves */
+
+  --background-color-base: #f9fafb;    /* base general */
+  --background-color-primary: rgba(92, 113, 246, 0.75);  /* branding */
+  --background-color-secondary: #e5e7eb; /* gris claro */
+  --background-color-tertiary: #f3f4f6; /* borde tarjetas */
+  --card-background: #ffffff;          /* tarjetas y elementos elevados */
+
+  /* Text */
+  --text-primary: #000005;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-inverted: #ffffff;
+  --text-brand: #8393ff;
+  --text-p: #6b7280;
+
+  /* Brand / Status */
+  --primary-50:  #EDF4FF;
+  --primary-100: #DFEAFF;
+  --primary-200: #C5D8FF;
+  --primary-300: #A2BDFF;
+  --primary-400: #7D98FC;
+  --primary-500: #5C71F6;
+  --primary-600: #404AEB;
+  --primary-700: #3339CF;
+  --primary-800: #2C33A7;
+  --primary-900: #2B3284;
+  --primary-950: #191C4D;
+
+
+  --primary: #5c71f6;
+  --primary-hover: #495cd6;
+  --secondary: #10b981;
+  --secondary-hover: #059669;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Neutrals */
+  --color-white: #ffffff;
+  --color-muted: #94a3b8;
+  --color-border: #a5b4fc;              /* borde activo o destacado */
+  --color-border-2: #cbd5e1;            /* borde general */
+  --color-border-avatar: #3e4db3;       /* borde perfil/avatar */
+  --card-shadow: rgba(0, 0, 0, 0.05);    /* sombra sutil para tarjetas */
+
+  /* Shadows */
+  --shadow-primary-xs:   0 1px 2px    rgba(92, 113, 246, 0.08);
+  --shadow-primary-sm:   0 1px 3px    rgba(92, 113, 246, 0.15);
+  --shadow-primary-md:   0 4px 6px    rgba(92, 113, 246, 0.20);
+  --shadow-primary-lg:   0 10px 15px  rgba(92, 113, 246, 0.25);
+  --shadow-primary-xl:   0 20px 25px  rgba(92, 113, 246, 0.30);
+  --shadow-primary-2xl:  0 25px 50px  rgba(92, 113, 246, 0.35);
+  --shadow-primary-3xl:  0 30px 60px  rgba(92, 113, 246, 0.40);
+  --shadow-primary-4xl:  0 40px 80px  rgba(92, 113, 246, 0.45);
+  --shadow-primary-5xl:  0 50px 100px rgba(92, 113, 246, 0.50);
+  --shadow-primary-6xl:  0 60px 120px rgba(92, 113, 246, 0.60);
+  --shadow-primary-7xl:  0 70px 140px rgba(92, 113, 246, 0.70);
+  --shadow-primary-8xl:  0 80px 160px rgba(92, 113, 246, 0.80);
+  --shadow-primary-8xl-center:  0 0 80px rgba(92, 113, 246, 0.80);
+
+  /* Blur Transparencies */
+  --blur-bg: rgba(255, 255, 255, 0.7);
+  --blur-bg-heavy: rgba(255, 255, 255, 0.85);
+
+  /* Background Wrappers */
+  --bg-wrapper: rgba(243, 244, 246, 0.8);
+  --bg-navbar: rgba(255, 255, 255, 0.75);
+  --bg-submenu: rgba(255, 255, 255, 0.9);
+  --accent: #5c71f6;
+  --hover-bg: rgba(92, 113, 246, 0.1);
+
+  /* Fonts */
+  --font-family-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-mono: 'Fira Code', 'Courier New', Courier, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-bolder:800;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.75;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --border-radius-full: 9999px;
+
+  /* Spacing */
+  --padding-xs: 0.5rem;
+  --padding-sm: 0.75rem;
+  --padding-md: 1rem;
+  --padding-lg: 1.5rem;
+  --padding-xl: 2rem;
+  --padding-xxl: 3rem;
+  --padding-xxxl: 4rem;
+  --padding-xxxxl: 5rem;
+  --padding-xxxxxl: 6rem;
+  --padding-xxxxxxl: 7rem;
+  --padding-xxxxxxxl: 8rem;
+
+  --margin-xs: 0.5rem;
+  --margin-sm: 0.75rem;
+  --margin-md: 1rem;
+  --margin-lg: 1.5rem;
+  --margin-xl: 2rem;
+
+  --spacing: 0.25rem;
+  --gap-xxs: 0.3rem;
+  --gap-xs: 0.5rem;
+  --gap-sm: 0.75rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.25rem;
+  --gap-xl: 1.5rem;
+  --gap-xxl: 2rem;
+
+  /* Estado deshabilitado */
+  --text-disabled: rgba(156, 163, 175, 0.3);
+  --color-disabled: rgba(209, 213, 219, 0.3);
+
+  /* Otros */
+  --notification-icon-color: #53ac7b;
+
+  /* Transiciones */
+  --transition-fastest: 0.1s ease-in-out;
+  --transition-fast: 0.15s ease-in-out;
+  --transition-medium: 0.3s ease-in-out;
+  --transition-medium-ease: 0.3s ease;
+  --transition-slow: 0.5s ease-in-out;
+  --transition-slower: 0.75s ease-in-out;
+  --transition-slowest: 1s ease-in-out;
+
+  --spinner-bg: rgba(255, 255, 255, 0.8); /* Fondo del spinner en modo claro */
+}
+
+/* === Dark Mode (Noche) === */
+.dark {
+  --background: #121212;
+  --foreground: #f6f6f6;
+  --form-background: #1e1e1e;            /* fondo de formularios en modo oscuro */
+  --container-background: #1c1c1f;       /* fondo principal de contenedores en modo oscuro */
+
+  --background-light: #1e1e1e;         /* tono más claro que fondo base */
+  --background-medium: #2a2a2e;        /* secciones intermedias */
+  --background-dark: #3a3a3f;          /* separadores o contornos */
+
+  --background-color-base: #1c1c1f;    /* fondo general */
+  --background-color-primary: rgba(165, 180, 252, 0.15); /* branding */
+  --background-color-secondary: #2d2f36;  /* tarjetas más suaves */
+  --background-color-tertiary: #383a42;  /* borde tarjetas */
+  --card-background: #121319;          /* tarjetas y componentes elevados */
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverted: #111827;
+  --text-brand: #a5b4fc;
+
+  /* Brand / Status */
+  --primary-50:  #191C4D;
+  --primary-100: #2B3284;
+  --primary-200: #2C33A7;
+  --primary-300: #3339CF;
+  --primary-400: #404AEB;
+  --primary-500: #5C71F6;
+  --primary-600: #7D98FC;
+  --primary-700: #A2BDFF;
+  --primary-800: #C5D8FF;
+  --primary-900: #DFEAFF;
+  --primary-950: #EDF4FF;
+
+
+  /* Neutrals */
+  --color-muted: #6b7280;               /* texto secundario gris oscuro */
+  --color-border: #4b5563;              /* borde suave oscuro */
+  --color-border-2: #374151;            /* borde general intermedio */
+  --color-border-avatar: #6366f1;       /* borde perfil (primary-500 adaptado) */
+  --card-shadow: rgba(255, 255, 255, 0.05); /* sombra clara invertida */
+
+  --blur-bg: rgba(23, 23, 23, 0.8);
+  --blur-bg-heavy: rgba(23, 23, 23, 0.9);
+
+  --bg-wrapper: rgba(17, 24, 39, 0.8);
+  --bg-navbar: rgba(31, 41, 55, 0.75);
+  --bg-submenu: rgba(31, 41, 55, 0.9);
+  --accent: #a5b4fc;
+  --hover-bg: rgba(129, 140, 248, 0.15);
+
+  /* Shadows adaptados a fondo oscuro */
+  --shadow-primary-xs:   0 1px 2px    rgba(165, 180, 252, 0.12);
+  --shadow-primary-sm:   0 1px 3px    rgba(165, 180, 252, 0.18);
+  --shadow-primary-md:   0 4px 6px    rgba(165, 180, 252, 0.25);
+  --shadow-primary-lg:   0 10px 15px  rgba(165, 180, 252, 0.30);
+  --shadow-primary-xl:   0 20px 25px  rgba(165, 180, 252, 0.35);
+  --shadow-primary-2xl:  0 25px 50px  rgba(165, 180, 252, 0.40);
+  --shadow-primary-3xl:  0 30px 60px  rgba(165, 180, 252, 0.45);
+  --shadow-primary-4xl:  0 40px 80px  rgba(165, 180, 252, 0.50);
+  --shadow-primary-5xl:  0 50px 100px rgba(165, 180, 252, 0.60);
+  --shadow-primary-6xl:  0 60px 120px rgba(165, 180, 252, 0.70);
+  --shadow-primary-7xl:  0 70px 140px rgba(165, 180, 252, 0.80);
+  --shadow-primary-8xl:  0 80px 160px rgba(165, 180, 252, 0.90);
+  --shadow-primary-8xl:  0 80px 80px rgba(165, 180, 252, 0.90);
+  --shadow-primary-8xl-center:  0 0 80px rgba(165, 180, 252, 0.90);
+
+  --spinner-bg: rgba(31, 41, 55, 0.8); /* Fondo del spinner en modo oscuro */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-family-sans);
+  transition: background var(--transition-medium), color var(--transition-medium);
+}
+
+/* === Spinner Animation === */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+.gm-style {
+  width: 100%;
+  height: 100%;
+}
+
+.gm-style .gm-style-iw-c {
+  background-color: var(--blur-bg-heavy);
+  border-radius: var(--radius-md);
+  /* overflow: hidden; */
+  scrollbar-color: transparent transparent; /* Transparent scrollbar */
+  scrollbar-width: none; /* Hide scrollbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gm-style .gm-style-iw-d {
+  background-color: var(--blur-bg-heavy);
+  border-radius: var(--radius-md);
+  padding: var(--padding-sm);
+  /* overflow: hidden; */
+  scrollbar-color: transparent transparent; /* Transparent scrollbar */
+  scrollbar-width: none; /* Hide scrollbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gm-style .gm-style-iw {
+  background-color: var(--blur-bg-heavy);
+  border-radius: var(--radius-md);
+  /* overflow: hidden; */
+  scrollbar-color: transparent transparent; /* Transparent scrollbar */
+  scrollbar-width: none; /* Hide scrollbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div[role="dialog"].gm-style-iw.gm-style-iw-c {
+  /* all: unset; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  padding: 0;
+  margin: -6px 0 0 0;
+  /* background: transparent; */
+  /* box-shadow: none; */
+  /* border-radius: 0; */
+}
+
+.gm-style .gm-style-iw-tc::after {
+  background-color: var(--card-background);
+  margin-top: -6px; /* Mueve también la flecha para que no quede despegada */
+}
+
+.gm-style-iw-chr {
+  /* width: 100%; */
+  padding: 0;
+  position: absolute;
+  z-index: 10;
+  top: -.4rem;
+  right: -.4rem;
+  /* background-color: var(--form-background); */
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--transition-medium);
+}
+
+.gm-style-iw-chr:hover {
+  background-color: var(--hover-bg);
+}
+
+
+.gm-style .gm-style-iw-c::-webkit-scrollbar, 
+.gm-style .gm-style-iw-d::-webkit-scrollbar, 
+.gm-style .gm-style-iw::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Webkit browsers */
+}

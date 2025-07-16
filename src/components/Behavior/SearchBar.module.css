@@ -1,0 +1,37 @@
+/* frontend/src/components/Behavior/SearchBar.module.css */
+
+.container {
+  margin-bottom: var(--margin-lg);
+  display: flex;
+  justify-content: center;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--padding-sm) var(--padding-lg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  background: var(--card-background);
+  transition: all var(--transition-medium-ease);
+  box-shadow: var(--shadow-primary-sm);
+  position: relative;
+  color: var(--text-primary);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(92, 113, 246, 0.15), var(--shadow-primary-md);
+  transform: translateY(-1px);
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+.searchInput:hover {
+  border-color: var(--primary-300);
+}

@@ -1,0 +1,41 @@
+.wrapper {
+  width: 52px;
+  height: 28px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-medium);
+  user-select: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toggle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-medium), background-color var(--transition-medium);
+  pointer-events: none;
+}
+
+.dark {
+  transform: translateX(24px);
+}
+
+.light {
+  transform: translateX(0);
+}
+
+.icon {
+  color: var(--text-inverted);
+  font-size: 14px;
+  transition: color var(--transition-medium);
+  pointer-events: none;
+}

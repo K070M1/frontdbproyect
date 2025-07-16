@@ -1,0 +1,23 @@
+.section {
+  margin-top: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.chartContainer {
+  background: var(--background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px var(--card-shadow);
+}
+
+.chartTitle {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}

@@ -1,0 +1,89 @@
+.container {
+  padding: 2rem 1rem;
+  background: var(--form-background);
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 2rem;
+  max-width: 95%;
+  margin: 0 auto;
+  padding-bottom: 5rem;
+  /* min-height: calc(100vh - 180px); */
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.layoutWrapper {
+  display: contents; /* eliminado: uso de grid directamente en container */
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContainer {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-background);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-lg);
+  box-shadow: var(--shadow-primary-md);
+  border: 1px solid var(--color-border);
+  height: 100%;
+}
+
+.mapContainer > div:last-child {
+  flex: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.mapTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.mapInstructions {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  padding: var(--padding-md);
+  background-color: var(--background-color-base);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.existingZonesInfo {
+  color: var(--danger-500);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+}
+
+.loadingZonesInfo {
+  color: var(--primary-500);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .mapContainer {
+    height: 400px;
+  }
+}
